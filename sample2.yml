@@ -1,0 +1,8 @@
+# Electric Imp library and apps listed in YAML form from which they're parsed by the homepage template
+headless: true
+heartles: false
+title: eiapps
+steeple:
+  - 2000
+  - 2001
+  - 2002

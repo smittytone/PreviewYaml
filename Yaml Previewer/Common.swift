@@ -79,12 +79,24 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
         if let value = part.array {
             // Iterate through array elements
             // NOTE A given element can be of any YAML type
+            var isLeaf: Bool = true
             for i in 0..<value.count {
                 if let yamlString = renderYaml(value[i], indent, false) {
                     returnString.append(yamlString)
-                    returnString.append(newLine)
+                    
+                    // Is the element a collection? If it is, this
+                    // array can't be a leaf
+                    if value[i].array != nil || value[i].dictionary != nil {
+                        isLeaf = false
+                    }
                 }
             }
+            
+            // If the array is a leaf, add a spacer line
+            if isLeaf {
+                returnString.append(NSAttributedString.init(string: "*** LEAF (\(indent)) ***\n"))
+            }
+            
             return returnString
         }
     case .dictionary:
@@ -128,6 +140,7 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
             })
             
             // Iterate through the sorted keys array
+            var isLeaf: Bool = true
             for i in 0..<keys.count {
                 // Get the key:value pairs
                 let key: Yaml = keys[i]
@@ -139,10 +152,13 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
                 }
                 
                 // If the value is a collection, we drop to the next line and indent
-                var valueIndent = 0
+                var valueIndent: Int = 0
                 if value.array != nil || value.dictionary != nil {
                     valueIndent = indent + BUFFOON_CONSTANTS.YAML_INDENT
                     returnString.append(newLine)
+                    isLeaf = false
+                } else if indent == 0 {
+                    isLeaf = true;
                 }
                 
                 // Render the key's value
@@ -150,11 +166,15 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
                     returnString.append(yamlString)
                 }
                 
-                // Hack: if this is the root dictionary, add a blank line between keys
-                if (indent == 0) {
-                    returnString.append(newLine)
+                if isLeaf && indent == 0 && i < keys.count - 1  {
+                    returnString.append(NSAttributedString.init(string: "*** LEAF (\(indent)) (\(i)) ***\n"))
                 }
             }
+            
+            if indent != 0 {
+                returnString.append(NSAttributedString.init(string: "*** DICT (\(indent)) ***\n"))
+            }
+            
             return returnString
         }
     case .string:
@@ -164,7 +184,9 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
                                        range: NSMakeRange(0, returnString.length))
 
             if (isKey) {
-                returnString.append(NSAttributedString.init(string: " "))
+                returnString.append(NSAttributedString.init(string: " -> "))
+            } else {
+                returnString.append(newLine)
             }
 
             return returnString
@@ -173,11 +195,11 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
         // Place all the scalar values here
         // TODO These *may* be keys too, so we need to check that
         if let val = part.int {
-            returnString.append(getIndentedString("\(val)", indent))
+            returnString.append(getIndentedString("\(val)\n", indent))
         } else if let val = part.bool {
-            returnString.append(getIndentedString((val ? "true" : "false"), indent))
+            returnString.append(getIndentedString((val ? "true\n" : "false\n"), indent))
         } else if let val = part.double {
-            returnString.append(getIndentedString("\(val)", indent))
+            returnString.append(getIndentedString("\(val)\n", indent))
         }
         
         returnString.addAttributes(valAtts, range: NSMakeRange(0, returnString.length))
