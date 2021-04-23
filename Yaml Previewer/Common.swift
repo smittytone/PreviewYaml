@@ -13,23 +13,21 @@ import AppKit
 
 
 // Use defaults for some user-selectable values
-private var codeColourIndex: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
-private var codeFontIndex: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
-private var bodyFontIndex: Int = BUFFOON_CONSTANTS.BODY_FONT_INDEX
-private var fontSizeBase: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
-private var linkColourIndex: Int = BUFFOON_CONSTANTS.LINK_COLOUR_INDEX
+private var keyColourIndex: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
+private var textFontIndex: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
+private var textSizeBase: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
 private var doShowLightBackground: Bool = false
 private let codeFonts: [String] = ["AndaleMono", "Courier", "Menlo-Regular", "Monaco"]
-private let bodyFonts: [String] = ["system", "ArialMT", "Helvetica", "HelveticaNeue", "LucidaGrande", "Times-Roman", "Verdana"]
 private var hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n", attributes: [.strikethroughStyle: NSUnderlineStyle.patternDot.rawValue, .strikethroughColor: NSColor.labelColor])
 private var keyAtts: [NSAttributedString.Key:Any] = [
-    NSAttributedString.Key.foregroundColor: getColour(codeColourIndex),
-    NSAttributedString.Key.font: NSFont.init(name: codeFonts[codeFontIndex], size: fontSizeBase) as Any
+    NSAttributedString.Key.foregroundColor: getColour(keyColourIndex),
+    NSAttributedString.Key.font: NSFont.init(name: codeFonts[textFontIndex], size: textSizeBase) as Any
 ]
 private var valAtts: [NSAttributedString.Key:Any] = [
     NSAttributedString.Key.foregroundColor: (doShowLightBackground ? NSColor.black : NSColor.labelColor),
-    NSAttributedString.Key.font: NSFont.init(name: codeFonts[codeFontIndex], size: fontSizeBase) as Any
+    NSAttributedString.Key.font: NSFont.init(name: codeFonts[textFontIndex], size: textSizeBase) as Any
 ]
+private let newLine: NSAttributedString = NSAttributedString.init(string: "\n")
 
 
 // MARK: Primary Function
@@ -53,11 +51,12 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
     }
     catch {
         // No YAML to render, or mis-formatted
+        let errorString: NSMutableAttributedString = NSMutableAttributedString.init(string: "Could not render the YAML. It may be mis-formed.\n", attributes: keyAtts)
 #if DEBUG
-        let errorString: NSMutableAttributedString = NSMutableAttributedString()
-        errorString.append(NSAttributedString.init(string: error.localizedDescription + "\n"))
-        renderedString = errorString
+        errorString.append(NSMutableAttributedString.init(string: error.localizedDescription + "\n", attributes: keyAtts))
+        errorString.append(NSMutableAttributedString.init(string: yamlFileString + "\n", attributes: valAtts))
 #endif
+        renderedString = errorString
     }
         
     return renderedString
@@ -76,39 +75,27 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
     let returnString: NSMutableAttributedString = NSMutableAttributedString.init()
     
     switch (part) {
-    case .string:
-        if let keyOrValue = part.string {
-            returnString.append(getIndentedString(keyOrValue, indent))
-            returnString.addAttributes((isKey ? keyAtts : valAtts),
-                                       range: NSMakeRange(0, returnString.length))
-            returnString.append(isKey ? NSAttributedString.init(string: " ") : NSAttributedString.init(string: "\n"))
-            return returnString
-        }
     case .array:
         if let value = part.array {
             // Iterate through array elements
             // NOTE A given element can be of any YAML type
             for i in 0..<value.count {
-                if let yamlString = renderYaml(value[i], indent + BUFFOON_CONSTANTS.YAML_INDENT, false) {
+                if let yamlString = renderYaml(value[i], indent, false) {
                     returnString.append(yamlString)
-                    if i < value.count - 1 && (value[i].array != nil || value[i].dictionary != nil) {
-                        // Separate items with a space
-                        // TODO Move this to where we know what the type is
-                        returnString.append(NSAttributedString.init(string: "\n"))
-                    }
+                    returnString.append(newLine)
                 }
             }
             return returnString
         }
     case .dictionary:
-        if let dictValue = part.dictionary {
+        if let dict = part.dictionary {
             // Iterate through the dictionary's keys and their values
             // NOTE A given value can be of any YAML type
             
             // Sort the dictionary's keys (ascending)
             // We assume all keys will be strings, ints, doubles or bools
-            var dkeys: [Yaml] = Array(dictValue.keys)
-            dkeys = dkeys.sorted(by: { (a, b) -> Bool in
+            var keys: [Yaml] = Array(dict.keys)
+            keys = keys.sorted(by: { (a, b) -> Bool in
                 // Strings?
                 if let a_s: String = a.string {
                     if let b_s: String = b.string {
@@ -141,10 +128,10 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
             })
             
             // Iterate through the sorted keys array
-            for i in 0..<dkeys.count {
+            for i in 0..<keys.count {
                 // Get the key:value pairs
-                let key: Yaml = dkeys[i]
-                let value: Yaml = dictValue[key] ?? ""
+                let key: Yaml = keys[i]
+                let value: Yaml = dict[key] ?? ""
                 
                 // Render the key
                 if let yamlString = renderYaml(key, indent, true) {
@@ -154,8 +141,8 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
                 // If the value is a collection, we drop to the next line and indent
                 var valueIndent = 0
                 if value.array != nil || value.dictionary != nil {
-                    returnString.append(NSAttributedString.init(string: "\n"))
-                    valueIndent = indent
+                    valueIndent = indent + BUFFOON_CONSTANTS.YAML_INDENT
+                    returnString.append(newLine)
                 }
                 
                 // Render the key's value
@@ -165,20 +152,32 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
                 
                 // Hack: if this is the root dictionary, add a blank line between keys
                 if (indent == 0) {
-                    returnString.append(NSAttributedString.init(string: "\n"))
+                    returnString.append(newLine)
                 }
             }
+            return returnString
+        }
+    case .string:
+        if let keyOrValue = part.string {
+            returnString.append(getIndentedString(keyOrValue, indent))
+            returnString.addAttributes((isKey ? keyAtts : valAtts),
+                                       range: NSMakeRange(0, returnString.length))
+
+            if (isKey) {
+                returnString.append(NSAttributedString.init(string: " "))
+            }
+
             return returnString
         }
     default:
         // Place all the scalar values here
         // TODO These *may* be keys too, so we need to check that
         if let val = part.int {
-            returnString.append(getIndentedString("\(val)\n", indent))
+            returnString.append(getIndentedString("\(val)", indent))
         } else if let val = part.bool {
-            returnString.append(getIndentedString((val ? "true\n" : "false\n"), indent))
+            returnString.append(getIndentedString((val ? "true" : "false"), indent))
         } else if let val = part.double {
-            returnString.append(getIndentedString("\(val)\n", indent))
+            returnString.append(getIndentedString("\(val)", indent))
         }
         
         returnString.addAttributes(valAtts, range: NSMakeRange(0, returnString.length))
@@ -190,18 +189,18 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
 }
 
 
-func getIndentedString(_ s: String, _ indent: Int) -> NSAttributedString {
+func getIndentedString(_ baseString: String, _ indent: Int) -> NSAttributedString {
     
-    // FROM 1.3.0
-    // Return a suitably space-indented NSAttributedString
+    // Return a space-prefix NSAttributedString where 'indent' specifies
+    // the number of spaces to add
     
-    let trimmedString = s.trimmingCharacters(in: .whitespaces)
-    let spacer = "                                                     "
-    let spaceString = String(spacer.suffix(indent))
-    let nsm: NSMutableAttributedString = NSMutableAttributedString.init()
-    nsm.append(NSAttributedString.init(string: spaceString))
-    nsm.append(NSAttributedString.init(string: trimmedString))
-    return nsm.attributedSubstring(from: NSMakeRange(0, nsm.length))
+    let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
+    let spaces = "                                                     "
+    let spaceString = String(spaces.suffix(indent))
+    let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
+    indentedString.append(NSAttributedString.init(string: spaceString))
+    indentedString.append(NSAttributedString.init(string: trimmedString))
+    return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
 }
 
 
@@ -214,29 +213,29 @@ func setBaseValues(_ isThumbnail: Bool) {
     // The suite name is the app group name, set in each extension's entitlements, and the host app's
     if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.previewyaml") {
         defaults.synchronize()
-        fontSizeBase = CGFloat(isThumbnail
-                                ? defaults.float(forKey: "com-bps-previewyaml-thumb-font-size")
-                                : defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
-        codeColourIndex = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
-        codeFontIndex = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
+        textSizeBase = CGFloat(isThumbnail
+                              ? defaults.float(forKey: "com-bps-previewyaml-thumb-font-size")
+                              : defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
+        keyColourIndex = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
+        textFontIndex = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
         doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
     }
 
     // Just in case the above block reads in zero values
     // NOTE The other valyes CAN be zero
-    if fontSizeBase < 1.0 || fontSizeBase > 28.0 {
-        fontSizeBase = CGFloat(isThumbnail ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE : BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+    if textSizeBase < 1.0 || textSizeBase > 28.0 {
+        textSizeBase = CGFloat(isThumbnail ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE : BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
     }
 
     // Set the YAML key:value fonts and sizes
     keyAtts = [
-        NSAttributedString.Key.foregroundColor: getColour(codeColourIndex),
-        NSAttributedString.Key.font: NSFont.init(name: codeFonts[codeFontIndex], size: fontSizeBase) as Any
+        NSAttributedString.Key.foregroundColor: getColour(keyColourIndex),
+        NSAttributedString.Key.font: NSFont.init(name: codeFonts[textFontIndex], size: textSizeBase) as Any
     ]
     
     valAtts = [
         NSAttributedString.Key.foregroundColor: (doShowLightBackground ? NSColor.black : NSColor.labelColor),
-        NSAttributedString.Key.font: NSFont.init(name: codeFonts[codeFontIndex], size: fontSizeBase) as Any
+        NSAttributedString.Key.font: NSFont.init(name: codeFonts[textFontIndex], size: textSizeBase) as Any
     ]
     
     hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
