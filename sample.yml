@@ -1,0 +1,77 @@
+# Electric Imp library and apps listed in YAML form from which they're parsed by the homepage template
+headless: true
+title: eiapps
+apps:
+  - current_date: '2020-05-21'
+    icon: /images/ati-matrix.png
+    link: https://github.com/smittytone/MatrixClock
+    name: MatrixClock
+    text: A retro matrix LED clock.
+    version: 2.2.10
+  - current_date: '2020-05-21'
+    icon: /images/ati-clock.png
+    link: https://github.com/smittytone/Clock
+    name: "Cl\xF8ck"
+    text: A compact digital clock design.
+    version: 2.2.0
+  - current_date: '2020-02-21'
+    icon: /images/ati-weather.png
+    link: https://github.com/smittytone/Weather
+    name: Weather
+    text: A weather forecast readout using an 8x8 LED matrix.
+    version: 3.12.1
+  - current_date: '2020-02-21'
+    icon: /images/ati-wstation.png
+    link: https://github.com/smittytone/HomeWeather
+    name: HomeWeather
+    text: Wall-mounted weather forecast, outdoor temperature and time readout, and rain gauge.
+    version: 2.7.7
+  - current_date: '2020-07-16'
+    icon: /images/ati-thermal.png
+    link: https://github.com/smittytone/ThermalForecastWorld
+    name: ThermalForecastWorld
+    text: A NeoPixel forecast temperature display.
+    version: 1.10.1
+  - current_date: '2020-05-21'
+    icon: /images/ati-tsensor.png
+    link: https://github.com/smittytone/EnvTailTempLog
+    name: EnvTailTempLog
+    text: A basic environment data sensor.
+    version: 1.5.6
+libs:
+  - current_date: '2019-03-01'
+    icon: /images/location.png
+    link: https://github.com/smittytone/Location
+    name: Location
+    text: A Squirrel class for Google’s geolocation API.
+    version: 1.5.4
+  - current_date: '2020-02-06'
+    icon: /images/matrix.png
+    link: https://github.com/smittytone/HT16K33Matrix
+    name: HT16K33Matrix
+    text: A driver for the Adafruit 8x8 LED Matrix I2C Backpack.
+    version: 3.0.0
+  - current_date: '2019-03-01'
+    icon: /images/bargraph.png
+    link: https://github.com/smittytone/HT16K33Bargraph
+    name: HT16K33Bargraph
+    text: A driver for the Adafruit Bi-Color (Red/Green) 24-Bar Bargraph.
+    version: 2.0.0
+  - current_date: '2020-02-07'
+    icon: /images/segment.png
+    link: https://github.com/smittytone/HT16K33Segment
+    name: HT16K33Segment
+    text: A driver for the Adafruit 0.56in 7-segment LED I2C Backpack.
+    version: 2.0.1
+  - current_date: '2019-03-22'
+    icon: /images/segment.png
+    link: https://github.com/smittytone/HT16K33SegmentBig
+    name: HT16K33SegmentBig
+    text: A driver for the Adafruit 1.2in 7-segment LED I2C Backpack.
+    version: 2.0.0
+  - current_date: '2019-10-27'
+    icon: /images/generic.png
+    link: https://github.com/smittytone/generic
+    name: Generic Squirrel Code
+    text: Assorted cross-project utilities.
+    version: various
