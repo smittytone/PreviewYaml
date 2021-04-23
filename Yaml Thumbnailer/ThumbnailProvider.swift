@@ -36,13 +36,13 @@ class ThumbnailProvider: QLThumbnailProvider {
                     thumbnailFrame.size.width = CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ASPECT) * thumbnailFrame.size.height
 
                     // Set the primary drawing frame and a base font size
-                    let markdownFrame: CGRect = CGRect.init(x: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X,
+                    let yamlFrame: CGRect = CGRect.init(x: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X,
                                                         y: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_Y,
                                                         width: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH,
                                                         height: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.HEIGHT)
 
                     // Instantiate an NSTextView to display the NSAttributedString render of the markdown
-                    let yamlTextView: NSTextView = NSTextView.init(frame: markdownFrame)
+                    let yamlTextView: NSTextView = NSTextView.init(frame: yamlFrame)
                     yamlTextView.backgroundColor = NSColor.white
 
                     // Write the markdown rendered as an NSAttributedString into the view's text storage
@@ -89,10 +89,10 @@ class ThumbnailProvider: QLThumbnailProvider {
                     }
 
                     // Generate the bitmap from the rendered markdown text view
-                    let imageRep: NSBitmapImageRep? = yamlTextView.bitmapImageRepForCachingDisplay(in: markdownFrame)
+                    let imageRep: NSBitmapImageRep? = yamlTextView.bitmapImageRepForCachingDisplay(in: yamlFrame)
                     if imageRep != nil {
                         // Draw into the bitmap first the markdown view...
-                        yamlTextView.cacheDisplay(in: markdownFrame, to: imageRep!)
+                        yamlTextView.cacheDisplay(in: yamlFrame, to: imageRep!)
 
                         // ...then the tag view
                         if tagTextView != nil && tagFrame != nil {
@@ -137,9 +137,9 @@ class ThumbnailProvider: QLThumbnailProvider {
     func getTagString(_ tag: String = "YAML", _ width: CGFloat) -> NSAttributedString {
 
         // Set the text for the bottom-of-thumbnail file type tag
-        // Default: MARKDOWN
+        // Default: YAML
 
-        // Set the paraghraph style we'll use -- just centred text
+        // Set the paragraph style we'll use -- just centred text
         let style: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
         style.alignment = .center
 
