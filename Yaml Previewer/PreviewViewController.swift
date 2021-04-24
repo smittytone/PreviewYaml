@@ -42,7 +42,7 @@ class PreviewViewController: NSViewController,
                     // Update the NSTextView
                     var doShowLightBackground: Bool = false
 
-                    if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.previewyaml") {
+                    if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
                         defaults.synchronize()
                         doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
                     }

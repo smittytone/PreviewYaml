@@ -64,7 +64,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                     var doShowTag: Bool = true
 
                     // Get the preference
-                    if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.previewyaml") {
+                    if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
                         defaults.synchronize()
                         doShowTag = defaults.bool(forKey: "com-bps-previewyaml-do-show-tag")
                     }

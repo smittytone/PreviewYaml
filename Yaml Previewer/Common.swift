@@ -17,7 +17,7 @@ private var keyColourIndex: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
 private var textFontIndex: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
 private var textSizeBase: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
 private var doShowLightBackground: Bool = false
-private let codeFonts: [String] = ["AndaleMono", "Courier", "Menlo-Regular", "Monaco"]
+private let codeFonts: [String] = ["system", "ArialMT", "Helvetica", "HelveticaNeue", "LucidaGrande", "Times-Roman", "Verdana", "AndaleMono", "Courier", "Menlo-Regular", "Monaco", "PTMono-Regular"]
 private var hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n", attributes: [.strikethroughStyle: NSUnderlineStyle.patternDot.rawValue, .strikethroughColor: NSColor.labelColor])
 private var keyAtts: [NSAttributedString.Key:Any] = [
     NSAttributedString.Key.foregroundColor: getColour(keyColourIndex),
@@ -28,6 +28,8 @@ private var valAtts: [NSAttributedString.Key:Any] = [
     NSAttributedString.Key.font: NSFont.init(name: codeFonts[textFontIndex], size: textSizeBase) as Any
 ]
 private let newLine: NSAttributedString = NSAttributedString.init(string: "\n")
+
+var prefserr: String = "";
 
 
 // MARK: Primary Function
@@ -42,11 +44,21 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
     var renderedString: NSMutableAttributedString = NSMutableAttributedString()
     
     do {
+        // Load the YAML from the file
         let yaml = try Yaml.load(yamlFileString)
+        
+        // Set the colours, etc.
+        setBaseValues(isThumbnail)
         
         // Render the YAML to NSAttributedString
         if let yamlString = renderYaml(yaml, 0, false) {
             renderedString.append(yamlString)
+            
+#if DEBUG
+            if prefserr.count > 0 {
+                renderedString.append(NSAttributedString.init(string: prefserr))
+            }
+#endif
         }
     }
     catch {
@@ -220,7 +232,7 @@ func setBaseValues(_ isThumbnail: Bool) {
     // Set common base style values for the markdown render
 
     // The suite name is the app group name, set in each extension's entitlements, and the host app's
-    if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.previewyaml") {
+    if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
         defaults.synchronize()
         textSizeBase = CGFloat(isThumbnail
                               ? defaults.float(forKey: "com-bps-previewyaml-thumb-font-size")
@@ -228,6 +240,8 @@ func setBaseValues(_ isThumbnail: Bool) {
         keyColourIndex = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
         textFontIndex = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
         doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
+    } else {
+        prefserr = "NONE"
     }
 
     // Just in case the above block reads in zero values
@@ -237,19 +251,22 @@ func setBaseValues(_ isThumbnail: Bool) {
     }
 
     // Set the YAML key:value fonts and sizes
+    let font: NSFont = textFontIndex == 0
+        ? (NSFont.systemFont(ofSize: textSizeBase))
+        : (NSFont.init(name: codeFonts[textFontIndex], size: textSizeBase)!)
     keyAtts = [
         NSAttributedString.Key.foregroundColor: getColour(keyColourIndex),
-        NSAttributedString.Key.font: NSFont.init(name: codeFonts[textFontIndex], size: textSizeBase) as Any
+        NSAttributedString.Key.font: font as Any
     ]
     
     valAtts = [
-        NSAttributedString.Key.foregroundColor: (doShowLightBackground ? NSColor.black : NSColor.labelColor),
-        NSAttributedString.Key.font: NSFont.init(name: codeFonts[textFontIndex], size: textSizeBase) as Any
+        NSAttributedString.Key.foregroundColor: (isThumbnail || doShowLightBackground ? NSColor.black : NSColor.labelColor),
+        NSAttributedString.Key.font: font as Any
     ]
     
     hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
                             attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
-                                         .strikethroughColor: (doShowLightBackground ? NSColor.black : NSColor.white)])
+                                         .strikethroughColor: (isThumbnail || doShowLightBackground ? NSColor.black : NSColor.white)])
 
 }
 

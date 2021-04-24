@@ -247,7 +247,7 @@ class AppDelegate: NSObject,
         // Display the Preferences... sheet
 
         // The suite name is the app group name, set in each extension's entitlements, and the host app's
-        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.previewyaml") {
+        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
             self.previewFontSize = CGFloat(defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
             self.previewCodeColour = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
             self.previewCodeFont = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
@@ -257,12 +257,16 @@ class AppDelegate: NSObject,
 
         // Get the menu item index from the stored value
         // NOTE The other values are currently stored as indexes -- should this be the same?
-        //let options: [CGFloat] = [10.0, 12.0, 14.0, 16.0, 18.0, 24.0, 28.0]
+        var fontIndex: Int = self.previewCodeFont + 1
+        if fontIndex > 7 {
+            fontIndex += 2
+        }
+        
         let index: Int = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS.lastIndex(of: self.previewFontSize) ?? 3
         self.fontSizeSlider.floatValue = Float(index)
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
         self.codeColourPopup.selectItem(at: self.previewCodeColour)
-        self.codeFontPopup.selectItem(at: self.previewCodeFont)
+        self.codeFontPopup.selectItem(at: fontIndex)
         self.useLightCheckbox.state = self.doShowLightBackground ? .on : .off
         self.doShowTagCheckbox.state = self.doShowTag ? .on : .off
         
@@ -290,16 +294,20 @@ class AppDelegate: NSObject,
 
         // Close the Preferences... sheet and save the prefs, if they have changed
 
-        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.previewyaml") {
+        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
             if self.codeColourPopup.indexOfSelectedItem != self.previewCodeColour {
                 defaults.setValue(self.codeColourPopup.indexOfSelectedItem,
                                   forKey: "com-bps-previewyaml-code-colour-index")
             }
-
-            if self.codeFontPopup.indexOfSelectedItem != self.previewCodeFont {
-                defaults.setValue(self.codeFontPopup.indexOfSelectedItem,
+            
+            var fontIndex: Int = self.codeFontPopup.indexOfSelectedItem - 1
+            if fontIndex > 6 { fontIndex -= 2 }
+            if fontIndex != self.previewCodeFont {
+                defaults.setValue(fontIndex,
                                   forKey: "com-bps-previewyaml-code-font-index")
             }
+            
+            defaults.setValue(CGFloat(24.0), forKey: "com-bps-previewyaml-thumb-font-size")
 
             var state: Bool = self.useLightCheckbox.state == .on
             if self.doShowLightBackground != state {
@@ -339,7 +347,7 @@ class AppDelegate: NSObject,
         if !doShowSheet {
             // We are coming from the 'appDidFinishLoading()' so check
             // if we need to show the sheet by the checking the prefs
-            if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.previewyaml") {
+            if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
                 // Get the version-specific preference key
                 let key: String = "com-bps-previewyaml-do-show-whats-new-" + getVersion()
                 doShowSheet = defaults.bool(forKey: key)
@@ -386,7 +394,7 @@ class AppDelegate: NSObject,
         self.whatsNewWebView.evaluateJavaScript("window.scrollTo(0,0)", completionHandler: nil)
 
         // Set this version's preference
-        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.previewyaml") {
+        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
             let key: String = "com-bps-previewyaml-do-show-whats-new-" + getVersion()
             defaults.setValue(false, forKey: key)
 
@@ -523,7 +531,7 @@ class AppDelegate: NSObject,
 
         // Called by the app at launch to register its initial defaults
 
-        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.previewyaml") {
+        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
             // Check if each preference value exists -- set if it doesn't
             // Preview body font size, stored as a CGFloat
             // Default: 16.0

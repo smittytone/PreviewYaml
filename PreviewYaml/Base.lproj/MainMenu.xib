@@ -389,7 +389,10 @@ DQ
                         <constraints>
                             <constraint firstAttribute="height" constant="20" id="rXr-Rf-Gb3"/>
                         </constraints>
-                        <sliderCell key="cell" state="on" alignment="left" maxValue="7" doubleValue="4" tickMarkPosition="below" numberOfTickMarks="8" allowsTickMarkValuesOnly="YES" sliderType="linear" id="Wik-8f-xJm"/>
+                        <sliderCell key="cell" state="on" alignment="left" maxValue="6" doubleValue="3" tickMarkPosition="below" numberOfTickMarks="7" allowsTickMarkValuesOnly="YES" sliderType="linear" id="Wik-8f-xJm"/>
+                        <connections>
+                            <action selector="doMoveSliderWithSender:" target="Voe-Tx-rLC" id="AW4-o2-fCC"/>
+                        </connections>
                     </slider>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="E2f-Ly-G4Y">
                         <rect key="frame" x="18" y="259" width="533" height="33"/>
@@ -509,15 +512,46 @@ DQ
                             <constraint firstAttribute="height" constant="20" id="LoG-1M-4Pu"/>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="170" id="gmb-9Q-YdS"/>
                         </constraints>
-                        <popUpButtonCell key="cell" type="push" title="Andale Mono" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="trV-Xt-g2b" id="REh-FL-G2G">
+                        <popUpButtonCell key="cell" type="push" title="Proportional" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="ou2-EH-IEv" id="REh-FL-G2G">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
-                            <menu key="menu" id="Lyf-QG-I5Z">
+                            <menu key="menu" autoenablesItems="NO" id="Lyf-QG-I5Z">
                                 <items>
+                                    <menuItem title="Proportional" enabled="NO" id="ou2-EH-IEv">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="System" id="eDb-zI-u64">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="Arial" id="53j-EH-4Z0">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="Helvetica" id="q6N-lZ-6ec">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="Helvetica Neue" id="9gT-Bq-9Gy">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="Lucida Grande" id="m6S-iw-0Ha">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="Times" id="HFQ-wb-O48">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="Verdana" id="j4n-Tt-u41">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem isSeparatorItem="YES" id="ENb-Y1-cRx"/>
+                                    <menuItem title="Monospace" enabled="NO" id="XfF-Ry-7yv">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
                                     <menuItem title="Andale Mono" state="on" id="trV-Xt-g2b"/>
                                     <menuItem title="Courier" id="tiF-Mb-NNx"/>
                                     <menuItem title="Menlo" id="EsT-D7-479"/>
                                     <menuItem title="Monaco" id="Dqp-51-ofb">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="PT Mono" id="0F4-Hm-coP">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
                                 </items>
