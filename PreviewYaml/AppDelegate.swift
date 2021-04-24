@@ -42,7 +42,6 @@ class AppDelegate: NSObject,
     @IBOutlet weak var fontSizeLabel: NSTextField!
     @IBOutlet weak var useLightCheckbox: NSButton!
     @IBOutlet weak var doShowTagCheckbox: NSButton!
-    @IBOutlet weak var bodyFontPopup: NSPopUpButton!
     @IBOutlet weak var codeFontPopup: NSPopUpButton!
     @IBOutlet weak var codeColourPopup: NSPopUpButton!
 
@@ -252,9 +251,8 @@ class AppDelegate: NSObject,
         if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.previewyaml") {
             self.previewFontSize = CGFloat(defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
             self.previewCodeColour = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
-            self.previewLinkColour = defaults.integer(forKey: "com-bps-previewyaml-link-colour-index")
-            self.doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
             self.previewCodeFont = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
+            self.doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
             self.doShowTag = defaults.bool(forKey: "com-bps-previewyaml-do-show-tag")
         }
 
@@ -536,6 +534,14 @@ class AppDelegate: NSObject,
 
         if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.previewyaml") {
             // Check if each preference value exists -- set if it doesn't
+            // Preview body font size, stored as a CGFloat
+            // Default: 16.0
+            let bodyFontSizeDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-base-font-size")
+            if bodyFontSizeDefault == nil {
+                defaults.setValue(CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE),
+                                  forKey: "com-bps-previewyaml-base-font-size")
+            }
+
             // Thumbnail view base font size, stored as a CGFloat, not currently used
             // Default: 14.0
             let thumbFontSizeDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-thumb-font-size")
