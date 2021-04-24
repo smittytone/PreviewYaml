@@ -1,0 +1,8 @@
+# Basic YAML file for UTI determination
+headless: true
+heartles: false
+title: eiapps
+steeple:
+  - 2000
+  - 2001
+  - 2002
