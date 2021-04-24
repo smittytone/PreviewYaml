@@ -16,6 +16,7 @@ import AppKit
 private var keyColourIndex: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
 private var textFontIndex: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
 private var textSizeBase: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+private var yamlIndent: Int = BUFFOON_CONSTANTS.YAML_INDENT
 private var doShowLightBackground: Bool = false
 private let codeFonts: [String] = ["system", "ArialMT", "Helvetica", "HelveticaNeue", "LucidaGrande", "Times-Roman", "Verdana", "AndaleMono", "Courier", "Menlo-Regular", "Monaco", "PTMono-Regular"]
 private var keyAtts: [NSAttributedString.Key:Any] = [
@@ -163,7 +164,7 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
                 // If the value is a collection, we drop to the next line and indent
                 var valueIndent: Int = 0
                 if value.array != nil || value.dictionary != nil {
-                    valueIndent = indent + BUFFOON_CONSTANTS.YAML_INDENT
+                    valueIndent = indent + yamlIndent
                     returnString.append(newLine)
                 }
                 
@@ -234,6 +235,7 @@ func setBaseValues(_ isThumbnail: Bool) {
         keyColourIndex = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
         textFontIndex = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
         doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
+        yamlIndent = defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
     } else {
         prefserr = "NONE"
     }

@@ -44,6 +44,7 @@ class AppDelegate: NSObject,
     @IBOutlet weak var doShowTagCheckbox: NSButton!
     @IBOutlet weak var codeFontPopup: NSPopUpButton!
     @IBOutlet weak var codeColourPopup: NSPopUpButton!
+    @IBOutlet weak var codeIndentPopup: NSPopUpButton!
 
     // What's New Sheet
     @IBOutlet weak var whatsNewWindow: NSWindow!
@@ -55,6 +56,7 @@ class AppDelegate: NSObject,
     private var previewFontSize: CGFloat = 16.0
     private var previewCodeColour: Int = 1
     private var previewCodeFont: Int = 0
+    private var previewIndentDepth: Int = BUFFOON_CONSTANTS.YAML_INDENT
     private var doShowLightBackground: Bool = false
     private var doShowTag: Bool = false
     private var localYamlUTI: String = "N/A"
@@ -260,6 +262,7 @@ class AppDelegate: NSObject,
             self.previewFontSize = CGFloat(defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
             self.previewCodeColour = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
             self.previewCodeFont = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
+            self.previewIndentDepth = defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
             self.doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
             self.doShowTag = defaults.bool(forKey: "com-bps-previewyaml-do-show-tag")
         }
@@ -279,6 +282,9 @@ class AppDelegate: NSObject,
         self.codeFontPopup.selectItem(at: fontIndex)
         self.useLightCheckbox.state = self.doShowLightBackground ? .on : .off
         self.doShowTagCheckbox.state = self.doShowTag ? .on : .off
+        
+        let indents: [Int] = [1, 2, 4, 8]
+        self.codeIndentPopup.selectItem(at: indents.firstIndex(of: self.previewIndentDepth)!)
         
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
@@ -339,6 +345,12 @@ class AppDelegate: NSObject,
             if self.doShowTag != state {
                 defaults.setValue(state,
                                   forKey: "com-bps-previewyaml-do-show-tag")
+            }
+            
+            let indents: [Int] = [1, 2, 4, 8]
+            let indent: Int = indents[self.codeIndentPopup.indexOfSelectedItem]
+            if self.previewIndentDepth != indent {
+                defaults.setValue(indent, forKey: "com-bps-previewyaml-yaml-indent")
             }
 
             // Sync any changes
@@ -586,6 +598,14 @@ class AppDelegate: NSObject,
             let showNewDefault: Any? = defaults.object(forKey: key)
             if showNewDefault == nil {
                 defaults.setValue(true, forKey: key)
+            }
+            
+            // Record the preferred indent depth in spaces
+            // Default: 2
+            let indentDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-yaml-indent")
+            if indentDefault == nil {
+                defaults.setValue(BUFFOON_CONSTANTS.YAML_INDENT,
+                                  forKey: "com-bps-previewyaml-yaml-indent")
             }
 
             // Sync any additions
