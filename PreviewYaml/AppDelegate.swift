@@ -57,7 +57,7 @@ class AppDelegate: NSObject,
     private var previewCodeFont: Int = 0
     private var doShowLightBackground: Bool = false
     private var doShowTag: Bool = false
-    private var localYamlUTI: String = "NONE"
+    private var localYamlUTI: String = "N/A"
     private var whatsNewNav: WKNavigation? = nil
     
     
@@ -69,7 +69,7 @@ class AppDelegate: NSObject,
         registerPreferences()
         
         // Get the local UTI for markdown files
-        //self.localMarkdownUTI = getLocalMarkdownUTI()
+        self.localYamlUTI = getLocalYamlUTI()
 
         // Add the version number to the panel
         let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
@@ -607,7 +607,7 @@ class AppDelegate: NSObject,
         // This is not PII. It used solely for debugging purposes
         
         var localMarkdownUTI: String = "NONE"
-        let samplePath = Bundle.main.resourcePath! + "/sample.md"
+        let samplePath = Bundle.main.resourcePath! + "/sample.yml"
         
         if FileManager.default.fileExists(atPath: samplePath) {
             // Create a URL reference to the sample file
@@ -662,7 +662,7 @@ class AppDelegate: NSObject,
         let app: String = bundle.object(forInfoDictionaryKey: "CFBundleExecutable") as! String
         let version: String = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         let build: String = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as! String
-        return "\(app)/\(version).\(build) (Mac macOS \(sysVer.majorVersion).\(sysVer.minorVersion).\(sysVer.patchVersion))"
+        return "\(app)/\(version)-\(build) (Mac macOS \(sysVer.majorVersion).\(sysVer.minorVersion).\(sysVer.patchVersion))"
     }
 
 

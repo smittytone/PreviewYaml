@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B21717D26344C81000C5AF6 /* sample.yml in Resources */ = {isa = PBXBuildFile; fileRef = 3B21717C26344C81000C5AF6 /* sample.yml */; };
 		3BB64D8926320064003CD14D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64D8826320064003CD14D /* AppDelegate.swift */; };
 		3BB64D8B26320065003CD14D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8A26320065003CD14D /* Assets.xcassets */; };
 		3BB64D8E26320065003CD14D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8C26320065003CD14D /* MainMenu.xib */; };
@@ -86,6 +87,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3B21717C26344C81000C5AF6 /* sample.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = sample.yml; sourceTree = "<group>"; };
 		3BB64D8526320064003CD14D /* PreviewYaml.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PreviewYaml.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BB64D8826320064003CD14D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3BB64D8A26320065003CD14D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = /Users/smitty/OneDrive/Programming/PreviewYaml/Assets.xcassets; sourceTree = "<absolute>"; };
@@ -195,6 +197,7 @@
 				3BB64E1A2632033F003CD14D /* Secrets.swift */,
 				3BB64D8A26320065003CD14D /* Assets.xcassets */,
 				3BB64E2326320BFC003CD14D /* new */,
+				3B21717C26344C81000C5AF6 /* sample.yml */,
 				3BB64D8C26320065003CD14D /* MainMenu.xib */,
 				3BB64D8F26320065003CD14D /* Info.plist */,
 				3BB64D9026320065003CD14D /* PreviewYaml.entitlements */,
@@ -422,6 +425,7 @@
 			files = (
 				3BB64E2826320BFC003CD14D /* logo.png in Resources */,
 				3BB64E2726320BFC003CD14D /* retina.min.js in Resources */,
+				3B21717D26344C81000C5AF6 /* sample.yml in Resources */,
 				3BB64E2926320BFC003CD14D /* new.html in Resources */,
 				3BB64D8B26320065003CD14D /* Assets.xcassets in Resources */,
 				3BB64D8E26320065003CD14D /* MainMenu.xib in Resources */,
@@ -810,7 +814,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Yaml Previewer/Yaml_Previewer.entitlements";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "Yaml Previewer/Info.plist";
@@ -822,6 +826,7 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Previewer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -831,7 +836,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Yaml Previewer/Yaml_Previewer.entitlements";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "Yaml Previewer/Info.plist";
@@ -843,6 +848,7 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Previewer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -852,7 +858,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Yaml Thumbnailer/Yaml_Thumbnailer.entitlements";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "Yaml Thumbnailer/Info.plist";
@@ -865,6 +871,7 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Thumbnailer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -874,7 +881,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "Yaml Thumbnailer/Yaml_Thumbnailer.entitlements";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = "Yaml Thumbnailer/Info.plist";
@@ -887,6 +894,7 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Thumbnailer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 			};
