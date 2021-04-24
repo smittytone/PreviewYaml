@@ -79,22 +79,16 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
         if let value = part.array {
             // Iterate through array elements
             // NOTE A given element can be of any YAML type
-            var isLeaf: Bool = true
             for i in 0..<value.count {
                 if let yamlString = renderYaml(value[i], indent, false) {
-                    returnString.append(yamlString)
-                    
-                    // Is the element a collection? If it is, this
-                    // array can't be a leaf
-                    if value[i].array != nil || value[i].dictionary != nil {
-                        isLeaf = false
+                    // Apply a prefix to separate array and dictionary elements
+                    if i > 0 && (value[i].array != nil || value[i].dictionary != nil) {
+                        returnString.append(newLine)
                     }
+                    
+                    // Add the element itself
+                    returnString.append(yamlString)
                 }
-            }
-            
-            // If the array is a leaf, add a spacer line
-            if isLeaf {
-                returnString.append(NSAttributedString.init(string: "*** LEAF (\(indent)) ***\n"))
             }
             
             return returnString
@@ -140,8 +134,12 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
             })
             
             // Iterate through the sorted keys array
-            var isLeaf: Bool = true
             for i in 0..<keys.count {
+                // Prefix root-level key:value pairs after the first with a new line
+                if indent == 0 && i > 0 {
+                    returnString.append(newLine)
+                }
+                
                 // Get the key:value pairs
                 let key: Yaml = keys[i]
                 let value: Yaml = dict[key] ?? ""
@@ -156,23 +154,12 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
                 if value.array != nil || value.dictionary != nil {
                     valueIndent = indent + BUFFOON_CONSTANTS.YAML_INDENT
                     returnString.append(newLine)
-                    isLeaf = false
-                } else if indent == 0 {
-                    isLeaf = true;
                 }
                 
                 // Render the key's value
                 if let yamlString = renderYaml(value, valueIndent, false) {
                     returnString.append(yamlString)
                 }
-                
-                if isLeaf && indent == 0 && i < keys.count - 1  {
-                    returnString.append(NSAttributedString.init(string: "*** LEAF (\(indent)) (\(i)) ***\n"))
-                }
-            }
-            
-            if indent != 0 {
-                returnString.append(NSAttributedString.init(string: "*** DICT (\(indent)) ***\n"))
             }
             
             return returnString
@@ -184,7 +171,7 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
                                        range: NSMakeRange(0, returnString.length))
 
             if (isKey) {
-                returnString.append(NSAttributedString.init(string: " -> "))
+                returnString.append(NSAttributedString.init(string: " "))
             } else {
                 returnString.append(newLine)
             }
