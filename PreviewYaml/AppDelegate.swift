@@ -51,14 +51,14 @@ class AppDelegate: NSObject,
 
     // MARK:- Private Properies
     private var feedbackTask: URLSessionTask? = nil
+    private var whatsNewNav: WKNavigation? = nil
     private var previewFontSize: CGFloat = 16.0
     private var previewCodeColour: Int = 1
-    private var previewLinkColour: Int = 2
     private var previewCodeFont: Int = 0
     private var doShowLightBackground: Bool = false
     private var doShowTag: Bool = false
     private var localYamlUTI: String = "N/A"
-    private var whatsNewNav: WKNavigation? = nil
+    private var appSuiteName: String = MNU_SECRETS.PID + ".suite.preview-yaml"
     
     
     // MARK:- Class Lifecycle Functions
@@ -68,10 +68,10 @@ class AppDelegate: NSObject,
         // Set application group-level defaults
         registerPreferences()
         
-        // Get the local UTI for markdown files
+        // Get the local UTI for Yaml files
         self.localYamlUTI = getLocalYamlUTI()
 
-        // Add the version number to the panel
+        // Add the app's version number to the UI
         let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
         versionLabel.stringValue = "Version \(version) (\(build))"
@@ -81,11 +81,11 @@ class AppDelegate: NSObject,
         let theApp = NSApplication.shared
         theApp.helpMenu = dummyHelpMenu
         
-        // Centre window and display
+        // Centre the main window and display
         self.window.center()
         self.window.makeKeyAndOrderFront(self)
 
-        // Show 'What's New' if we need to
+        // Show the 'What's New' panel if we need to
         // (and set up the WKWebBiew: no elasticity, horizontal scroller)
         // NOTE Has to take place at the end of the function
         self.whatsNewWebView.enclosingScrollView?.hasHorizontalScroller = false
@@ -106,7 +106,7 @@ class AppDelegate: NSObject,
 
     @IBAction func doClose(_ sender: Any) {
         
-        // Reset the QL thumbnail cache... just in case
+        // Reset the QL thumbnail cache... just in case it helps
         _ = runProcess(app: "/usr/bin/qlmanage", with: ["-r", "cache"])
         
         // Close the window... which will trigger an app closure
@@ -116,18 +116,19 @@ class AppDelegate: NSObject,
     
     @IBAction @objc func doShowSites(sender: Any) {
         
-        // Open the websites for contributors
+        // Open the websites for contributors, help and suc
         let item: NSMenuItem = sender as! NSMenuItem
-        var path: String = "https://smittytone.net/previewmarkdown/index.html"
-
+        var path: String = "https://smittytone.net/previewyaml/index.html"
+        
+        // Depending on the menu selected, set the load path
         if item == self.helpMenuAcknowledgments {
             path += "#acknowledgements"
         } else if item == self.helpAppStoreRating {
-            path = "https://apps.apple.com/gb/app/previewmarkdown/id1492280469?action=write-review"
+            path = PVY_SECRETS.APP_STORE
         } else if item == self.helpMenuYaml {
             path = "https://github.com/behrang/YamlSwift"
         } else if item == self.helpMenuPY {
-            path += "#how-to-use-previewmarkdown"
+            path += "#how-to-use-previewyaml"
         }
         
         // Open the selected website
@@ -135,16 +136,17 @@ class AppDelegate: NSObject,
     }
 
 
-    @IBAction func openSysPrefs(sender: Any) {
+    @IBAction func doOpenSysPrefs(sender: Any) {
 
         // Open the System Preferences app at the Extensions pane
         NSWorkspace.shared.open(URL(fileURLWithPath: "/System/Library/PreferencePanes/Extensions.prefPane"))
     }
 
 
-    @IBAction @objc func showFeedbackWindow(sender: Any?) {
+    @IBAction @objc func doShowReportWindow(sender: Any?) {
 
-        // Display a window in which the user can submit feedback
+        // Display a window in which the user can submit feedback,
+        // or report a bug
 
         // Reset the UI
         self.connectionProgress.stopAnimation(self)
@@ -157,7 +159,8 @@ class AppDelegate: NSObject,
 
     @IBAction @objc func doCancelReportWindow(sender: Any) {
 
-        // User has clicked 'Cancel', so just close the sheet
+        // User has clicked the Report window's 'Cancel' button,
+        // so just close the sheet
 
         self.connectionProgress.stopAnimation(self)
         self.window.endSheet(self.reportWindow)
@@ -166,34 +169,39 @@ class AppDelegate: NSObject,
 
     @IBAction @objc func doSendFeedback(sender: Any) {
 
-        // User clicked 'Send' so get the message (if there is one) from the text field and send it
+        // User has clicked the Report window's 'Send' button,
+        // so get the message (if there is one) from the text field and submit it
+        
         let feedback: String = self.feedbackText.stringValue
 
         if feedback.count > 0 {
             // Start the connection indicator if it's not already visible
             self.connectionProgress.startAnimation(self)
             
-            self.feedbackTask = sendFeedback(feedback)
+            self.feedbackTask = submitFeedback(feedback)
             
             if self.feedbackTask != nil {
                 // We have a valid URL Session Task, so start it to send
                 self.feedbackTask!.resume()
+                return
             } else {
                 // Report the error
                 sendFeedbackError()
             }
-        } else {
-            // No feedback, so close the sheet
-            self.window.endSheet(self.reportWindow)
         }
         
-        // NOTE sheet closes asynchronously unless there was no feedback to send
+        // No feedback, so close the sheet
+        self.window.endSheet(self.reportWindow)
+        
+        // NOTE sheet closes asynchronously unless there was no feedback to send,
+        //      or an error occured with setting up the feedback session
     }
     
     
-    func sendFeedback(_ feedback: String) -> URLSessionTask? {
+    func submitFeedback(_ feedback: String) -> URLSessionTask? {
         
-        // Send the string etc.
+        // Send the feedback string etc.
+        
         // First get the data we need to build the user agent string
         let userAgent: String = getUserAgentForFeedback()
         
@@ -244,10 +252,11 @@ class AppDelegate: NSObject,
 
     @IBAction func doShowPreferences(sender: Any) {
 
-        // Display the Preferences... sheet
+        // Display the 'Preferences' sheet
 
-        // The suite name is the app group name, set in each extension's entitlements, and the host app's
-        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
+        // The suite name is the app group name, set in each the entitlements file of
+        // the host app and of each extension
+        if let defaults = UserDefaults(suiteName: self.appSuiteName) {
             self.previewFontSize = CGFloat(defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
             self.previewCodeColour = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
             self.previewCodeFont = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
@@ -256,13 +265,14 @@ class AppDelegate: NSObject,
         }
 
         // Get the menu item index from the stored value
-        // NOTE The other values are currently stored as indexes -- should this be the same?
+        // NOTE The index is that of the list of available fonts (see 'Common.swift') so
+        //      we need to convert this to an equivalent menu index because the menu also
+        //      contains a separator and two title items
         var fontIndex: Int = self.previewCodeFont + 1
-        if fontIndex > 7 {
-            fontIndex += 2
-        }
+        if fontIndex > 7 { fontIndex += 2 }
         
         let index: Int = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS.lastIndex(of: self.previewFontSize) ?? 3
+        
         self.fontSizeSlider.floatValue = Float(index)
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
         self.codeColourPopup.selectItem(at: self.previewCodeColour)
@@ -276,7 +286,9 @@ class AppDelegate: NSObject,
 
 
     @IBAction func doMoveSlider(sender: Any) {
-
+        
+        // When the slider is moved and released, this function updates
+        // the font size readout
         let index: Int = Int(self.fontSizeSlider.floatValue)
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
     }
@@ -284,7 +296,7 @@ class AppDelegate: NSObject,
 
     @IBAction func doClosePreferences(sender: Any) {
 
-        // Close the Preferences... sheet
+        // Close the 'Preferences' sheet
 
         self.window.endSheet(self.preferencesWindow)
     }
@@ -292,14 +304,15 @@ class AppDelegate: NSObject,
 
     @IBAction func doSavePreferences(sender: Any) {
 
-        // Close the Preferences... sheet and save the prefs, if they have changed
+        // Close the 'Preferences' sheet and save the settings, if they have changed
 
-        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
+        if let defaults = UserDefaults(suiteName: self.appSuiteName) {
             if self.codeColourPopup.indexOfSelectedItem != self.previewCodeColour {
                 defaults.setValue(self.codeColourPopup.indexOfSelectedItem,
                                   forKey: "com-bps-previewyaml-code-colour-index")
             }
             
+            // Decode the font menu index value into a font list index
             var fontIndex: Int = self.codeFontPopup.indexOfSelectedItem - 1
             if fontIndex > 6 { fontIndex -= 2 }
             if fontIndex != self.previewCodeFont {
@@ -307,7 +320,14 @@ class AppDelegate: NSObject,
                                   forKey: "com-bps-previewyaml-code-font-index")
             }
             
-            defaults.setValue(CGFloat(24.0), forKey: "com-bps-previewyaml-thumb-font-size")
+            let newValue: CGFloat = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[Int(self.fontSizeSlider.floatValue)]
+            if newValue != self.previewFontSize {
+                defaults.setValue(newValue,
+                                  forKey: "com-bps-previewyaml-base-font-size")
+            }
+            
+            // Set this here for now
+            defaults.setValue(CGFloat(32.0), forKey: "com-bps-previewyaml-thumb-font-size")
 
             var state: Bool = self.useLightCheckbox.state == .on
             if self.doShowLightBackground != state {
@@ -321,12 +341,6 @@ class AppDelegate: NSObject,
                                   forKey: "com-bps-previewyaml-do-show-tag")
             }
 
-            let newValue: CGFloat = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[Int(self.fontSizeSlider.floatValue)]
-            if newValue != self.previewFontSize {
-                defaults.setValue(newValue,
-                                  forKey: "com-bps-previewyaml-base-font-size")
-            }
-            
             // Sync any changes
             defaults.synchronize()
         }
@@ -338,7 +352,8 @@ class AppDelegate: NSObject,
 
     @IBAction func doShowWhatsNew(_ sender: Any) {
 
-        // Show the 'What's New' sheet, if we're on a new, non-patch version
+        // Show the 'What's New' sheet, if we're on a new, non-patch version,
+        // of the user has explicitly asked to see it with a menu click
            
         // See if we're coming from a menu click (sender != self) or
         // directly in code from 'appDidFinishLoading()' (sender == self)
@@ -347,7 +362,7 @@ class AppDelegate: NSObject,
         if !doShowSheet {
             // We are coming from the 'appDidFinishLoading()' so check
             // if we need to show the sheet by the checking the prefs
-            if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
+            if let defaults = UserDefaults(suiteName: self.appSuiteName) {
                 // Get the version-specific preference key
                 let key: String = "com-bps-previewyaml-do-show-whats-new-" + getVersion()
                 doShowSheet = defaults.bool(forKey: key)
@@ -394,7 +409,7 @@ class AppDelegate: NSObject,
         self.whatsNewWebView.evaluateJavaScript("window.scrollTo(0,0)", completionHandler: nil)
 
         // Set this version's preference
-        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
+        if let defaults = UserDefaults(suiteName: self.appSuiteName) {
             let key: String = "com-bps-previewyaml-do-show-whats-new-" + getVersion()
             defaults.setValue(false, forKey: key)
 
@@ -404,26 +419,6 @@ class AppDelegate: NSObject,
             #endif
 
             defaults.synchronize()
-        }
-    }
-
-
-    @IBAction func doLogOut(_ sender: Any) {
-
-        // Run a log out sequence if the user requests it
-
-        let app: String = "/usr/bin/osascript"
-        let args: [String] = ["-e", "tell application \"System Events\" to log out"]
-
-        // Run the process
-        // NOTE This time we wait for its conclusion
-        let success = runProcess(app: app, with: (args.count > 0 ? args : []))
-        if !success {
-            // Log out request failed for some reason
-            let alert: NSAlert = NSAlert.init()
-            alert.messageText = "Log out request failed"
-            alert.addButton(withTitle: "OK")
-            alert.runModal()
         }
     }
 
@@ -531,7 +526,7 @@ class AppDelegate: NSObject,
 
         // Called by the app at launch to register its initial defaults
 
-        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
+        if let defaults = UserDefaults(suiteName: self.appSuiteName) {
             // Check if each preference value exists -- set if it doesn't
             // Preview body font size, stored as a CGFloat
             // Default: 16.0
@@ -542,7 +537,7 @@ class AppDelegate: NSObject,
             }
 
             // Thumbnail view base font size, stored as a CGFloat, not currently used
-            // Default: 14.0
+            // Default: 32.0
             let thumbFontSizeDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-thumb-font-size")
             if thumbFontSizeDefault == nil {
                 defaults.setValue(CGFloat(BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE),
@@ -602,10 +597,9 @@ class AppDelegate: NSObject,
     
     func getLocalYamlUTI() -> String {
         
-        
         // This is not PII. It used solely for debugging purposes
         
-        var localMarkdownUTI: String = "NONE"
+        var localYamlUTI: String = "NONE"
         let samplePath = Bundle.main.resourcePath! + "/sample.yml"
         
         if FileManager.default.fileExists(atPath: samplePath) {
@@ -615,14 +609,14 @@ class AppDelegate: NSObject,
             do {
                 // Read back the UTI from the URL
                 if let uti = try sampleURL.resourceValues(forKeys: [.typeIdentifierKey]).typeIdentifier {
-                    localMarkdownUTI = uti
+                    localYamlUTI = uti
                 }
             } catch {
                 // NOP
             }
         }
         
-        return localMarkdownUTI
+        return localYamlUTI
     }
 
 

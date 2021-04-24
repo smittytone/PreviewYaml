@@ -292,7 +292,7 @@ DQ
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="openSysPrefsWithSender:" target="Voe-Tx-rLC" id="1hj-mh-sUv"/>
+                            <action selector="doOpenSysPrefsWithSender:" target="Voe-Tx-rLC" id="Mqf-5N-7qI"/>
                         </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9WJ-du-sIm">
@@ -317,7 +317,7 @@ DQ
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                         <connections>
-                            <action selector="showFeedbackWindowWithSender:" target="Voe-Tx-rLC" id="vEP-wv-MP3"/>
+                            <action selector="doShowReportWindowWithSender:" target="Voe-Tx-rLC" id="1AA-t5-tea"/>
                         </connections>
                     </button>
                 </subviews>
@@ -512,12 +512,12 @@ DQ
                             <constraint firstAttribute="height" constant="20" id="LoG-1M-4Pu"/>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="170" id="gmb-9Q-YdS"/>
                         </constraints>
-                        <popUpButtonCell key="cell" type="push" title="Proportional" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="ou2-EH-IEv" id="REh-FL-G2G">
+                        <popUpButtonCell key="cell" type="push" title="Proportional" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="ou2-EH-IEv" id="REh-FL-G2G">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
                             <menu key="menu" autoenablesItems="NO" id="Lyf-QG-I5Z">
                                 <items>
-                                    <menuItem title="Proportional" enabled="NO" id="ou2-EH-IEv">
+                                    <menuItem title="Proportional" state="on" enabled="NO" id="ou2-EH-IEv">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
                                     <menuItem title="System" id="eDb-zI-u64">
@@ -545,7 +545,7 @@ DQ
                                     <menuItem title="Monospace" enabled="NO" id="XfF-Ry-7yv">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
-                                    <menuItem title="Andale Mono" state="on" id="trV-Xt-g2b"/>
+                                    <menuItem title="Andale Mono" id="trV-Xt-g2b"/>
                                     <menuItem title="Courier" id="tiF-Mb-NNx"/>
                                     <menuItem title="Menlo" id="EsT-D7-479"/>
                                     <menuItem title="Monaco" id="Dqp-51-ofb">

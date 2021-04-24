@@ -42,7 +42,7 @@ struct BUFFOON_CONSTANTS {
     }
 
     static let BASE_PREVIEW_FONT_SIZE       = 16.0
-    static let BASE_THUMB_FONT_SIZE         = 24.0
+    static let BASE_THUMB_FONT_SIZE         = 32.0
 
     static let CODE_COLOUR_INDEX            = 0
     static let CODE_FONT_INDEX             = 0
