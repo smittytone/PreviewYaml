@@ -18,7 +18,6 @@ private var textFontIndex: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
 private var textSizeBase: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
 private var doShowLightBackground: Bool = false
 private let codeFonts: [String] = ["system", "ArialMT", "Helvetica", "HelveticaNeue", "LucidaGrande", "Times-Roman", "Verdana", "AndaleMono", "Courier", "Menlo-Regular", "Monaco", "PTMono-Regular"]
-private var hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n", attributes: [.strikethroughStyle: NSUnderlineStyle.patternDot.rawValue, .strikethroughColor: NSColor.labelColor])
 private var keyAtts: [NSAttributedString.Key:Any] = [
     NSAttributedString.Key.foregroundColor: getColour(keyColourIndex),
     NSAttributedString.Key.font: NSFont.init(name: codeFonts[textFontIndex], size: textSizeBase) as Any
@@ -27,27 +26,26 @@ private var valAtts: [NSAttributedString.Key:Any] = [
     NSAttributedString.Key.foregroundColor: (doShowLightBackground ? NSColor.black : NSColor.labelColor),
     NSAttributedString.Key.font: NSFont.init(name: codeFonts[textFontIndex], size: textSizeBase) as Any
 ]
+private var hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n", attributes: [.strikethroughStyle: NSUnderlineStyle.patternDot.rawValue, .strikethroughColor: NSColor.labelColor])
 private let newLine: NSAttributedString = NSAttributedString.init(string: "\n")
-
-var prefserr: String = "";
+private var prefserr: String = "";
 
 
 // MARK: Primary Function
 
 func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAttributedString {
 
-    // FROM 1.1.0
-    // Use SwiftyMarkdown to render the input markdown as an NSAttributedString, which is returned
+    // Use YamlSwift to render the input YAML as an NSAttributedString, which is returned.
     // NOTE Set the font colour according to whether we're rendering a thumbail or a preview
     //      (thumbnails always rendered black on white; previews may be the opposite [dark mode])
 
     var renderedString: NSMutableAttributedString = NSMutableAttributedString()
     
     do {
-        // Load the YAML from the file
+        // Parse the YAML data
         let yaml = try Yaml.load(yamlFileString)
         
-        // Set the colours, etc.
+        // Set the colours, etc. base on current prefs
         setBaseValues(isThumbnail)
         
         // Render the YAML to NSAttributedString
@@ -93,7 +91,8 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
             // NOTE A given element can be of any YAML type
             for i in 0..<value.count {
                 if let yamlString = renderYaml(value[i], indent, false) {
-                    // Apply a prefix to separate array and dictionary elements
+                    // Apply a prefix to separate array and dictionary elements from a
+                    // previous one -- so apply to all but the first item
                     if i > 0 && (value[i].array != nil || value[i].dictionary != nil) {
                         returnString.append(newLine)
                     }
@@ -181,13 +180,7 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
             returnString.append(getIndentedString(keyOrValue, indent))
             returnString.addAttributes((isKey ? keyAtts : valAtts),
                                        range: NSMakeRange(0, returnString.length))
-
-            if (isKey) {
-                returnString.append(NSAttributedString.init(string: " "))
-            } else {
-                returnString.append(newLine)
-            }
-
+            returnString.append(isKey ? NSAttributedString.init(string: " ") : newLine)
             return returnString
         }
     default:
@@ -201,7 +194,8 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
             returnString.append(getIndentedString("\(val)\n", indent))
         }
         
-        returnString.addAttributes(valAtts, range: NSMakeRange(0, returnString.length))
+        returnString.addAttributes((isKey ? keyAtts : valAtts),
+                                   range: NSMakeRange(0, returnString.length))
         return returnString
     }
     
