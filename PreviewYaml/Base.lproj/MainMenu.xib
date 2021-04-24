@@ -572,6 +572,7 @@ DQ
                     <constraint firstAttribute="bottom" secondItem="L3S-3t-ZLg" secondAttribute="bottom" constant="20" symbolic="YES" id="2mX-5U-b59"/>
                     <constraint firstAttribute="trailing" secondItem="E2f-Ly-G4Y" secondAttribute="trailing" constant="11" id="3He-cf-oRe"/>
                     <constraint firstItem="Z9F-Y6-BVI" firstAttribute="top" secondItem="7a6-Mb-1dq" secondAttribute="bottom" constant="14" id="A8F-Ph-wkD"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="GS0-Os-jnX" secondAttribute="trailing" constant="20" symbolic="YES" id="AUS-9r-3Zv"/>
                     <constraint firstAttribute="trailing" secondItem="8hT-Js-gGr" secondAttribute="trailing" constant="20" symbolic="YES" id="Df6-r1-EgA"/>
                     <constraint firstItem="Z9F-Y6-BVI" firstAttribute="leading" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="20" symbolic="YES" id="ESg-Bf-Egt"/>
                     <constraint firstItem="E2f-Ly-G4Y" firstAttribute="top" secondItem="OfZ-N6-qKG" secondAttribute="bottom" id="FNz-OM-IlG"/>
@@ -646,6 +647,10 @@ DQ
                             <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
                             <wkPreferences key="preferences"/>
                         </wkWebViewConfiguration>
+                        <connections>
+                            <outlet property="UIDelegate" destination="Voe-Tx-rLC" id="MFX-xN-VQ2"/>
+                            <outlet property="navigationDelegate" destination="Voe-Tx-rLC" id="hKw-7D-ptP"/>
+                        </connections>
                     </wkWebView>
                 </subviews>
                 <constraints>

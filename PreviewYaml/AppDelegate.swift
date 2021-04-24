@@ -244,7 +244,6 @@ class AppDelegate: NSObject,
 
     @IBAction func doShowPreferences(sender: Any) {
 
-        // FROM 1.2.0
         // Display the Preferences... sheet
 
         // The suite name is the app group name, set in each extension's entitlements, and the host app's
@@ -274,7 +273,6 @@ class AppDelegate: NSObject,
 
     @IBAction func doMoveSlider(sender: Any) {
 
-        // FROM 1.2.0
         let index: Int = Int(self.fontSizeSlider.floatValue)
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
     }
@@ -282,7 +280,6 @@ class AppDelegate: NSObject,
 
     @IBAction func doClosePreferences(sender: Any) {
 
-        // FROM 1.2.0
         // Close the Preferences... sheet
 
         self.window.endSheet(self.preferencesWindow)
@@ -291,7 +288,6 @@ class AppDelegate: NSObject,
 
     @IBAction func doSavePreferences(sender: Any) {
 
-        // FROM 1.2.0
         // Close the Preferences... sheet and save the prefs, if they have changed
 
         if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.previewyaml") {
@@ -334,7 +330,6 @@ class AppDelegate: NSObject,
 
     @IBAction func doShowWhatsNew(_ sender: Any) {
 
-        // FROM 1.2.0
         // Show the 'What's New' sheet, if we're on a new, non-patch version
            
         // See if we're coming from a menu click (sender != self) or
@@ -367,7 +362,6 @@ class AppDelegate: NSObject,
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
 
-        // FROM 1.2.0
         // Asynchronously show the sheet once the HTML has loaded
         // (triggered by delegate method)
 
@@ -382,7 +376,6 @@ class AppDelegate: NSObject,
 
     @IBAction func doCloseWhatsNew(_ sender: Any) {
 
-        // FROM 1.2.0
         // Close the 'What's New' sheet, making sure we clear the preference flag for this minor version,
         // so that the sheet is not displayed next time the app is run (unless the version changes)
 
@@ -409,7 +402,6 @@ class AppDelegate: NSObject,
 
     @IBAction func doLogOut(_ sender: Any) {
 
-        // FROM 1.2.0
         // Run a log out sequence if the user requests it
 
         let app: String = "/usr/bin/osascript"
@@ -430,7 +422,6 @@ class AppDelegate: NSObject,
 
     func runProcess(app path: String, with args: [String]) -> Bool {
 
-        // FROM 1.2.0
         // Generic task creation and run function
 
         let task: Process = Process()
@@ -629,7 +620,6 @@ class AppDelegate: NSObject,
 
     func getVersion() -> String {
 
-        // FROM 1.2.0
         // Build a basic 'major.manor' version string for prefs usage
 
         let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
@@ -640,7 +630,6 @@ class AppDelegate: NSObject,
     
     func getDateForFeedback() -> String {
 
-        // FROM 1.2.0
         // Refactor code out into separate function for clarity
 
         let date: Date = Date()
@@ -654,7 +643,6 @@ class AppDelegate: NSObject,
 
     func getUserAgentForFeedback() -> String {
 
-        // FROM 1.2.0
         // Refactor code out into separate function for clarity
 
         let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
