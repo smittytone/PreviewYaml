@@ -29,7 +29,6 @@ private var valAtts: [NSAttributedString.Key:Any] = [
 ]
 private var hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n", attributes: [.strikethroughStyle: NSUnderlineStyle.patternDot.rawValue, .strikethroughColor: NSColor.labelColor])
 private let newLine: NSAttributedString = NSAttributedString.init(string: "\n")
-private var prefserr: String = "";
 
 
 // MARK: Primary Function
@@ -44,20 +43,24 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
     
     do {
         // Parse the YAML data
-        let yaml = try Yaml.load(yamlFileString)
+        let yaml = try Yaml.loadMultiple(yamlFileString)
         
         // Set the colours, etc. base on current prefs
         setBaseValues(isThumbnail)
         
         // Render the YAML to NSAttributedString
-        if let yamlString = renderYaml(yaml, 0, false) {
-            renderedString.append(yamlString)
-            
-#if DEBUG
-            if prefserr.count > 0 {
-                renderedString.append(NSAttributedString.init(string: prefserr))
+        for i in 0..<yaml.count {
+            if let yamlString = renderYaml(yaml[i], 0, false) {
+                if i > 0 {
+                    renderedString.append(hr)
+                }
+                renderedString.append(yamlString)
             }
-#endif
+        }
+        
+        // Just in case...
+        if renderedString.length == 0 {
+            renderedString.append(NSMutableAttributedString.init(string: "Could not render the YAML.\n", attributes: keyAtts))
         }
     }
     catch {
@@ -184,15 +187,22 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
             returnString.append(isKey ? NSAttributedString.init(string: " ") : newLine)
             return returnString
         }
+    case .null:
+        returnString.append(getIndentedString("NULL\n", indent))
+        returnString.addAttributes(valAtts,
+                                   range: NSMakeRange(0, returnString.length))
+        return returnString
     default:
         // Place all the scalar values here
         // TODO These *may* be keys too, so we need to check that
         if let val = part.int {
             returnString.append(getIndentedString("\(val)\n", indent))
         } else if let val = part.bool {
-            returnString.append(getIndentedString((val ? "true\n" : "false\n"), indent))
+            returnString.append(getIndentedString((val ? "TRUE\n" : "FALSE\n"), indent))
         } else if let val = part.double {
             returnString.append(getIndentedString("\(val)\n", indent))
+        } else {
+            returnString.append(getIndentedString("UNKNOWN\n", indent))
         }
         
         returnString.addAttributes((isKey ? keyAtts : valAtts),
@@ -236,8 +246,6 @@ func setBaseValues(_ isThumbnail: Bool) {
         textFontIndex = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
         doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
         yamlIndent = defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
-    } else {
-        prefserr = "NONE"
     }
 
     // Just in case the above block reads in zero values
