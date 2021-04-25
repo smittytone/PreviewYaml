@@ -19,6 +19,10 @@ You can alter some of the key elements of the preview by using the **Preferences
 
 Changing these settings will affect previews immediately, but may not affect thumbnails until you open a folder that has not been previously opened in the current login session.
 
+## Troubleshooting ##
+
+If PreviewYaml reports that it was unable to render YAML, this is almost certainly caused by a slight malformation of YAML itself. Rogue comma after a float? That will cause PreviewYaml’s YAML parser to reject the entire file. However, please note the **Known Issues**, below.
+
 ## Known Issues ##
 
 I am aware of an issue with YAML files that contain the `.inf`, `.-inf` and/or `.nan` values. This issue prevents these files from being rendered.
