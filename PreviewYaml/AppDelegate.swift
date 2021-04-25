@@ -42,6 +42,8 @@ class AppDelegate: NSObject,
     @IBOutlet weak var fontSizeLabel: NSTextField!
     @IBOutlet weak var useLightCheckbox: NSButton!
     @IBOutlet weak var doShowTagCheckbox: NSButton!
+    @IBOutlet weak var doIndentScalarsCheckbox: NSButton!
+    @IBOutlet weak var doShowRawYamlCheckbox: NSButton!
     @IBOutlet weak var codeFontPopup: NSPopUpButton!
     @IBOutlet weak var codeColourPopup: NSPopUpButton!
     @IBOutlet weak var codeIndentPopup: NSPopUpButton!
@@ -59,6 +61,8 @@ class AppDelegate: NSObject,
     private var previewIndentDepth: Int = BUFFOON_CONSTANTS.YAML_INDENT
     private var doShowLightBackground: Bool = false
     private var doShowTag: Bool = false
+    private var doShowRawYaml: Bool = false
+    private var doIndentScalars: Bool = false
     private var localYamlUTI: String = "N/A"
     private var appSuiteName: String = MNU_SECRETS.PID + ".suite.preview-yaml"
     
@@ -145,6 +149,8 @@ class AppDelegate: NSObject,
     }
 
 
+    // MARK: Report Functions
+    
     @IBAction @objc func doShowReportWindow(sender: Any?) {
 
         // Display a window in which the user can submit feedback,
@@ -252,6 +258,8 @@ class AppDelegate: NSObject,
     }
 
 
+    // MARK: Preferences Functions
+    
     @IBAction func doShowPreferences(sender: Any) {
 
         // Display the 'Preferences' sheet
@@ -265,6 +273,8 @@ class AppDelegate: NSObject,
             self.previewIndentDepth = defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
             self.doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
             self.doShowTag = defaults.bool(forKey: "com-bps-previewyaml-do-show-tag")
+            self.doShowRawYaml = defaults.bool(forKey: "com-bps-previewyaml-show-bad-yaml")
+            self.doIndentScalars = defaults.bool(forKey: "com-bps-previewyaml-do-indent-scalars")
         }
 
         // Get the menu item index from the stored value
@@ -282,6 +292,8 @@ class AppDelegate: NSObject,
         self.codeFontPopup.selectItem(at: fontIndex)
         self.useLightCheckbox.state = self.doShowLightBackground ? .on : .off
         self.doShowTagCheckbox.state = self.doShowTag ? .on : .off
+        self.doShowRawYamlCheckbox.state = self.doShowRawYaml ? .on : .off
+        self.doIndentScalarsCheckbox.state = self.doIndentScalars ? .on : .off
         
         let indents: [Int] = [1, 2, 4, 8]
         self.codeIndentPopup.selectItem(at: indents.firstIndex(of: self.previewIndentDepth)!)
@@ -347,6 +359,18 @@ class AppDelegate: NSObject,
                                   forKey: "com-bps-previewyaml-do-show-tag")
             }
             
+            state = self.doShowRawYamlCheckbox.state == .on
+            if self.doShowRawYaml != state {
+                defaults.setValue(state,
+                                  forKey: "com-bps-previewyaml-show-bad-yaml")
+            }
+            
+            state = self.doIndentScalarsCheckbox.state == .on
+            if self.doIndentScalars != state {
+                defaults.setValue(state,
+                                  forKey: "com-bps-previewyaml-do-indent-scalars")
+            }
+            
             let indents: [Int] = [1, 2, 4, 8]
             let indent: Int = indents[self.codeIndentPopup.indexOfSelectedItem]
             if self.previewIndentDepth != indent {
@@ -362,6 +386,8 @@ class AppDelegate: NSObject,
     }
 
 
+    // MARK: What's New Sheet Functions
+    
     @IBAction func doShowWhatsNew(_ sender: Any) {
 
         // Show the 'What's New' sheet, if we're on a new, non-patch version,
@@ -606,6 +632,22 @@ class AppDelegate: NSObject,
             if indentDefault == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.YAML_INDENT,
                                   forKey: "com-bps-previewyaml-yaml-indent")
+            }
+            
+            // Indent scalar values?
+            // Default: false
+            let indentScalarsDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-do-indent-scalars")
+            if indentScalarsDefault == nil {
+                defaults.setValue(false,
+                                  forKey: "com-bps-previewyaml-do-indent-scalars")
+            }
+            
+            // Present malformed YAML on error?
+            // Default: false
+            let presentBadYamlDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-show-bad-yaml")
+            if presentBadYamlDefault == nil {
+                defaults.setValue(false,
+                                  forKey: "com-bps-previewyaml-show-bad-yaml")
             }
 
             // Sync any additions

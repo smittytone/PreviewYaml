@@ -18,6 +18,8 @@ private var textFontIndex: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
 private var textSizeBase: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
 private var yamlIndent: Int = BUFFOON_CONSTANTS.YAML_INDENT
 private var doShowLightBackground: Bool = false
+private var doShowRawYaml: Bool = false
+private var doIndentScalars: Bool = false
 private let codeFonts: [String] = ["system", "ArialMT", "Helvetica", "HelveticaNeue", "LucidaGrande", "Times-Roman", "Verdana", "AndaleMono", "Courier", "Menlo-Regular", "Monaco", "PTMono-Regular"]
 private var keyAtts: [NSAttributedString.Key:Any] = [
     NSAttributedString.Key.foregroundColor: getColour(keyColourIndex),
@@ -66,10 +68,13 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
     catch {
         // No YAML to render, or mis-formatted
         let errorString: NSMutableAttributedString = NSMutableAttributedString.init(string: "Could not render the YAML. It may be mis-formed.\n", attributes: keyAtts)
-#if DEBUG
+        
         errorString.append(NSMutableAttributedString.init(string: error.localizedDescription + "\n", attributes: keyAtts))
-        errorString.append(NSMutableAttributedString.init(string: yamlFileString + "\n", attributes: valAtts))
-#endif
+        
+        if doShowRawYaml {
+            errorString.append(NSMutableAttributedString.init(string: "Raw YAML:\n" + yamlFileString + "\n", attributes: valAtts))
+        }
+
         renderedString = errorString
     }
         
@@ -166,7 +171,7 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
                 
                 // If the value is a collection, we drop to the next line and indent
                 var valueIndent: Int = 0
-                if value.array != nil || value.dictionary != nil {
+                if value.array != nil || value.dictionary != nil || doIndentScalars {
                     valueIndent = indent + yamlIndent
                     returnString.append(newLine)
                 }
@@ -188,23 +193,27 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
             return returnString
         }
     case .null:
-        returnString.append(getIndentedString("NULL\n", indent))
+        let valString: String = "NULL\n"
+        returnString.append(getIndentedString(valString, indent))
         returnString.addAttributes(valAtts,
                                    range: NSMakeRange(0, returnString.length))
         return returnString
     default:
         // Place all the scalar values here
         // TODO These *may* be keys too, so we need to check that
+        var valString: String = ""
+        
         if let val = part.int {
-            returnString.append(getIndentedString("\(val)\n", indent))
-        } else if let val = part.bool {
-            returnString.append(getIndentedString((val ? "TRUE\n" : "FALSE\n"), indent))
+            valString = "\(val)\n"
         } else if let val = part.double {
-            returnString.append(getIndentedString("\(val)\n", indent))
+            valString = "\(val)\n"
+        } else if let val = part.bool {
+            valString = val ? "TRUE\n" : "FALSE\n"
         } else {
-            returnString.append(getIndentedString("UNKNOWN\n", indent))
+            valString = "UNKNOWN\n"
         }
         
+        returnString.append(getIndentedString(valString, indent))
         returnString.addAttributes((isKey ? keyAtts : valAtts),
                                    range: NSMakeRange(0, returnString.length))
         return returnString
@@ -246,6 +255,8 @@ func setBaseValues(_ isThumbnail: Bool) {
         textFontIndex = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
         doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
         yamlIndent = defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
+        doShowRawYaml = defaults.bool(forKey: "com-bps-previewyaml-show-bad-yaml")
+        doIndentScalars = defaults.bool(forKey: "com-bps-previewyaml-do-indent-scalars")
     }
 
     // Just in case the above block reads in zero values
