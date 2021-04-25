@@ -1,53 +1,9 @@
 # Electric Imp library and apps listed in YAML form from which they're parsed by the homepage template
-root-ascalar-01: true
-root-scalar-02: false
-root-zscalar-03: eiapps
-root-array-01:
+headless: true
+heartles: false
+title: eiapps
+steeple:
   - 2000
   - 2001
   - 2002
-root-array-02:
-  - current_date: '2020-05-21'
-    icon: /images/ati-matrix.png
-    link: https://github.com/smittytone/MatrixClock
-    name: MatrixClock
-    text: A retro matrix LED clock.
-    version: 2.2.10
-  - current_date: '2020-07-16'
-    icon: /images/ati-thermal.png
-    link: https://github.com/smittytone/ThermalForecastWorld
-    name: ThermalForecastWorld
-    text: A NeoPixel forecast temperature display.
-    version: 1.10.1
-    items:
-      - name: '2020-05-21'
-        icon: /images/ati-tsensor.png
-        link: https://github.com/smittytone/EnvTailTempLog
-      - name: '2020-05-21'
-        icon: /images/ati-tsensor.png
-        link: https://github.com/smittytone/EnvTailTempLoggy
-  - current_date: '2020-02-21'
-    icon: /images/ati-wstation.png
-    link: https://github.com/smittytone/HomeWeather
-    name: HomeWeather
-    text: Wall-mounted weather forecast, outdoor temperature and time readout, and rain gauge.
-    version: 2.7.7
-root-array-03:
-  - current_date: '2019-03-01'
-    icon: /images/location.png
-    link: https://github.com/smittytone/Location
-    name: Location
-    text: A Squirrel class for Google’s geolocation API.
-    version: 1.5.4
-  - current_date: '2019-10-27'
-    icon: /images/generic.png
-    link: https://github.com/smittytone/generic
-    name: Generic Squirrel Code
-    text: Assorted cross-project utilities.
-    version: various
-ttt:
-  uuu:
-    vvv:
-      a: 1000
-      b: 1001
-      c: 1002
+is-null:

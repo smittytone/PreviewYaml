@@ -19,6 +19,12 @@ You can alter some of the key elements of the preview by using the **Preferences
 
 Changing these settings will affect previews immediately, but may not affect thumbnails until you open a folder that has not been previously opened in the current login session.
 
+## Known Issues ##
+
+I am aware of an issue with YAML files that contain the `.inf`, `.-inf` and/or `.nan` values. This issue prevents these files from being rendered.
+
+PreviewYaml expects files in UTF-8 only.
+
 ## Source Code ##
 
 This repository contains the primary source code for PreviewYaml. Certain graphical assets and data files are not included, but are required to build the application. To build PreviewYaml from scratch, you will need to examine the source code and add these files yourself.
