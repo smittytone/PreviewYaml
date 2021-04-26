@@ -60,7 +60,14 @@ class PreviewViewController: NSViewController,
                     self.renderTextScrollView.scrollerKnobStyle = doShowLightBackground ? .dark : .light
 
                     if let renderTextStorage: NSTextStorage = self.renderTextView.textStorage {
+                        /*
+                         * NSTextStorage subclasses that return true from the fixesAttributesLazily
+                         * method should avoid directly calling fixAttributes(in:) or else bracket
+                         * such calls with beginEditing() and endEditing() messages.
+                         */
+                        renderTextStorage.beginEditing()
                         renderTextStorage.setAttributedString(yamlAttString)
+                        renderTextStorage.endEditing()
                     }
                     
                     // Add the subview to the instance's own view and draw

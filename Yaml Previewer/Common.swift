@@ -20,17 +20,24 @@ private var yamlIndent: Int = BUFFOON_CONSTANTS.YAML_INDENT
 private var doShowLightBackground: Bool = false
 private var doShowRawYaml: Bool = false
 private var doIndentScalars: Bool = false
-private let codeFonts: [String] = ["system", "ArialMT", "Helvetica", "HelveticaNeue", "LucidaGrande", "Times-Roman", "Verdana", "AndaleMono", "Courier", "Menlo-Regular", "Monaco", "PTMono-Regular"]
-private var keyAtts: [NSAttributedString.Key:Any] = [
-    NSAttributedString.Key.foregroundColor: getColour(keyColourIndex),
-    NSAttributedString.Key.font: NSFont.init(name: codeFonts[textFontIndex], size: textSizeBase) as Any
+private let codeFonts: [String] = ["Helvetica", "ArialMT", "Helvetica", "HelveticaNeue",
+                                   "LucidaGrande", "Times-Roman", "Verdana", "AndaleMono",
+                                   "Courier", "Menlo-Regular", "Monaco", "PTMono-Regular"]
+
+private var keyAtts: [NSAttributedString.Key: Any] = [
+    .foregroundColor: getColour(keyColourIndex),
+    .font: NSFont.systemFont(ofSize: textSizeBase)
 ]
-private var valAtts: [NSAttributedString.Key:Any] = [
-    NSAttributedString.Key.foregroundColor: (doShowLightBackground ? NSColor.black : NSColor.labelColor),
-    NSAttributedString.Key.font: NSFont.init(name: codeFonts[textFontIndex], size: textSizeBase) as Any
+
+private var valAtts: [NSAttributedString.Key: Any] = [
+    .foregroundColor: (doShowLightBackground ? NSColor.black : NSColor.labelColor),
+    .font: NSFont.systemFont(ofSize: textSizeBase)
 ]
-private var hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n", attributes: [.strikethroughStyle: NSUnderlineStyle.patternDot.rawValue, .strikethroughColor: NSColor.labelColor])
-private let newLine: NSAttributedString = NSAttributedString.init(string: "\n")
+
+private var hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
+                                    attributes: [.strikethroughStyle: NSUnderlineStyle.patternDot.rawValue,
+                                                 .strikethroughColor: NSColor.labelColor])
+private var newLine: NSAttributedString = NSAttributedString.init(string: "\n", attributes: valAtts)
 
 
 // MARK: Primary Function
@@ -41,15 +48,16 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
     // NOTE Set the font colour according to whether we're rendering a thumbail or a preview
     //      (thumbnails always rendered black on white; previews may be the opposite [dark mode])
 
-    var renderedString: NSMutableAttributedString = NSMutableAttributedString()
+    // Set the colours, etc. base on current prefs first
+    setBaseValues(isThumbnail)
+    
+    // Set up the base string
+    var renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: valAtts)
     
     do {
         // Parse the YAML data,
         // first fixing any .NAN, +/-.INF in the file
         let yaml = try Yaml.loadMultiple(fixNan(yamlFileString))
-        
-        // Set the colours, etc. base on current prefs
-        setBaseValues(isThumbnail)
         
         // Render the YAML to NSAttributedString
         for i in 0..<yaml.count {
@@ -63,7 +71,7 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
         
         // Just in case...
         if renderedString.length == 0 {
-            renderedString.append(NSMutableAttributedString.init(string: "Could not render the YAML.\n", attributes: keyAtts))
+            renderedString = NSMutableAttributedString.init(string: "Could not render the YAML.\n", attributes: keyAtts)
         }
     }
     catch {
@@ -78,8 +86,8 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
 
         renderedString = errorString
     }
-        
-    return renderedString
+    
+    return renderedString as NSAttributedString
 }
 
 
@@ -92,7 +100,8 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
     // This is called recursively as it drills down through YAML values.
     // Returns nil on error
     
-    let returnString: NSMutableAttributedString = NSMutableAttributedString.init()
+    // Set up the base string
+    let returnString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: valAtts)
     
     switch (part) {
     case .array:
@@ -188,17 +197,17 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
     case .string:
         if let keyOrValue = part.string {
             returnString.append(getIndentedString(keyOrValue, indent))
-            returnString.addAttributes((isKey ? keyAtts : valAtts),
+            returnString.setAttributes((isKey ? keyAtts : valAtts),
                                        range: NSMakeRange(0, returnString.length))
-            returnString.append(isKey ? NSAttributedString.init(string: " ") : newLine)
+            returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: valAtts) : newLine)
             return returnString
         }
     case .null:
-        let valString: String = isKey ? "NULL KEY\n" : "NULL VALUE\n"
+        let valString: String = isKey ? "NULL KEY" : "NULL VALUE"
         returnString.append(getIndentedString(valString, indent))
-        returnString.addAttributes(valAtts,
+        returnString.setAttributes(valAtts,
                                    range: NSMakeRange(0, returnString.length))
-        returnString.append(isKey ? NSAttributedString.init(string: " ") : newLine)
+        returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: valAtts) : newLine)
         return returnString
     default:
         // Place all the scalar values here
@@ -216,7 +225,7 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
         }
         
         returnString.append(getIndentedString(valString, indent))
-        returnString.addAttributes((isKey ? keyAtts : valAtts),
+        returnString.setAttributes((isKey ? keyAtts : valAtts),
                                    range: NSMakeRange(0, returnString.length))
         return returnString
     }
@@ -256,7 +265,7 @@ func setBaseValues(_ isThumbnail: Bool) {
         keyColourIndex = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
         textFontIndex = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
         doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
-        yamlIndent = defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
+        yamlIndent = isThumbnail ? 2 : defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
         doShowRawYaml = defaults.bool(forKey: "com-bps-previewyaml-show-bad-yaml")
         doIndentScalars = defaults.bool(forKey: "com-bps-previewyaml-do-indent-scalars")
     }
@@ -268,23 +277,33 @@ func setBaseValues(_ isThumbnail: Bool) {
     }
 
     // Set the YAML key:value fonts and sizes
-    let font: NSFont = textFontIndex == 0
-        ? (NSFont.systemFont(ofSize: textSizeBase))
-        : (NSFont.init(name: codeFonts[textFontIndex], size: textSizeBase)!)
+    var font: NSFont
+    if textFontIndex == 0 {
+        font = NSFont.systemFont(ofSize: textSizeBase)
+    } else {
+        if let otherFont = NSFont.init(name: codeFonts[textFontIndex], size: textSizeBase) {
+            font = otherFont
+        } else {
+            font = NSFont.systemFont(ofSize: textSizeBase)
+        }
+    }
+    
     keyAtts = [
-        NSAttributedString.Key.foregroundColor: getColour(keyColourIndex),
-        NSAttributedString.Key.font: font as Any
+        .foregroundColor: getColour(keyColourIndex),
+        .font: font
     ]
     
     valAtts = [
-        NSAttributedString.Key.foregroundColor: (isThumbnail || doShowLightBackground ? NSColor.black : NSColor.labelColor),
-        NSAttributedString.Key.font: font as Any
+        .foregroundColor: (isThumbnail || doShowLightBackground ? NSColor.black : NSColor.labelColor),
+        .font: font
     ]
     
     hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
                             attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
                                          .strikethroughColor: (isThumbnail || doShowLightBackground ? NSColor.black : NSColor.white)])
-
+    
+    newLine = NSAttributedString.init(string: "\n",
+                                      attributes: valAtts)
 }
 
 

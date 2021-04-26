@@ -15,7 +15,7 @@ struct BUFFOON_CONSTANTS {
     struct ERRORS {
 
         struct CODES {
-            static let NONE                = 0
+            static let NONE                 = 0
             static let FILE_INACCESSIBLE    = 400
             static let FILE_WONT_OPEN       = 401
             static let BAD_MD_STRING        = 402
@@ -23,7 +23,7 @@ struct BUFFOON_CONSTANTS {
         }
 
         struct MESSAGES {
-            static let NO_ERROR            = "No error"
+            static let NO_ERROR             = "No error"
             static let FILE_INACCESSIBLE    = "Can't access file"
             static let FILE_WONT_OPEN       = "Can't open file"
             static let BAD_MD_STRING        = "Can't get yaml data"
@@ -33,19 +33,19 @@ struct BUFFOON_CONSTANTS {
 
     struct THUMBNAIL_SIZE {
 
-        static let ORIGIN_X             = 0
-        static let ORIGIN_Y             = 0
-        static let WIDTH                = 768
-        static let HEIGHT               = 1024
-        static let ASPECT               = 0.75
-        static let TAG_HEIGHT          = 180
+        static let ORIGIN_X                 = 0
+        static let ORIGIN_Y                 = 0
+        static let WIDTH                    = 768
+        static let HEIGHT                   = 1024
+        static let ASPECT                   = 0.75
+        static let TAG_HEIGHT               = 180
     }
 
     static let BASE_PREVIEW_FONT_SIZE       = 16.0
     static let BASE_THUMB_FONT_SIZE         = 32.0
 
     static let CODE_COLOUR_INDEX            = 0
-    static let CODE_FONT_INDEX             = 0
+    static let CODE_FONT_INDEX              = 2     // Helvetica
 
     static let FONT_SIZE_OPTIONS: [CGFloat] = [10.0, 12.0, 14.0, 16.0, 18.0, 24.0, 28.0]
     

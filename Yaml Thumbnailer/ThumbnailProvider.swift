@@ -49,7 +49,9 @@ class ThumbnailProvider: QLThumbnailProvider {
 
                     // Write the markdown rendered as an NSAttributedString into the view's text storage
                     if let yamlTextStorage: NSTextStorage = yamlTextView.textStorage {
+                        yamlTextStorage.beginEditing()
                         yamlTextStorage.setAttributedString(yamlAttString)
+                        yamlTextStorage.endEditing()
                     } else {
                         // Error
                         reportError = NSError(domain: "com.bps.PreviewYaml.Yaml-Thumbnailer",
