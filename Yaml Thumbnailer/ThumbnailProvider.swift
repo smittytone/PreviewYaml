@@ -27,7 +27,9 @@ class ThumbnailProvider: QLThumbnailProvider {
                 // Get the file contents as a string
                 let data: Data = try Data.init(contentsOf: request.fileURL)
                 if let yamlFileString: String = String.init(data: data, encoding: .utf8) {
-
+                    // Get the Attributed String
+                    let yamlAttString: NSAttributedString = getAttributedString(yamlFileString, true)
+                    
                     // Set the thumbnail frame
                     // NOTE This is always square, with height matched to width, so adjust
                     //      to a 3:4 aspect ratio to maintain the macOS standard doc icon width
@@ -47,7 +49,7 @@ class ThumbnailProvider: QLThumbnailProvider {
 
                     // Write the markdown rendered as an NSAttributedString into the view's text storage
                     if let yamlTextStorage: NSTextStorage = yamlTextView.textStorage {
-                        yamlTextStorage.setAttributedString(getAttributedString(yamlFileString, true))
+                        yamlTextStorage.setAttributedString(yamlAttString)
                     } else {
                         // Error
                         reportError = NSError(domain: "com.bps.PreviewYaml.Yaml-Thumbnailer",
@@ -127,6 +129,11 @@ class ThumbnailProvider: QLThumbnailProvider {
                                       code: BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN,
                                       userInfo: [NSLocalizedDescriptionKey: BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_WONT_OPEN])
             }
+        }  else {
+            // We couldn't access the file so set an appropriate error to report back
+            reportError = NSError(domain: "com.bps.PreviewYaml.Yaml-Thumbnailer",
+                                  code: BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE,
+                                  userInfo: [NSLocalizedDescriptionKey: BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_INACCESSIBLE])
         }
 
         // We couldn't do any so set an appropriate error to report back

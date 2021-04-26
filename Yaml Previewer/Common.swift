@@ -44,8 +44,9 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
     var renderedString: NSMutableAttributedString = NSMutableAttributedString()
     
     do {
-        // Parse the YAML data
-        let yaml = try Yaml.loadMultiple(yamlFileString)
+        // Parse the YAML data,
+        // first fixing any .NAN, +/-.INF in the file
+        let yaml = try Yaml.loadMultiple(fixNan(yamlFileString))
         
         // Set the colours, etc. base on current prefs
         setBaseValues(isThumbnail)
@@ -314,4 +315,53 @@ func getColour(_ index: Int) -> NSColor {
         default:
             return NSColor.systemGray
     }
+}
+    
+
+func fixNan(_ yamlString: String) -> String {
+    
+    // Attempt to trap and fix .NaN, -.INF and .INF,
+    // which give YamlSwift trouble
+    
+    let regexes = [#"-\.(inf|Inf|INF)+"#, #"\.(inf|Inf|INF)+"#, #"\.(nan|NaN|NAN)+"#]
+    let unfixedlines = yamlString.components(separatedBy: CharacterSet.newlines)
+    var fixedString: String = ""
+    
+    // Run through all the YAML file's lines
+    for i in 0..<unfixedlines.count {
+        // Look for a pattern on the current line
+        var count: Int = 0
+        var line: String = unfixedlines[i]
+        
+        for regex in regexes {
+            if let itemRange: Range = line.range(of: regex, options: .regularExpression) {
+                // Set the symbol based on the current value of 'count'
+                // Can make this more Swift-y with an enum
+                var symbol = ""
+                switch(count) {
+                case 0:
+                    symbol = "\"-INF\""
+                case 1:
+                    symbol = "\"+INF\""
+                default:
+                    symbol = "\"NAN\""
+                }
+                
+                // Swap out the originl symbol for a string version
+                // (which doesn't cause a crash YamlString crash)
+                line = line.replacingCharacters(in: itemRange, with: symbol)
+                
+                // NOTE Can we break here?
+            }
+            
+            // Move to next symbol
+            count += 1
+        }
+        
+        // Compose the return string
+        fixedString += (line + "\n")
+    }
+    
+    // Send the updated string back
+    return fixedString
 }

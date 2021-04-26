@@ -38,7 +38,9 @@ class PreviewViewController: NSViewController,
                 // Get the file contents as a string
                 let data: Data = try Data.init(contentsOf: url)
                 if let yamlFileString: String = String.init(data: data, encoding: .utf8) {
-
+                    // Get the key string first
+                    let yamlAttString: NSAttributedString = getAttributedString(yamlFileString, false)
+                    
                     // Update the NSTextView
                     var doShowLightBackground: Bool = false
 
@@ -58,13 +60,14 @@ class PreviewViewController: NSViewController,
                     self.renderTextScrollView.scrollerKnobStyle = doShowLightBackground ? .dark : .light
 
                     if let renderTextStorage: NSTextStorage = self.renderTextView.textStorage {
-                        renderTextStorage.setAttributedString(getAttributedString(yamlFileString, false))
+                        renderTextStorage.setAttributedString(yamlAttString)
                     }
                     
                     // Add the subview to the instance's own view and draw
                     self.view.display()
 
-                    // Call the QLPreviewingController indicating no error (nil)
+                    // Call the QLPreviewingController indicating no error
+                    // (argument is nil)
                     handler(nil)
                     return
                 } else {
@@ -79,12 +82,16 @@ class PreviewViewController: NSViewController,
                                       code: BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN,
                                       userInfo: [NSLocalizedDescriptionKey: BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_WONT_OPEN])
             }
-
-            handler(reportError)
+        } else {
+            // We couldn't access the file so set an appropriate error to report back
+            reportError = NSError(domain: "com.bps.PreviewYaml.Yaml-Previewer",
+                                  code: BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE,
+                                  userInfo: [NSLocalizedDescriptionKey: BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_INACCESSIBLE])
         }
 
-        // Call the QLPreviewingController indicating no error (nil)
-        handler(nil)
+        // Call the QLPreviewingController indicating an error
+        // (argumnet is not nil)
+        handler(reportError)
     }
 
 
