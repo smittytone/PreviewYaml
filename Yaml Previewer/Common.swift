@@ -59,7 +59,8 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
     do {
         // Parse the YAML data,
         // first fixing any .NAN, +/-.INF in the file
-        let yaml = try Yaml.loadMultiple(fixNan(yamlFileString))
+        let processed = fixNan(yamlFileString)
+        let yaml = try Yaml.loadMultiple(yamlFileString)
         
         // Render the YAML to NSAttributedString
         for i in 0..<yaml.count {
