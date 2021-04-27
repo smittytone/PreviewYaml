@@ -13,9 +13,9 @@ import AppKit
 
 
 // Use defaults for some user-selectable values
-private var keyColourIndex: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
-private var textFontIndex: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
-private var textSizeBase: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+private var codeColourIndex: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
+private var codeFontIndex: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
+private var fontBaseSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
 private var yamlIndent: Int = BUFFOON_CONSTANTS.YAML_INDENT
 private var doShowLightBackground: Bool = false
 private var doShowRawYaml: Bool = false
@@ -24,16 +24,18 @@ private let codeFonts: [String] = ["Helvetica", "ArialMT", "Helvetica", "Helveti
                                    "LucidaGrande", "Times-Roman", "Verdana", "AndaleMono",
                                    "Courier", "Menlo-Regular", "Monaco", "PTMono-Regular"]
 
+// YAML string attributes...
 private var keyAtts: [NSAttributedString.Key: Any] = [
-    .foregroundColor: getColour(keyColourIndex),
-    .font: NSFont.systemFont(ofSize: textSizeBase)
+    .foregroundColor: getColour(codeColourIndex),
+    .font: NSFont.systemFont(ofSize: fontBaseSize)
 ]
 
 private var valAtts: [NSAttributedString.Key: Any] = [
     .foregroundColor: (doShowLightBackground ? NSColor.black : NSColor.labelColor),
-    .font: NSFont.systemFont(ofSize: textSizeBase)
+    .font: NSFont.systemFont(ofSize: fontBaseSize)
 ]
 
+// String artefacts...
 private var hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
                                     attributes: [.strikethroughStyle: NSUnderlineStyle.patternDot.rawValue,
                                                  .strikethroughColor: NSColor.labelColor])
@@ -259,11 +261,11 @@ func setBaseValues(_ isThumbnail: Bool) {
     // The suite name is the app group name, set in each extension's entitlements, and the host app's
     if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
         defaults.synchronize()
-        textSizeBase = CGFloat(isThumbnail
+        fontBaseSize = CGFloat(isThumbnail
                               ? defaults.float(forKey: "com-bps-previewyaml-thumb-font-size")
                               : defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
-        keyColourIndex = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
-        textFontIndex = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
+        codeColourIndex = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
+        codeFontIndex = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
         doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
         yamlIndent = isThumbnail ? 2 : defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
         doShowRawYaml = defaults.bool(forKey: "com-bps-previewyaml-show-bad-yaml")
@@ -272,24 +274,24 @@ func setBaseValues(_ isThumbnail: Bool) {
 
     // Just in case the above block reads in zero values
     // NOTE The other valyes CAN be zero
-    if textSizeBase < 1.0 || textSizeBase > 28.0 {
-        textSizeBase = CGFloat(isThumbnail ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE : BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+    if fontBaseSize < 1.0 || fontBaseSize > 28.0 {
+        fontBaseSize = CGFloat(isThumbnail ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE : BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
     }
 
     // Set the YAML key:value fonts and sizes
     var font: NSFont
-    if textFontIndex == 0 {
-        font = NSFont.systemFont(ofSize: textSizeBase)
+    if codeFontIndex == 0 {
+        font = NSFont.systemFont(ofSize: fontBaseSize)
     } else {
-        if let otherFont = NSFont.init(name: codeFonts[textFontIndex], size: textSizeBase) {
+        if let otherFont = NSFont.init(name: codeFonts[codeFontIndex], size: fontBaseSize) {
             font = otherFont
         } else {
-            font = NSFont.systemFont(ofSize: textSizeBase)
+            font = NSFont.systemFont(ofSize: fontBaseSize)
         }
     }
     
     keyAtts = [
-        .foregroundColor: getColour(keyColourIndex),
+        .foregroundColor: getColour(codeColourIndex),
         .font: font
     ]
     
