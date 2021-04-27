@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		3B21717D26344C81000C5AF6 /* sample.yml in Resources */ = {isa = PBXBuildFile; fileRef = 3B21717C26344C81000C5AF6 /* sample.yml */; };
 		3B21718926344E88000C5AF6 /* new in Resources */ = {isa = PBXBuildFile; fileRef = 3B21718826344E88000C5AF6 /* new */; };
+		3B218DDB2637F41F0024446B /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3B218DDA2637F41F0024446B /* Yaml */; };
+		3B218DE22637F4290024446B /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3B218DE12637F4290024446B /* Yaml */; };
 		3BB64D8926320064003CD14D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64D8826320064003CD14D /* AppDelegate.swift */; };
 		3BB64D8B26320065003CD14D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8A26320065003CD14D /* Assets.xcassets */; };
 		3BB64D8E26320065003CD14D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8C26320065003CD14D /* MainMenu.xib */; };
@@ -24,8 +26,6 @@
 		3BB64DDF263200BA003CD14D /* Yaml Thumbnailer.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3BB64DD4263200BA003CD14D /* Yaml Thumbnailer.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3BB64DEE2632013A003CD14D /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64DED2632013A003CD14D /* Common.swift */; };
 		3BB64DF52632014D003CD14D /* licences.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64DF42632014D003CD14D /* licences.txt */; };
-		3BB64DFD26320185003CD14D /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3BB64DFC26320185003CD14D /* Yaml */; };
-		3BB64E0426320193003CD14D /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3BB64E0326320193003CD14D /* Yaml */; };
 		3BB64E05263201A6003CD14D /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64DED2632013A003CD14D /* Common.swift */; };
 		3BB64E0B263201B4003CD14D /* licences.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64DF42632014D003CD14D /* licences.txt */; };
 		3BB64E122632023C003CD14D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E112632023C003CD14D /* Constants.swift */; };
@@ -143,7 +143,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BB64DBC263200A8003CD14D /* Quartz.framework in Frameworks */,
-				3BB64DFD26320185003CD14D /* Yaml in Frameworks */,
+				3B218DDB2637F41F0024446B /* Yaml in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,7 +153,7 @@
 			files = (
 				3BB64DD6263200BA003CD14D /* QuickLookThumbnailing.framework in Frameworks */,
 				3BB64DD7263200BA003CD14D /* Quartz.framework in Frameworks */,
-				3BB64E0426320193003CD14D /* Yaml in Frameworks */,
+				3B218DE22637F4290024446B /* Yaml in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,7 +324,7 @@
 			);
 			name = "Yaml Previewer";
 			packageProductDependencies = (
-				3BB64DFC26320185003CD14D /* Yaml */,
+				3B218DDA2637F41F0024446B /* Yaml */,
 			);
 			productName = "Yaml Previewer";
 			productReference = 3BB64DB9263200A8003CD14D /* Yaml Previewer.appex */;
@@ -344,7 +344,7 @@
 			);
 			name = "Yaml Thumbnailer";
 			packageProductDependencies = (
-				3BB64E0326320193003CD14D /* Yaml */,
+				3B218DE12637F4290024446B /* Yaml */,
 			);
 			productName = "Yaml Thumbnailer";
 			productReference = 3BB64DD4263200BA003CD14D /* Yaml Thumbnailer.appex */;
@@ -388,7 +388,7 @@
 			);
 			mainGroup = 3BB64D7C26320064003CD14D;
 			packageReferences = (
-				3BB64DFB26320185003CD14D /* XCRemoteSwiftPackageReference "YamlSwift" */,
+				3B218DD92637F41F0024446B /* XCRemoteSwiftPackageReference "YamlSwift" */,
 			);
 			productRefGroup = 3BB64D8626320064003CD14D /* Products */;
 			projectDirPath = "";
@@ -953,25 +953,25 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		3BB64DFB26320185003CD14D /* XCRemoteSwiftPackageReference "YamlSwift" */ = {
+		3B218DD92637F41F0024446B /* XCRemoteSwiftPackageReference "YamlSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/behrang/YamlSwift.git";
+			repositoryURL = "https://github.com/smittytone/YamlSwift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.4.4;
+				branch = master;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3BB64DFC26320185003CD14D /* Yaml */ = {
+		3B218DDA2637F41F0024446B /* Yaml */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3BB64DFB26320185003CD14D /* XCRemoteSwiftPackageReference "YamlSwift" */;
+			package = 3B218DD92637F41F0024446B /* XCRemoteSwiftPackageReference "YamlSwift" */;
 			productName = Yaml;
 		};
-		3BB64E0326320193003CD14D /* Yaml */ = {
+		3B218DE12637F4290024446B /* Yaml */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3BB64DFB26320185003CD14D /* XCRemoteSwiftPackageReference "YamlSwift" */;
+			package = 3B218DD92637F41F0024446B /* XCRemoteSwiftPackageReference "YamlSwift" */;
 			productName = Yaml;
 		};
 /* End XCSwiftPackageProductDependency section */

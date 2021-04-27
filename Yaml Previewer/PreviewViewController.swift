@@ -107,7 +107,7 @@ class PreviewViewController: NSViewController,
         // Is this ever called?
         NSLog("BUFFOON searchable identifier: \(identifier)")
         NSLog("BUFFOON searchable query:      " + (queryString ?? "nil"))
-
+        
         // Hand control back to QuickLook
         handler(nil)
     }

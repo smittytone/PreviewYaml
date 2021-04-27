@@ -370,8 +370,7 @@ func fixNan(_ yamlString: String) -> String {
                 // Swap out the originl symbol for a string version
                 // (which doesn't cause a crash YamlString crash)
                 line = line.replacingCharacters(in: itemRange, with: symbol)
-                
-                // NOTE Can we break here?
+                break;
             }
             
             // Move to next symbol

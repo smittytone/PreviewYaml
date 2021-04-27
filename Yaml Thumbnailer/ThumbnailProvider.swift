@@ -88,18 +88,20 @@ class ThumbnailProvider: QLThumbnailProvider {
                         // Write the tag rendered as an NSAttributedString into the view's text storage
                         if let tagTextStorage: NSTextStorage = tagTextView!.textStorage {
                             // NOTE We use 'request.maximumSize' for more accurate results
+                            tagTextStorage.beginEditing()
                             tagTextStorage.setAttributedString(getTagString("YAML", request.maximumSize.width))
+                            tagTextStorage.endEditing()
                         }
                     }
 
                     // Generate the bitmap from the rendered markdown text view
-                    let imageRep: NSBitmapImageRep? = yamlTextView.bitmapImageRepForCachingDisplay(in: yamlFrame)
+                    var imageRep: NSBitmapImageRep? = yamlTextView.bitmapImageRepForCachingDisplay(in: yamlFrame)
                     if imageRep != nil {
                         // Draw into the bitmap first the markdown view...
                         yamlTextView.cacheDisplay(in: yamlFrame, to: imageRep!)
 
                         // ...then the tag view
-                        if tagTextView != nil && tagFrame != nil {
+                        if doShowTag && tagTextView != nil && tagFrame != nil {
                             tagTextView!.cacheDisplay(in: tagFrame!, to: imageRep!)
                         }
                     }
@@ -107,9 +109,10 @@ class ThumbnailProvider: QLThumbnailProvider {
                     let reply: QLThumbnailReply = QLThumbnailReply.init(contextSize: thumbnailFrame.size) { () -> Bool in
                         // This is the drawing block. It returns true (thumbnail drawn into current context)
                         // or false (thumbnail not drawn)
-                        if imageRep != nil {
-                            let _ = imageRep!.draw(in: thumbnailFrame)
-                            return true
+                        if let ir = imageRep {
+                            let success = ir.draw(in: thumbnailFrame)
+                            imageRep = nil
+                            return success
                         }
 
                         //  We didn't draw anything
