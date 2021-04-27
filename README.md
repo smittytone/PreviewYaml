@@ -21,13 +21,15 @@ Changing these settings will affect previews immediately, but may not affect thu
 
 ## Troubleshooting ##
 
-If PreviewYaml reports that it was unable to render YAML, this is almost certainly caused by a slight malformation of YAML itself. Rogue comma after a float? That will cause PreviewYaml’s YAML parser to reject the entire file. However, please note the **Known Issues**, below.
+If PreviewYaml reports that it was unable to render YAML, this is almost certainly caused by a slight malformation of the YAML itself. PreviewYaml’s YAML library is very strict, so YAML malformations which other apps may accepts can be rejected by PreviewYaml. For example, it expects correct minimum indentation. For this reason, you can optionally tell PreviewYaml to display a file’s raw YAML in the event of a parsing error. This option is chosen in PreviewYaml’s **Preferences** panel and will allow you to preview YAML files, albeit without rendering.
 
 ## Known Issues ##
 
-I am aware of an issue with YAML files that contain the `.inf`, `.-inf` and/or `.nan` values. This issue prevents these files from being rendered.
+PreviewYaml currently expects files to be encoded in UTF-8.
 
-PreviewYaml expects files in UTF-8 only.
+Certain YAML features — custom tags — are not as yet correctly rendered by PreviewYAML’s YAML library.
+
+I have noted crashes in the cade that triggers thumbnail generation and calls PreviewYaml’s Yaml Thumbnailer extension. This results in some YAML files showing generic icons (others may show thumbnails). This issus is under investigation.
 
 ## Source Code ##
 
