@@ -8,7 +8,7 @@
 
 import QuickLookThumbnailing
 import Cocoa
-import os.log
+
 
 class ThumbnailProvider: QLThumbnailProvider {
 
