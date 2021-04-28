@@ -55,12 +55,13 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
     setBaseValues(isThumbnail)
         
     // Set up the base string
-    var renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: valAtts)
+    var renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "",
+                                                                                   attributes: valAtts)
     
     do {
         // Parse the YAML data,
         // first fixing any .NAN, +/-.INF in the file
-        //let processed = fixNan(yamlFileString)
+        // let processed = fixNan(yamlFileString)
         let yaml = try Yaml.loadMultiple(yamlFileString)
         
         // Render the YAML to NSAttributedString
@@ -77,15 +78,26 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
         if renderedString.length == 0 {
             renderedString = NSMutableAttributedString.init(string: "Could not render the YAML.\n", attributes: keyAtts)
         }
-    }
-    catch {
-        // No YAML to render, or mis-formatted
-        let errorString: NSMutableAttributedString = NSMutableAttributedString.init(string: "Could not render the YAML. It may be mis-formed.\n", attributes: keyAtts)
-        
-        errorString.append(NSMutableAttributedString.init(string: error.localizedDescription + "\n", attributes: keyAtts))
-        
+    } catch {
+        // No YAML to render, or the YAML was mis-formatted
+        // Get the error as reported by YamlSwift
+        let yamlErr: Yaml.ResultError = error as! Yaml.ResultError
+        var yamlErrString: String
+        switch(yamlErr) {
+            case .message(let s):
+                yamlErrString = s ?? "unknown"
+        }
+
+        // Assemble the error string
+        let errorString: NSMutableAttributedString = NSMutableAttributedString.init(string: "Could not render the YAML. Error: " + yamlErrString,
+                                                                                    attributes: keyAtts)
+
+        // Should we include the raw text?
+        // At least the user can see the data this way
         if doShowRawYaml {
-            errorString.append(NSMutableAttributedString.init(string: "Raw YAML:\n" + yamlFileString + "\n", attributes: valAtts))
+            errorString.append(hr)
+            errorString.append(NSMutableAttributedString.init(string: yamlFileString + "\n",
+                                                              attributes: valAtts))
         }
 
         renderedString = errorString
