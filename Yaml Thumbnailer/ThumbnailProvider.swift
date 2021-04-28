@@ -110,7 +110,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                             }
                         }
                     } catch {
-                        // NOP -- just fall through
+                        // NOP -- fall through to fail
                     }
                 }
 

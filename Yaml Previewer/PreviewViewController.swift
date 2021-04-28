@@ -72,7 +72,7 @@ class PreviewViewController: NSViewController,
                         renderTextStorage.setAttributedString(yamlAttString)
                         renderTextStorage.endEditing()
                     } else {
-                        handler(setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
+                        handler(setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING))
                         return
                     }
                     
