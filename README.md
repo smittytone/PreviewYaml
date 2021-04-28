@@ -15,13 +15,14 @@ You can alter some of the key elements of the preview by using the **Preferences
 - The colour of keys.
 - The preview’s font.
 - The preview’s text size.
+- Level of indentation.
 - Whether preview should be display white-on-black even in macOS’ Dark Mode.
 
-Changing these settings will affect previews immediately, but may not affect thumbnails until you open a folder that has not been previously opened in the current login session.
+Changing these settings will affect previews immediately, but may not affect thumbnails until you open a folder that has not been previously opened in the current login session, you edit a thumbnail, or you log back into your Mac account.
 
 ## Troubleshooting ##
 
-If PreviewYaml reports that it was unable to render YAML, this is almost certainly caused by a slight malformation of the YAML itself. PreviewYaml’s YAML library is very strict, so YAML malformations which other apps may accepts can be rejected by PreviewYaml. For example, it expects correct minimum indentation. For this reason, you can optionally tell PreviewYaml to display a file’s raw YAML in the event of a parsing error. This option is chosen in PreviewYaml’s **Preferences** panel and will allow you to preview YAML files, albeit without rendering.
+If PreviewYaml reports that it was unable to render YAML, this is almost certainly caused by a slight malformation of the YAML itself — the error message should help you spot the problem. PreviewYaml’s YAML library is quite strict, so YAML malformations which other apps may accept may be rejected by PreviewYaml. For this reason, you can optionally tell PreviewYaml to display a file’s raw YAML in the event of a parsing error. This option is chosen in PreviewYaml’s **Preferences** panel and will allow you to QuickLook YAML files, albeit without rendering.
 
 ## Known Issues ##
 
@@ -29,7 +30,9 @@ PreviewYaml currently expects files to be encoded in UTF-8.
 
 Certain YAML features — custom tags — are not as yet correctly rendered by PreviewYAML’s YAML library.
 
-I have noted crashes in the cade that triggers thumbnail generation and calls PreviewYaml’s Yaml Thumbnailer extension. This results in some YAML files showing generic icons (others may show thumbnails). This issus is under investigation.
+A YAML file containing `.nan`, `.inf` and/or `-.inf` values will prevent PreviewYAML from rendering the file. This is under investigation.
+
+Any YAML files showing generic icons will have suffered an initial rendering error. Changing the icon size often causes the thumbnail to appear correctly, but because Finder caches thumbnails, going back to the original icon size does not cause the icon to be redrawn. This issue is under investigation.
 
 ## Source Code ##
 
