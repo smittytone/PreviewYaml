@@ -62,7 +62,6 @@ class ThumbnailProvider: QLThumbnailProvider {
                             handler(nil, setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING, ".Yaml-Thumbnailer"))
                             return
                         }
-                        NSLog("PYML -- Set markdown text view")
                         
                         // Also generate text for the bottom-of-thumbnail file type tag,
                         // if the user has this set as a preference
@@ -103,8 +102,6 @@ class ThumbnailProvider: QLThumbnailProvider {
                                 handler(nil, setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING, ".Yaml-Thumbnailer"))
                                 return
                             }
-                            
-                            NSLog("PYML -- Set tag text view")
                         }
                         
                         // Generate the bitmap from the rendered markdown text view
@@ -117,8 +114,6 @@ class ThumbnailProvider: QLThumbnailProvider {
                             if doShowTag && tagTextView != nil && tagFrame != nil {
                                 tagTextView!.cacheDisplay(in: tagFrame!, to: imageRep!)
                             }
-                            
-                            NSLog("PYML -- Set imagerep")
                         }
 
                         let reply: QLThumbnailReply = QLThumbnailReply.init(contextSize: thumbnailFrame.size) { () -> Bool in
@@ -127,7 +122,6 @@ class ThumbnailProvider: QLThumbnailProvider {
                             if let ir = imageRep {
                                 let success = ir.draw(in: thumbnailFrame)
                                 //if (success) { imageRep = nil }
-                                NSLog(success ? "PYML -- Drew imageRep " : "PYML -- Didn't draw imageRep")
                                 return success
                             }
 
