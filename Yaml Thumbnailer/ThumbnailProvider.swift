@@ -8,7 +8,7 @@
 
 import QuickLookThumbnailing
 import Cocoa
-
+import os.log
 
 class ThumbnailProvider: QLThumbnailProvider {
     
@@ -25,120 +25,132 @@ class ThumbnailProvider: QLThumbnailProvider {
             // Only proceed if the file is accessible from here
             do {
                 // Get the file contents as a string
-                let data: Data = try Data.init(contentsOf: request.fileURL)
+                let data: Data = try Data.init(contentsOf: request.fileURL, options: [.uncached])
                 if let yamlFileString: String = String.init(data: data, encoding: .utf8) {
-                    // Get the Attributed String
-                    let yamlAttString: NSAttributedString = getAttributedString(yamlFileString, true)
+                    // Try this to handle Obj-C instances' deallocation
+                    autoreleasepool { () -> Void in
+                        // Get the Attributed String
+                        let yamlAttString: NSAttributedString = getAttributedString(yamlFileString, true)
+                        
+                        // Set the thumbnail frame
+                        // NOTE This is always square, with height matched to width, so adjust
+                        //      to a 3:4 aspect ratio to maintain the macOS standard doc icon width
+                        var thumbnailFrame: CGRect = .zero
+                        thumbnailFrame.size = request.maximumSize
+                        thumbnailFrame.size.width = CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ASPECT) * thumbnailFrame.size.height
+
+                        // Set the primary drawing frame and a base font size
+                        let yamlFrame: CGRect = CGRect.init(x: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X,
+                                                            y: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_Y,
+                                                            width: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH,
+                                                            height: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.HEIGHT)
+
+                        // Instantiate an NSTextView to display the NSAttributedString render of the markdown
+                        let yamlTextView: NSTextView = NSTextView.init(frame: yamlFrame)
+                        yamlTextView.backgroundColor = NSColor.white
+                        yamlTextView.usesFindBar = false
+                        yamlTextView.usesRuler = false
+                        yamlTextView.usesFontPanel = false
+
+                        // Write the markdown rendered as an NSAttributedString into the view's text storage
+                        if let yamlTextStorage: NSTextStorage = yamlTextView.textStorage {
+                            yamlTextStorage.beginEditing()
+                            yamlTextStorage.setAttributedString(yamlAttString)
+                            yamlTextStorage.endEditing()
+                        } else {
+                            // Error
+                            handler(nil, setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING, ".Yaml-Thumbnailer"))
+                            return
+                        }
+                        NSLog("PYML -- Set markdown text view")
+                        
+                        // Also generate text for the bottom-of-thumbnail file type tag,
+                        // if the user has this set as a preference
+                        var tagTextView: NSTextView? = nil
+                        var tagFrame: CGRect? = nil
+                        var doShowTag: Bool = true
+
+                        // Get the preference
+                        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
+                            defaults.synchronize()
+                            doShowTag = defaults.bool(forKey: "com-bps-previewyaml-do-show-tag")
+                        }
+
+                        if doShowTag {
+                            // Define the frame of the tag area
+                            tagFrame = CGRect.init(x: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X,
+                                                   y: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_Y,
+                                                   width: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH,
+                                                   height: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.TAG_HEIGHT)
+
+                            // Instantiate an NSTextView to display the NSAttributedString render of the tag,
+                            // this time with a clear background
+                            // NOTE 'tagTextView' is an optional
+                            tagTextView = NSTextView.init(frame: tagFrame!)
+                            tagTextView!.backgroundColor = NSColor.clear
+                            tagTextView!.usesFindBar = false
+                            tagTextView!.usesRuler = false
+                            tagTextView!.usesFontPanel = false
+                            
+                            // Write the tag rendered as an NSAttributedString into the view's text storage
+                            if let tagTextStorage: NSTextStorage = tagTextView!.textStorage {
+                                // NOTE We use 'request.maximumSize' for more accurate results
+                                tagTextStorage.beginEditing()
+                                tagTextStorage.setAttributedString(getTagString("YAML", request.maximumSize.width))
+                                tagTextStorage.endEditing()
+                            } else {
+                                // Error
+                                handler(nil, setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING, ".Yaml-Thumbnailer"))
+                                return
+                            }
+                            
+                            NSLog("PYML -- Set tag text view")
+                        }
+                        
+                        // Generate the bitmap from the rendered markdown text view
+                        let imageRep: NSBitmapImageRep? = yamlTextView.bitmapImageRepForCachingDisplay(in: yamlFrame)
+                        if imageRep != nil {
+                            // Draw into the bitmap first the markdown view...
+                            yamlTextView.cacheDisplay(in: yamlFrame, to: imageRep!)
+
+                            // ...then the tag view
+                            if doShowTag && tagTextView != nil && tagFrame != nil {
+                                tagTextView!.cacheDisplay(in: tagFrame!, to: imageRep!)
+                            }
+                            
+                            NSLog("PYML -- Set imagerep")
+                        }
+
+                        let reply: QLThumbnailReply = QLThumbnailReply.init(contextSize: thumbnailFrame.size) { () -> Bool in
+                            // This is the drawing block. It returns true (thumbnail drawn into current context)
+                            // or false (thumbnail not drawn)
+                            if let ir = imageRep {
+                                let success = ir.draw(in: thumbnailFrame)
+                                //if (success) { imageRep = nil }
+                                NSLog(success ? "PYML -- Drew imageRep " : "PYML -- Didn't draw imageRep")
+                                return success
+                            }
+
+                            //  We didn't draw anything
+                            return false
+                        }
+
+                        // Hand control back to QuickLook, supplying the QLThumbnailReply instance and no error
+                        handler(reply, nil)
+                    }
                     
-                    // Set the thumbnail frame
-                    // NOTE This is always square, with height matched to width, so adjust
-                    //      to a 3:4 aspect ratio to maintain the macOS standard doc icon width
-                    var thumbnailFrame: CGRect = .zero
-                    thumbnailFrame.size = request.maximumSize
-                    thumbnailFrame.size.width = CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ASPECT) * thumbnailFrame.size.height
-
-                    // Set the primary drawing frame and a base font size
-                    let yamlFrame: CGRect = CGRect.init(x: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X,
-                                                        y: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_Y,
-                                                        width: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH,
-                                                        height: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.HEIGHT)
-
-                    // Instantiate an NSTextView to display the NSAttributedString render of the markdown
-                    let yamlTextView: NSTextView = NSTextView.init(frame: yamlFrame)
-                    yamlTextView.backgroundColor = NSColor.white
-
-                    // Write the markdown rendered as an NSAttributedString into the view's text storage
-                    if let yamlTextStorage: NSTextStorage = yamlTextView.textStorage {
-                        yamlTextStorage.beginEditing()
-                        yamlTextStorage.setAttributedString(yamlAttString)
-                        yamlTextStorage.endEditing()
-                    } else {
-                        // Error
-                        reportError = NSError(domain: "com.bps.PreviewYaml.Yaml-Thumbnailer",
-                                              code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING,
-                                              userInfo: [NSLocalizedDescriptionKey: BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING])
-                        handler(nil, reportError)
-                        return
-                    }
-
-                    // Also generate text for the bottom-of-thumbnail file type tag,
-                    // if the user has this set as a preference
-                    var tagTextView: NSTextView? = nil
-                    var tagFrame: CGRect? = nil
-                    var doShowTag: Bool = true
-
-                    // Get the preference
-                    if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
-                        defaults.synchronize()
-                        doShowTag = defaults.bool(forKey: "com-bps-previewyaml-do-show-tag")
-                    }
-
-                    if doShowTag {
-                        // Define the frame of the tag area
-                        tagFrame = CGRect.init(x: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X,
-                                               y: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_Y,
-                                               width: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH,
-                                               height: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.TAG_HEIGHT)
-
-                        // Instantiate an NSTextView to display the NSAttributedString render of the tag,
-                        // this time with a clear background
-                        tagTextView = NSTextView.init(frame: tagFrame!)
-                        tagTextView!.backgroundColor = NSColor.clear
-
-                        // Write the tag rendered as an NSAttributedString into the view's text storage
-                        if let tagTextStorage: NSTextStorage = tagTextView!.textStorage {
-                            // NOTE We use 'request.maximumSize' for more accurate results
-                            tagTextStorage.beginEditing()
-                            tagTextStorage.setAttributedString(getTagString("YAML", request.maximumSize.width))
-                            tagTextStorage.endEditing()
-                        }
-                    }
-
-                    // Generate the bitmap from the rendered markdown text view
-                    var imageRep: NSBitmapImageRep? = yamlTextView.bitmapImageRepForCachingDisplay(in: yamlFrame)
-                    if imageRep != nil {
-                        // Draw into the bitmap first the markdown view...
-                        yamlTextView.cacheDisplay(in: yamlFrame, to: imageRep!)
-
-                        // ...then the tag view
-                        if doShowTag && tagTextView != nil && tagFrame != nil {
-                            tagTextView!.cacheDisplay(in: tagFrame!, to: imageRep!)
-                        }
-                    }
-
-                    let reply: QLThumbnailReply = QLThumbnailReply.init(contextSize: thumbnailFrame.size) { () -> Bool in
-                        // This is the drawing block. It returns true (thumbnail drawn into current context)
-                        // or false (thumbnail not drawn)
-                        if let ir = imageRep {
-                            let success = ir.draw(in: thumbnailFrame)
-                            imageRep = nil
-                            return success
-                        }
-
-                        //  We didn't draw anything
-                        return false
-                    }
-
-                    // Hand control back to QuickLook, supplying the QLThumbnailReply instance and no error
-                    handler(reply, nil)
                     return
                 } else {
                     // We couldn't get the markdwn string so set an appropriate error to report back
-                    reportError = NSError(domain: "com.bps.PreviewYaml.Yaml-Thumbnailer",
-                                          code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING,
-                                          userInfo: [NSLocalizedDescriptionKey: BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_MD_STRING])
+                    reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING, ".Yaml-Thumbnailer")
                 }
             } catch {
                 // We couldn't read the file so set an appropriate error to report back
-                reportError = NSError(domain: "com.bps.PreviewYaml.Yaml-Thumbnailer",
-                                      code: BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN,
-                                      userInfo: [NSLocalizedDescriptionKey: BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_WONT_OPEN])
+                reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN, ".Yaml-Thumbnailer")
             }
         }  else {
             // We couldn't access the file so set an appropriate error to report back
-            reportError = NSError(domain: "com.bps.PreviewYaml.Yaml-Thumbnailer",
-                                  code: BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE,
-                                  userInfo: [NSLocalizedDescriptionKey: BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_INACCESSIBLE])
+            reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE, ".Yaml-Thumbnailer")
         }
 
         // We couldn't do any so set an appropriate error to report back
