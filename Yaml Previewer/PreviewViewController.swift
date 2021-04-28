@@ -72,7 +72,7 @@ class PreviewViewController: NSViewController,
                         renderTextStorage.setAttributedString(yamlAttString)
                         renderTextStorage.endEditing()
                     } else {
-                        handler(setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING, ".Yaml-Previewer"))
+                        handler(setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
                         return
                     }
                     
@@ -85,15 +85,15 @@ class PreviewViewController: NSViewController,
                     return
                 } else {
                     // We couldn't get the markdwn string so set an appropriate error to report back
-                    reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING, ".Yaml-Previewer")
+                    reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING)
                 }
             } catch {
                 // We couldn't read the file so set an appropriate error to report back
-                reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN, ".Yaml-Previewer")
+                reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
             }
         } else {
             // We couldn't access the file so set an appropriate error to report back
-            reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE, ".Yaml-Previewer")
+            reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE)
         }
 
         // Call the QLPreviewingController indicating an error

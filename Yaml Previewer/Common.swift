@@ -354,7 +354,7 @@ func getColour(_ index: Int) -> NSColor {
 }
     
 
-func setError(_ code: Int, _ app: String) -> NSError {
+func setError(_ code: Int) -> NSError {
     
     // NSError generation function
     
@@ -372,8 +372,9 @@ func setError(_ code: Int, _ app: String) -> NSError {
     default:
         errDesc = "UNKNOWN ERROR"
     }
-    
-    return NSError(domain: "com.bps.PreviewYaml." + app,
+
+    let bundleID = Bundle.main.object(forInfoDictionaryKey: "CFBundleID") as! String
+    return NSError(domain: bundleID,
                    code: code,
                    userInfo: [NSLocalizedDescriptionKey: errDesc])
 }
