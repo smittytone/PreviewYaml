@@ -12,6 +12,7 @@ import Yaml
 import AppKit
 
 
+
 // Use defaults for some user-selectable values
 private var codeColourIndex: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
 private var codeFontIndex: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
@@ -52,14 +53,14 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
 
     // Set the colours, etc. base on current prefs first
     setBaseValues(isThumbnail)
-    
+        
     // Set up the base string
     var renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: valAtts)
     
     do {
         // Parse the YAML data,
         // first fixing any .NAN, +/-.INF in the file
-        let processed = fixNan(yamlFileString)
+        //let processed = fixNan(yamlFileString)
         let yaml = try Yaml.loadMultiple(yamlFileString)
         
         // Render the YAML to NSAttributedString
@@ -340,6 +341,33 @@ func getColour(_ index: Int) -> NSColor {
     }
 }
     
+
+func setError(_ code: Int, _ app: String) -> NSError {
+    
+    // NSError generation function
+    
+    var errDesc: String
+    
+    switch(code) {
+    case BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE:
+        errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_INACCESSIBLE
+    case BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN:
+        errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_WONT_OPEN
+    case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING:
+        errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING
+    case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING:
+        errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_MD_STRING
+    default:
+        errDesc = "UNKNOWN ERROR"
+    }
+    
+    return NSError(domain: "com.bps.PreviewYaml." + app,
+                   code: code,
+                   userInfo: [NSLocalizedDescriptionKey: errDesc])
+}
+
+
+// MARK: - EXPERIMENTAL
 
 func fixNan(_ yamlString: String) -> String {
     
