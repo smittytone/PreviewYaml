@@ -59,6 +59,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                             // Instantiate an NSTextView to display the NSAttributedString render of the markdown
                             let yamlTextView: NSTextView = NSTextView.init(frame: yamlFrame)
                             yamlTextView.backgroundColor = NSColor.white
+                            yamlTextView.isSelectable = false
 
                             // Write the markdown rendered as an NSAttributedString into the view's text storage
                             if let yamlTextStorage: NSTextStorage = yamlTextView.textStorage {
@@ -84,6 +85,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                                 // NOTE 'tagTextView' is an optional
                                 tagTextView = NSTextView.init(frame: tagFrame!)
                                 tagTextView!.backgroundColor = NSColor.clear
+                                tagTextView!.isSelectable = false
 
                                 // Write the tag rendered as an NSAttributedString into the view's text storage
                                 if let tagTextStorage: NSTextStorage = tagTextView!.textStorage {
