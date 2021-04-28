@@ -36,7 +36,7 @@ class PreviewViewController: NSViewController,
             // Only proceed if the file is accessible from here
             do {
                 // Get the file contents as a string
-                let data: Data = try Data.init(contentsOf: url)
+                let data: Data = try Data.init(contentsOf: url, options: [.uncached])
                 if let yamlFileString: String = String.init(data: data, encoding: .utf8) {
                     // Get the key string first
                     let yamlAttString: NSAttributedString = getAttributedString(yamlFileString, false)
@@ -56,6 +56,9 @@ class PreviewViewController: NSViewController,
                     //              in light mode, the scrollers show up light-on-light, in dark mode light-on-dark
                     // NOTE Changing the scrollview scroller knob style has no effect
                     self.renderTextView.backgroundColor = doShowLightBackground ? NSColor.init(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
+                    self.renderTextView.usesFindBar = false
+                    self.renderTextView.usesRuler = false
+                    self.renderTextView.usesFontPanel = false
                     
                     self.renderTextScrollView.scrollerKnobStyle = doShowLightBackground ? .dark : .light
 
@@ -68,6 +71,9 @@ class PreviewViewController: NSViewController,
                         renderTextStorage.beginEditing()
                         renderTextStorage.setAttributedString(yamlAttString)
                         renderTextStorage.endEditing()
+                    } else {
+                        handler(setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING, ".Yaml-Previewer"))
+                        return
                     }
                     
                     // Add the subview to the instance's own view and draw
@@ -79,21 +85,15 @@ class PreviewViewController: NSViewController,
                     return
                 } else {
                     // We couldn't get the markdwn string so set an appropriate error to report back
-                    reportError = NSError(domain: "com.bps.PreviewYaml.Yaml-Previewer",
-                                          code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING,
-                                          userInfo: [NSLocalizedDescriptionKey: BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_MD_STRING])
+                    reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING, ".Yaml-Previewer")
                 }
             } catch {
                 // We couldn't read the file so set an appropriate error to report back
-                reportError = NSError(domain: "com.bps.PreviewYaml.Yaml-Previewer",
-                                      code: BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN,
-                                      userInfo: [NSLocalizedDescriptionKey: BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_WONT_OPEN])
+                reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN, ".Yaml-Previewer")
             }
         } else {
             // We couldn't access the file so set an appropriate error to report back
-            reportError = NSError(domain: "com.bps.PreviewYaml.Yaml-Previewer",
-                                  code: BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE,
-                                  userInfo: [NSLocalizedDescriptionKey: BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_INACCESSIBLE])
+            reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE, ".Yaml-Previewer")
         }
 
         // Call the QLPreviewingController indicating an error
