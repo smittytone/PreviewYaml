@@ -51,9 +51,6 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
     // NOTE Set the font colour according to whether we're rendering a thumbail or a preview
     //      (thumbnails always rendered black on white; previews may be the opposite [dark mode])
 
-    // Set the colours, etc. base on current prefs first
-    setBaseValues(isThumbnail)
-        
     // Set up the base string
     var renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "",
                                                                                    attributes: valAtts)
@@ -271,6 +268,7 @@ func getIndentedString(_ baseString: String, _ indent: Int) -> NSAttributedStrin
 func setBaseValues(_ isThumbnail: Bool) {
 
     // Set common base style values for the markdown render
+    // NOTE This should now be called only once
 
     // The suite name is the app group name, set in each extension's entitlements, and the host app's
     if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {

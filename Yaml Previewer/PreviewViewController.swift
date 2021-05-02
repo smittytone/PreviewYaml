@@ -29,7 +29,17 @@ class PreviewViewController: NSViewController,
 
         // Get an error message ready for use
         var reportError: NSError? = nil
-
+        
+        // Set the base values
+        setBaseValues(false)
+        
+        // Does the user want a light background in dark mode?
+        var doShowLightBackground: Bool = false
+        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
+            defaults.synchronize()
+            doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
+        }
+        
         // Load the source file using a co-ordinator as we don't know what thread this function
         // will be executed in when it's called by macOS' QuickLook code
         if FileManager.default.isReadableFile(atPath: url.path) {
@@ -41,14 +51,6 @@ class PreviewViewController: NSViewController,
                     // Get the key string first
                     let yamlAttString: NSAttributedString = getAttributedString(yamlFileString, false)
                     
-                    // Update the NSTextView
-                    var doShowLightBackground: Bool = false
-
-                    if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
-                        defaults.synchronize()
-                        doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
-                    }
-                    
                     // Knock back the light background to make the scroll bars visible in dark mode
                     // NOTE If !doShowLightBackground,
                     //              in light mode, the scrollers show up dark-on-light, in dark mode light-on-dark
@@ -56,10 +58,6 @@ class PreviewViewController: NSViewController,
                     //              in light mode, the scrollers show up light-on-light, in dark mode light-on-dark
                     // NOTE Changing the scrollview scroller knob style has no effect
                     self.renderTextView.backgroundColor = doShowLightBackground ? NSColor.init(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
-                    self.renderTextView.usesFindBar = false
-                    self.renderTextView.usesRuler = false
-                    self.renderTextView.usesFontPanel = false
-                    
                     self.renderTextScrollView.scrollerKnobStyle = doShowLightBackground ? .dark : .light
 
                     if let renderTextStorage: NSTextStorage = self.renderTextView.textStorage {

@@ -12,31 +12,36 @@ import Cocoa
 
 class ThumbnailProvider: QLThumbnailProvider {
 
-    // MARK: Properties Held in Self for use in Closures
+    // MARK: Properties
     
     // NOTE May remove some or all of these later
     // public var reportError: NSError? = nil
     var doShowTag: Bool = true
-    var requestPath: String = ""
-    var thumbnailHeight: CGFloat = 1024.0
+    
+    
+    // MARK:- Lifecycle Required Functions
+    
+    override init() {
+        // Must call the super class because we don't know
+        // what operations it performs
+        super.init()
+        
+        // Set the base values once per instantiation, not every
+        // time a string is rendered (which risks a race condition)
+        setBaseValues(true)
+        
+        // Get the preference for showing a tag and do it once so it 
+        // only ever needs to be read from the property from this point on
+        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.previewmarkdown") {
+            defaults.synchronize()
+            self.doShowTag = defaults.bool(forKey: "com-bps-previewmarkdown-do-show-tag")
+        }
+    }
 
     
     // MARK:- QLThumbnailProvider Required Functions
 
     override func provideThumbnail(for request: QLFileThumbnailRequest, _ handler: @escaping (QLThumbnailReply?, Error?) -> Void) {
-        
-        // Get passed in data and store in self properties
-        
-        // Get the preference for showing a tag
-        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.previewmarkdown") {
-            defaults.synchronize()
-            self.doShowTag = defaults.bool(forKey: "com-bps-previewmarkdown-do-show-tag")
-        }
-        
-        // Get the path of the file we're thumbnailing and the desired thumbnail height
-        // NOTE width will be calculated from height and fixed aspect ratio
-        self.requestPath = request.fileURL.path
-        self.thumbnailHeight = request.maximumSize.height
         
         // Run everything on the main thread
         DispatchQueue.main.async {
@@ -45,15 +50,15 @@ class ThumbnailProvider: QLThumbnailProvider {
             //      to a 3:4 aspect ratio to maintain the macOS standard doc icon width
             let thumbnailFrame: CGRect = NSMakeRect(0.0,
                                                     0.0,
-                                                    CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ASPECT) * self.thumbnailHeight,
-                                                    self.thumbnailHeight)
+                                                    CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ASPECT) * request.maximumSize.height,
+                                                    request.maximumSize.height)
             
             handler(QLThumbnailReply.init(contextSize: thumbnailFrame.size) { () -> Bool in
                 // Place all the remaining code within the closure passed to 'handler()'
                 let success = autoreleasepool { () -> Bool in
                     // Load the source file using a co-ordinator as we don't know what thread this function
                     // will be executed in when it's called by macOS' QuickLook code
-                    if FileManager.default.isReadableFile(atPath: self.requestPath) {
+                    if FileManager.default.isReadableFile(atPath: request.fileURL.path) {
                         // Only proceed if the file is accessible from here
                         do {
                             // Get the file contents as a string, making sure it's not cached
@@ -77,12 +82,8 @@ class ThumbnailProvider: QLThumbnailProvider {
                             yamlTextView.backgroundColor = NSColor.white
 
                             // Write the YAML NSAttributedString into the view's text storage
-                            if let yamlTextStorage: NSTextStorage = yamlTextView.textStorage {
-                                yamlTextStorage.setAttributedString(yamlAttString)
-                            } else {
-                                // Just in case...
-                                return false
-                            }
+                            guard let yamlTextStorage: NSTextStorage = yamlTextView.textStorage else { return false }
+                            yamlTextStorage.setAttributedString(yamlAttString)
 
                             // Also generate text for the bottom-of-thumbnail file type tag,
                             // if the user has this set as a preference
@@ -105,9 +106,13 @@ class ThumbnailProvider: QLThumbnailProvider {
                                 tagTextView!.backgroundColor = NSColor.clear
 
                                 // Write the tag rendered as an NSAttributedString into the view's text storage
-                                guard let tagTextStorage: NSTextStorage = tagTextView!.textStorage else { return false }
-                                // NOTE We use 'request.maximumSize' for more accurate results
-                                tagTextStorage.setAttributedString(self.getTagString("YAML", request.maximumSize.width))
+                                if let tagTextStorage: NSTextStorage = tagTextView!.textStorage {
+                                    // NOTE We use 'request.maximumSize' for more accurate results
+                                    tagTextStorage.setAttributedString(self.getTagString("YAML", request.maximumSize.width))
+                                } else {
+                                    // Set this on error so we don't try and draw the tag later
+                                    tagFrame = nil
+                                }
                             }
 
                             // Generate the bitmap from the rendered markdown text view
@@ -117,7 +122,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                             yamlTextView.cacheDisplay(in: yamlFrame, to: imageRep)
 
                             // ...then the tag view
-                            if tagTextView != nil && tagFrame != nil {
+                            if tagFrame != nil && tagTextView != nil {
                                 tagTextView!.cacheDisplay(in: tagFrame!, to: imageRep)
                             }
 
