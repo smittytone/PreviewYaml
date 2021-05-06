@@ -32,9 +32,9 @@ class ThumbnailProvider: QLThumbnailProvider {
         
         // Get the preference for showing a tag and do it once so it 
         // only ever needs to be read from the property from this point on
-        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.previewmarkdown") {
+        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
             defaults.synchronize()
-            self.doShowTag = defaults.bool(forKey: "com-bps-previewmarkdown-do-show-tag")
+            self.doShowTag = defaults.bool(forKey: "com-bps-previewyaml-do-show-tag")
         }
     }
 
@@ -44,7 +44,7 @@ class ThumbnailProvider: QLThumbnailProvider {
     override func provideThumbnail(for request: QLFileThumbnailRequest, _ handler: @escaping (QLThumbnailReply?, Error?) -> Void) {
         
         // Run everything on the main thread
-        DispatchQueue.main.async {
+        //DispatchQueue.main.async {
             // Set the thumbnail frame
             // NOTE This is always square, with height matched to width, so adjust
             //      to a 3:4 aspect ratio to maintain the macOS standard doc icon width
@@ -141,7 +141,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                 // pool code to the handler
                 return success
             }, nil)
-        }
+        //}
     }
 
 
