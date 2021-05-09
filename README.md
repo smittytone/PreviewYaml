@@ -32,8 +32,6 @@ Certain YAML features — custom tags — are not as yet correctly rendered by 
 
 A YAML file containing `.nan`, `.inf` and/or `-.inf` values will prevent PreviewYAML from rendering the file. This is under investigation.
 
-Any YAML files showing generic icons will have suffered an initial rendering error. Changing the icon size often causes the thumbnail to appear correctly, but because Finder caches thumbnails, going back to the original icon size does not cause the icon to be redrawn. This issue is under investigation.
-
 ## Source Code ##
 
 This repository contains the primary source code for PreviewYaml. Certain graphical assets and data files are not included, but are required to build the application. To build PreviewYaml from scratch, you will need to examine the source code and add these files yourself.
