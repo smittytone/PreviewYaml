@@ -2,6 +2,8 @@
 
 App Extension-based macOS QuickLook previews and Finder thumbnails for [YAML](https://yaml.org) files.
 
+![PreviewYaml App Store QR code](qr-code.jpg)
+
 ## Installation and Usage ##
 
 Just run the host app once to register the extensions &mdash; you can quit the app as soon as it has launched. We recommend logging out of your Mac and back in again at this point. Now you can preview YAML documents using QuickLook (select an icon and hit Space), and Finder’s preview pane and **Info** panels.
@@ -38,7 +40,7 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 ## Release Notes
 
-* 1.0.0 *Unreleased*
+* 1.0.0 *10 May 2021*
     * Initial public release.
 
 ## Copyright and Licensing
