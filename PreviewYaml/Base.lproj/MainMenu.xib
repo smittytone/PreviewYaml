@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
-        <plugIn identifier="com.apple.WebKit2IBPlugin" version="17701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
+        <plugIn identifier="com.apple.WebKit2IBPlugin" version="18122"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -28,7 +28,8 @@
                 <outlet property="fontSizeSlider" destination="OfZ-N6-qKG" id="oDv-Or-Fni"/>
                 <outlet property="helpAppStoreRating" destination="jLd-Pw-5jM" id="P5Q-5y-ShE"/>
                 <outlet property="helpMenuAcknowledgments" destination="F5z-Fy-aVo" id="BcI-3U-6rw"/>
-                <outlet property="helpMenuPY" destination="Tys-ee-tfE" id="5Xq-V3-6Kx"/>
+                <outlet property="helpMenuOthersPreviewMarkdown" destination="a5a-JN-xae" id="efo-wb-Yel"/>
+                <outlet property="helpMenuPreviewYaml" destination="Tys-ee-tfE" id="tIC-su-fGU"/>
                 <outlet property="helpMenuYaml" destination="HJD-GL-x7D" id="iqf-E5-c8s"/>
                 <outlet property="preferencesWindow" destination="jjd-uj-Puq" id="1ud-bv-mbH"/>
                 <outlet property="reportWindow" destination="nk4-l2-g5W" id="SNf-z1-JQ2"/>
@@ -135,6 +136,19 @@
                                 <connections>
                                     <action selector="doShowWhatsNew:" target="Voe-Tx-rLC" id="kLX-aN-DbZ"/>
                                 </connections>
+                            </menuItem>
+                            <menuItem title="Other Preview Apps" id="taQ-Jz-Hel">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" id="5ad-EI-BC8">
+                                    <items>
+                                        <menuItem title="PreviewMarkdown" id="a5a-JN-xae">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="doShowSitesWithSender:" target="Voe-Tx-rLC" id="P21-Vm-BR5"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="YBw-sx-eD7"/>
                             <menuItem title="Report a Bug..." id="9jb-nj-WtE">

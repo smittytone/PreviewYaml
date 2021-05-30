@@ -20,10 +20,12 @@ class AppDelegate: NSObject,
 
     // MARK:- Class UI Properies
     // Menu Items
-    @IBOutlet var helpMenuPY: NSMenuItem!
+    @IBOutlet var helpMenuPreviewYaml: NSMenuItem!
     @IBOutlet var helpMenuAcknowledgments: NSMenuItem!
     @IBOutlet var helpAppStoreRating: NSMenuItem!
     @IBOutlet var helpMenuYaml: NSMenuItem!
+    // FROM 1.0.1
+    @IBOutlet var helpMenuOthersPreviewMarkdown: NSMenuItem!
     
     // Panel Items
     @IBOutlet var versionLabel: NSTextField!
@@ -133,8 +135,10 @@ class AppDelegate: NSObject,
             path = PVY_SECRETS.APP_STORE
         } else if item == self.helpMenuYaml {
             path = "https://github.com/behrang/YamlSwift"
-        } else if item == self.helpMenuPY {
+        } else if item == self.helpMenuPreviewYaml {
             path += "#how-to-use-previewyaml"
+        } else if item == self.helpMenuOthersPreviewMarkdown {
+            path = "https://smittytone.net/previewmarkdown/index.html"
         }
         
         // Open the selected website
