@@ -157,7 +157,7 @@
                                     <action selector="doShowReportWindowWithSender:" target="Voe-Tx-rLC" id="NRk-bJ-ymx"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Rate this App..." enabled="NO" id="jLd-Pw-5jM">
+                            <menuItem title="Rate this App..." id="jLd-Pw-5jM">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="doShowSitesWithSender:" target="Voe-Tx-rLC" id="Nqd-Nm-YPb"/>
