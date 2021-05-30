@@ -1,4 +1,4 @@
-# PreviewYaml 1.0.0
+# PreviewYaml 1.0.1
 
 App Extension-based macOS QuickLook previews and Finder thumbnails for [YAML](https://yaml.org) files.
 
@@ -40,6 +40,8 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 ## Release Notes
 
+* 1.0.1 *Unreleased*
+    * Add links to other PreviewApps.
 * 1.0.0 *10 May 2021*
     * Initial public release.
 
