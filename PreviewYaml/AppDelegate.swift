@@ -132,7 +132,7 @@ class AppDelegate: NSObject,
         if item == self.helpMenuAcknowledgments {
             path += "#acknowledgements"
         } else if item == self.helpAppStoreRating {
-            path = PVY_SECRETS.APP_STORE
+            path = PVY_SECRETS.APP_STORE + "?action=write-review"
         } else if item == self.helpMenuYaml {
             path = "https://github.com/behrang/YamlSwift"
         } else if item == self.helpMenuPreviewYaml {
