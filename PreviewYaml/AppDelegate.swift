@@ -57,9 +57,9 @@ class AppDelegate: NSObject,
     // MARK:- Private Properies
     private var feedbackTask: URLSessionTask? = nil
     private var whatsNewNav: WKNavigation? = nil
-    private var previewFontSize: CGFloat = 16.0
-    private var previewCodeColour: Int = 1
-    private var previewCodeFont: Int = 0
+    private var previewFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+    private var previewCodeColour: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
+    private var previewCodeFont: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
     private var previewIndentDepth: Int = BUFFOON_CONSTANTS.YAML_INDENT
     private var doShowLightBackground: Bool = false
     private var doShowTag: Bool = false

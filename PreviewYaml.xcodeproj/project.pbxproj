@@ -188,8 +188,8 @@
 		3BB64D8726320064003CD14D /* PreviewYaml */ = {
 			isa = PBXGroup;
 			children = (
-				3BB64E112632023C003CD14D /* Constants.swift */,
 				3BB64E1A2632033F003CD14D /* Secrets.swift */,
+				3BB64E112632023C003CD14D /* Constants.swift */,
 				3BB64D8826320064003CD14D /* AppDelegate.swift */,
 				3BB64D8A26320065003CD14D /* Assets.xcassets */,
 				3B21718826344E88000C5AF6 /* new */,
