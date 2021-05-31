@@ -66,9 +66,12 @@ class AppDelegate: NSObject,
     private var doShowRawYaml: Bool = false
     private var doIndentScalars: Bool = false
     private var localYamlUTI: String = "N/A"
-    private var appSuiteName: String = MNU_SECRETS.PID + ".suite.preview-yaml"
-    
-    
+    private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
+
+    // FROM 1.0.1
+    private var feedbackPath: String = MNU_SECRETS.ADDRESS.A
+
+
     // MARK:- Class Lifecycle Functions
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -126,19 +129,19 @@ class AppDelegate: NSObject,
         
         // Open the websites for contributors, help and suc
         let item: NSMenuItem = sender as! NSMenuItem
-        var path: String = "https://smittytone.net/previewyaml/index.html"
+        var path: String = BUFFOON_CONSTANTS.URL_MAIN
         
         // Depending on the menu selected, set the load path
         if item == self.helpMenuAcknowledgments {
             path += "#acknowledgements"
         } else if item == self.helpAppStoreRating {
-            path = PVY_SECRETS.APP_STORE + "?action=write-review"
+            path = BUFFOON_CONSTANTS.APP_STORE + "?action=write-review"
         } else if item == self.helpMenuYaml {
             path = "https://github.com/behrang/YamlSwift"
         } else if item == self.helpMenuPreviewYaml {
             path += "#how-to-use-previewyaml"
         } else if item == self.helpMenuOthersPreviewMarkdown {
-            path = "https://smittytone.net/previewmarkdown/index.html"
+            path = "https://apps.apple.com/us/app/previewmarkdown/id1492280469"
         }
         
         // Open the selected website
@@ -216,6 +219,7 @@ class AppDelegate: NSObject,
         
         // First get the data we need to build the user agent string
         let userAgent: String = getUserAgentForFeedback()
+        let endPoint: String = MNU_SECRETS.ADDRESS.B
         
         // Get the date as a string
         let dateString: String = getDateForFeedback()
@@ -237,7 +241,7 @@ class AppDelegate: NSObject,
         dict.setObject(true, forKey: NSString.init(string: "mrkdwn"))
         
         // Make and return the HTTPS request for sending
-        if let url: URL = URL.init(string: MNU_SECRETS.ADDRESS.A + MNU_SECRETS.ADDRESS.B) {
+        if let url: URL = URL.init(string: self.feedbackPath + endPoint) {
             var request: URLRequest = URLRequest.init(url: url)
             request.httpMethod = "POST"
 

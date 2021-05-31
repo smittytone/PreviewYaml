@@ -50,4 +50,8 @@ struct BUFFOON_CONSTANTS {
     static let FONT_SIZE_OPTIONS: [CGFloat] = [10.0, 12.0, 14.0, 16.0, 18.0, 24.0, 28.0]
     
     static let YAML_INDENT                  = 2
+
+    static let URL_MAIN                     = "https://smittytone.net/previewyaml/index.html"
+    static let APP_STORE                    = "https://apps.apple.com/us/app/previewyaml/id1564574724"
+    static let SUITE_NAME                   = ".suite.preview-yaml"
 }

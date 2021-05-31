@@ -17,6 +17,9 @@ class ThumbnailProvider: QLThumbnailProvider {
     // NOTE May remove some or all of these later
     // public var reportError: NSError? = nil
     var doShowTag: Bool = true
+
+    // FROM 1.3.1
+    private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
     
     
     // MARK:- Lifecycle Required Functions
@@ -32,7 +35,7 @@ class ThumbnailProvider: QLThumbnailProvider {
         
         // Get the preference for showing a tag and do it once so it 
         // only ever needs to be read from the property from this point on
-        if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
+        if let defaults = UserDefaults(suiteName: self.appSuiteName) {
             defaults.synchronize()
             self.doShowTag = defaults.bool(forKey: "com-bps-previewyaml-do-show-tag")
         }
