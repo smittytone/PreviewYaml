@@ -7,10 +7,10 @@
  *  Copyright © 2021 Tony Smith. All rights reserved.
  */
 
+
 import Foundation
 import Yaml
 import AppKit
-
 
 
 // Use defaults for some user-selectable values
@@ -43,7 +43,7 @@ private var hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
 private var newLine: NSAttributedString = NSAttributedString.init(string: "\n", attributes: valAtts)
 
 
-// MARK: Primary Function
+// MARK:- Primary Function
 
 func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAttributedString {
 
@@ -104,7 +104,7 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
 }
 
 
-// MARK: Yaml Functions
+// MARK:- Yaml Functions
 
 func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedString? {
     
@@ -263,11 +263,11 @@ func getIndentedString(_ baseString: String, _ indent: Int) -> NSAttributedStrin
 }
 
 
-// MARK: Formatting Functions
+// MARK:- Formatting Functions
 
 func setBaseValues(_ isThumbnail: Bool) {
 
-    // Set common base style values for the markdown render
+    // Set common base style values for the YAML render
     // NOTE This should now be called only once
 
     // The suite name is the app group name, set in each extension's entitlements, and the host app's
@@ -351,6 +351,8 @@ func getColour(_ index: Int) -> NSColor {
     }
 }
     
+
+// MARK:- Misc Functions
 
 func setError(_ code: Int) -> NSError {
     

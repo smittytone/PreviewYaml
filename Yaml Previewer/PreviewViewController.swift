@@ -6,6 +6,7 @@
  *  Copyright © 2021 Tony Smith. All rights reserved.
  */
 
+
 import Cocoa
 import Quartz
 
@@ -13,11 +14,14 @@ import Quartz
 class PreviewViewController: NSViewController,
                              QLPreviewingController {
     
-    // MARK:- Class Properties
+    // MARK:- Class UI Properties
 
     @IBOutlet var renderTextView: NSTextView!
     @IBOutlet var renderTextScrollView: NSScrollView!
-
+    
+    
+    // MARK:- Public Properties
+    
     override var nibName: NSNib.Name? {
         return NSNib.Name("PreviewViewController")
     }
@@ -85,7 +89,7 @@ class PreviewViewController: NSViewController,
                     handler(nil)
                     return
                 } else {
-                    // We couldn't get the markdwn string so set an appropriate error to report back
+                    // We couldn't get the YAML string so set an appropriate error to report back
                     reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING)
                 }
             } catch {

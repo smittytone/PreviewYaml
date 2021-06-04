@@ -6,18 +6,22 @@
  *  Copyright © 2021 Tony Smith. All rights reserved.
  */
 
+
 import QuickLookThumbnailing
 import Cocoa
 
 
 class ThumbnailProvider: QLThumbnailProvider {
 
-    // MARK: Properties
+    // MARK: Public Properties
     
     // NOTE May remove some or all of these later
     // public var reportError: NSError? = nil
     var doShowTag: Bool = true
-
+    
+    
+    // MARK: Private Properties
+    
     // FROM 1.3.1
     private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
     
@@ -78,7 +82,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                                                                 width: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH,
                                                                 height: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.HEIGHT)
 
-                            // Instantiate an NSTextView to display the NSAttributedString render of the markdown
+                            // Instantiate an NSTextView to display the NSAttributedString render of the YAML
                             // Make sure it is not selectable, ie. not interactive
                             let yamlTextView: NSTextView = NSTextView.init(frame: yamlFrame)
                             yamlTextView.isSelectable = false
@@ -118,10 +122,10 @@ class ThumbnailProvider: QLThumbnailProvider {
                                 }
                             }
 
-                            // Generate the bitmap from the rendered markdown text view
+                            // Generate the bitmap from the rendered YAML text view
                             guard let imageRep: NSBitmapImageRep = yamlTextView.bitmapImageRepForCachingDisplay(in: yamlFrame) else { return false }
                             
-                            // Draw into the bitmap first the markdown view...
+                            // Draw into the bitmap first the YAML view...
                             yamlTextView.cacheDisplay(in: yamlFrame, to: imageRep)
 
                             // ...then the tag view
@@ -147,7 +151,9 @@ class ThumbnailProvider: QLThumbnailProvider {
         //}
     }
 
-
+    
+    // MARK:- Misc Functions
+    
     func getTagString(_ tag: String, _ width: CGFloat) -> NSAttributedString {
 
         // Set the text for the bottom-of-thumbnail file type tag
