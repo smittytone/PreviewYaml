@@ -47,9 +47,12 @@ private var newLine: NSAttributedString = NSAttributedString.init(string: "\n", 
 
 func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAttributedString {
 
-    // Use YamlSwift to render the input YAML as an NSAttributedString, which is returned.
-    // NOTE Set the font colour according to whether we're rendering a thumbail or a preview
-    //      (thumbnails always rendered black on white; previews may be the opposite [dark mode])
+    /*
+     * Use YamlSwift to render the input YAML as an NSAttributedString, which is returned.
+     *
+     * NOTE Set the font colour according to whether we're rendering a thumbail or a preview
+     *      (thumbnails always rendered black on white; previews may be the opposite [dark mode])
+     */
 
     // Set up the base string
     var renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "",
@@ -108,10 +111,12 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
 
 func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedString? {
     
-    // Render a supplied YAML sub-component ('part') to an NSAttributedString,
-    // indenting as required, and using a different text format for keys.
-    // This is called recursively as it drills down through YAML values.
-    // Returns nil on error
+    /*
+     * Render a supplied YAML sub-component ('part') to an NSAttributedString,
+     * indenting as required, and using a different text format for keys.
+     * This is called recursively as it drills down through YAML values.
+     * Returns nil on error
+     */
     
     // Set up the base string
     let returnString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: valAtts)
@@ -250,8 +255,10 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
 
 func getIndentedString(_ baseString: String, _ indent: Int) -> NSAttributedString {
     
-    // Return a space-prefix NSAttributedString where 'indent' specifies
-    // the number of spaces to add
+    /*
+     * Return a space-prefix NSAttributedString where 'indent' specifies
+     * the number of spaces to add at the start
+     */
     
     let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
     let spaces = "                                                     "
@@ -267,8 +274,11 @@ func getIndentedString(_ baseString: String, _ indent: Int) -> NSAttributedStrin
 
 func setBaseValues(_ isThumbnail: Bool) {
 
-    // Set common base style values for the YAML render
-    // NOTE This should now be called only once
+    /*
+     * Set common base style values for the YAML render
+     *
+     * NOTE This should now be called only once
+     */
 
     // The suite name is the app group name, set in each extension's entitlements, and the host app's
     if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
@@ -276,17 +286,18 @@ func setBaseValues(_ isThumbnail: Bool) {
         fontBaseSize = CGFloat(isThumbnail
                               ? defaults.float(forKey: "com-bps-previewyaml-thumb-font-size")
                               : defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
-        codeColourIndex = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
-        codeFontIndex = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
+        codeColourIndex       = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
+        codeFontIndex         = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
         doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
-        yamlIndent = isThumbnail ? 2 : defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
-        doShowRawYaml = defaults.bool(forKey: "com-bps-previewyaml-show-bad-yaml")
-        doIndentScalars = defaults.bool(forKey: "com-bps-previewyaml-do-indent-scalars")
+        yamlIndent            = isThumbnail ? 2 : defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
+        doShowRawYaml         = defaults.bool(forKey: "com-bps-previewyaml-show-bad-yaml")
+        doIndentScalars       = defaults.bool(forKey: "com-bps-previewyaml-do-indent-scalars")
     }
-
+    
     // Just in case the above block reads in zero values
     // NOTE The other valyes CAN be zero
-    if fontBaseSize < 1.0 || fontBaseSize > 28.0 {
+    if fontBaseSize < CGFloat(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[0]) ||
+        fontBaseSize > CGFloat(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS.count - 1]) {
         fontBaseSize = CGFloat(isThumbnail ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE : BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
     }
 
@@ -323,8 +334,10 @@ func setBaseValues(_ isThumbnail: Bool) {
 
 func getColour(_ index: Int) -> NSColor {
 
-    // Return the colour from the selection
-
+    /*
+     * Return the colour from the selection
+     */
+    
     switch index {
         case 0:
             return NSColor.systemPurple
@@ -356,7 +369,9 @@ func getColour(_ index: Int) -> NSColor {
 
 func setError(_ code: Int) -> NSError {
     
-    // NSError generation function
+    /*
+     * NSError generation function
+     */
     
     var errDesc: String
     
@@ -384,8 +399,10 @@ func setError(_ code: Int) -> NSError {
 
 func fixNan(_ yamlString: String) -> String {
     
-    // Attempt to trap and fix .NaN, -.INF and .INF,
-    // which give YamlSwift trouble
+    /*
+     * Attempt to trap and fix .NaN, -.INF and .INF,
+     * which give YamlSwift trouble
+     */
     
     let regexes = [#"-\.(inf|Inf|INF)+"#, #"\.(inf|Inf|INF)+"#, #"\.(nan|NaN|NAN)+"#]
     let unfixedlines = yamlString.components(separatedBy: CharacterSet.newlines)
