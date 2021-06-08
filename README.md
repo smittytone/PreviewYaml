@@ -42,6 +42,7 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 * 1.0.1 *Unreleased*
     * Add links to other PreviewApps.
+    * Stability improvements.
 * 1.0.0 *10 May 2021*
     * Initial public release.
 
