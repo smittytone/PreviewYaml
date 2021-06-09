@@ -22,7 +22,7 @@ class ThumbnailProvider: QLThumbnailProvider {
     
     // MARK: Private Properties
     
-    // FROM 1.3.1
+    // FROM 1.0.1
     private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
     
     
@@ -174,14 +174,24 @@ class ThumbnailProvider: QLThumbnailProvider {
         // Set the paragraph style we'll use -- just centred text
         let style: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
         style.alignment = .center
+        
+        // FROM 1.0.1
+        // Set the point size
+        var fontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.TAG_TEXT_SIZE)
+        let renderSize: NSSize = (tag as NSString).size(withAttributes: [.font: NSFont.systemFont(ofSize: fontSize)])
+        if renderSize.width > CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH) - 20 {
+            let ratio: CGFloat = CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH - 20) / renderSize.width
+            fontSize *= ratio;
+            if fontSize < CGFloat(BUFFOON_CONSTANTS.TAG_TEXT_MIN_SIZE) {
+                fontSize = CGFloat(BUFFOON_CONSTANTS.TAG_TEXT_MIN_SIZE)
+            }
+        }
 
         // Build the tag's string attributes
         let tagAtts: [NSAttributedString.Key: Any] = [
             .paragraphStyle: style as NSParagraphStyle,
-            .font: NSFont.systemFont(ofSize: 120.0),
-            .foregroundColor: (width < 128
-                                ? NSColor.init(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0)
-                                : NSColor.init(red: 0.5, green: 0.5, blue: 0.5, alpha: 1.0))
+            .font: NSFont.systemFont(ofSize: fontSize),
+            .foregroundColor: (NSColor.init(red: 0.00, green: 0.49, blue: 0.47, alpha: 1.0))
         ]
 
         // Return the attributed string built from the tag

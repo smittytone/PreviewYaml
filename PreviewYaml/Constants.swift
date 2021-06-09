@@ -51,7 +51,11 @@ struct BUFFOON_CONSTANTS {
     
     static let YAML_INDENT                  = 2
 
+    // FROM 1.0.1
     static let URL_MAIN                     = "https://smittytone.net/previewyaml/index.html"
     static let APP_STORE                    = "https://apps.apple.com/us/app/previewyaml/id1564574724"
     static let SUITE_NAME                   = ".suite.preview-yaml"
+    
+    static let TAG_TEXT_SIZE                = 180
+    static let TAG_TEXT_MIN_SIZE            = 118
 }
