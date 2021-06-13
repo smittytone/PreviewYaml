@@ -104,7 +104,8 @@ class ThumbnailProvider: QLThumbnailProvider {
                         
                         // Also generate text for the bottom-of-thumbnail file type tag,
                         // if the user has this set as a preference
-                        var tagTextView: NSTextView? = nil
+                        // FROM 1.3.1 -- implement tag as NSTextField label
+                        var tagTextField: NSTextField? = nil
                         var tagFrame: CGRect? = nil
 
                         if self.doShowTag {
@@ -114,6 +115,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                                                    width: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH,
                                                    height: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.TAG_HEIGHT)
 
+                            /*
                             // Instantiate an NSTextView to display the NSAttributedString render of the tag,
                             // this time with a clear background
                             // Make sure it is not selectable, ie. not interactive
@@ -132,6 +134,12 @@ class ThumbnailProvider: QLThumbnailProvider {
                                 // Set this on error so we don't try and draw the tag later
                                 tagFrame = nil
                             }
+                            */
+                            
+                            tagTextField = NSTextField.init(labelWithAttributedString: self.getTagString("YAML", request.maximumSize.width))
+                            tagTextField?.textColor = NSColor.init(red: 0.00, green: 0.49, blue: 0.47, alpha: 1.0)
+                            tagTextField?.alignment = .center
+                            tagTextField?.frame = tagFrame!
                         }
 
                         // Generate the bitmap from the rendered YAML text view
@@ -141,8 +149,8 @@ class ThumbnailProvider: QLThumbnailProvider {
                         yamlTextView.cacheDisplay(in: yamlFrame, to: imageRep)
 
                         // ...then the tag view
-                        if tagFrame != nil && tagTextView != nil {
-                            tagTextView!.cacheDisplay(in: tagFrame!, to: imageRep)
+                        if tagFrame != nil && tagTextField != nil {
+                            tagTextField!.cacheDisplay(in: tagFrame!, to: imageRep)
                         }
 
                         return imageRep.draw(in: thumbnailFrame)
@@ -191,7 +199,6 @@ class ThumbnailProvider: QLThumbnailProvider {
         let tagAtts: [NSAttributedString.Key: Any] = [
             .paragraphStyle: style as NSParagraphStyle,
             .font: NSFont.systemFont(ofSize: fontSize),
-            .foregroundColor: (NSColor.init(red: 0.00, green: 0.49, blue: 0.47, alpha: 1.0))
         ]
 
         // Return the attributed string built from the tag
