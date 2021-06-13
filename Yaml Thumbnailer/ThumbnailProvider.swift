@@ -137,9 +137,8 @@ class ThumbnailProvider: QLThumbnailProvider {
                             */
                             
                             tagTextField = NSTextField.init(labelWithAttributedString: self.getTagString("YAML", request.maximumSize.width))
-                            tagTextField?.textColor = NSColor.init(red: 0.00, green: 0.49, blue: 0.47, alpha: 1.0)
-                            tagTextField?.alignment = .center
-                            tagTextField?.frame = tagFrame!
+                            tagTextField!.alignment = .center
+                            tagTextField!.frame = tagFrame!
                         }
 
                         // Generate the bitmap from the rendered YAML text view
@@ -199,6 +198,7 @@ class ThumbnailProvider: QLThumbnailProvider {
         let tagAtts: [NSAttributedString.Key: Any] = [
             .paragraphStyle: style as NSParagraphStyle,
             .font: NSFont.systemFont(ofSize: fontSize),
+            .foregroundColor: NSColor.init(red: 0.00, green: 0.49, blue: 0.47, alpha: 1.0)
         ]
 
         // Return the attributed string built from the tag
