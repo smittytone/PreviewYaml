@@ -90,6 +90,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                                                             width: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH,
                                                             height: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.HEIGHT)
 
+                        /*
                         // Instantiate an NSTextView to display the NSAttributedString render of the YAML
                         // Make sure it is not selectable, ie. not interactive
                         let yamlTextView: NSTextView = NSTextView.init(frame: yamlFrame)
@@ -101,7 +102,14 @@ class ThumbnailProvider: QLThumbnailProvider {
                         yamlTextStorage.beginEditing()
                         yamlTextStorage.setAttributedString(yamlAttString)
                         yamlTextStorage.endEditing()
-                        
+                        */
+
+                        // FROM 1.0.1
+                        // Instantiate an NSTextField to display the NSAttributedString render of the YAML,
+                        // and extend the size of its frame
+                        let yamlTextField: NSTextField = NSTextField.init(labelWithAttributedString: yamlAttString)
+                        yamlTextField.frame = yamlFrame
+
                         // Also generate text for the bottom-of-thumbnail file type tag,
                         // if the user has this set as a preference
                         // FROM 1.3.1 -- implement tag as NSTextField label
@@ -135,17 +143,19 @@ class ThumbnailProvider: QLThumbnailProvider {
                                 tagFrame = nil
                             }
                             */
-                            
+
+                            // FROM 1.0.1
+                            // Instantiate an NSTextField to display the NSAttributedString render of the YAML,
+                            // and extend the size of its frame
                             tagTextField = NSTextField.init(labelWithAttributedString: self.getTagString("YAML", request.maximumSize.width))
-                            tagTextField!.alignment = .center
                             tagTextField!.frame = tagFrame!
                         }
 
                         // Generate the bitmap from the rendered YAML text view
-                        guard let imageRep: NSBitmapImageRep = yamlTextView.bitmapImageRepForCachingDisplay(in: yamlFrame) else { return false }
+                        guard let imageRep: NSBitmapImageRep = yamlTextField.bitmapImageRepForCachingDisplay(in: yamlFrame) else { return false }
                         
                         // Draw into the bitmap first the YAML view...
-                        yamlTextView.cacheDisplay(in: yamlFrame, to: imageRep)
+                        yamlTextField.cacheDisplay(in: yamlFrame, to: imageRep)
 
                         // ...then the tag view
                         if tagFrame != nil && tagTextField != nil {
@@ -182,22 +192,10 @@ class ThumbnailProvider: QLThumbnailProvider {
         let style: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
         style.alignment = .center
         
-        // FROM 1.0.1
-        // Set the point size
-        var fontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.TAG_TEXT_SIZE)
-        let renderSize: NSSize = (tag as NSString).size(withAttributes: [.font: NSFont.systemFont(ofSize: fontSize)])
-        if renderSize.width > CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH) - 20 {
-            let ratio: CGFloat = CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH - 20) / renderSize.width
-            fontSize *= ratio;
-            if fontSize < CGFloat(BUFFOON_CONSTANTS.TAG_TEXT_MIN_SIZE) {
-                fontSize = CGFloat(BUFFOON_CONSTANTS.TAG_TEXT_MIN_SIZE)
-            }
-        }
-
         // Build the tag's string attributes
         let tagAtts: [NSAttributedString.Key: Any] = [
             .paragraphStyle: style as NSParagraphStyle,
-            .font: NSFont.systemFont(ofSize: fontSize),
+            .font: NSFont.systemFont(ofSize: CGFloat(BUFFOON_CONSTANTS.TAG_TEXT_SIZE)),
             .foregroundColor: NSColor.init(red: 0.00, green: 0.49, blue: 0.47, alpha: 1.0)
         ]
 
