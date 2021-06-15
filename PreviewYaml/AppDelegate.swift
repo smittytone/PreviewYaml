@@ -10,6 +10,7 @@
 import Cocoa
 import CoreServices
 import WebKit
+import UniformTypeIdentifiers
 
 
 @main
@@ -683,8 +684,16 @@ final class AppDelegate: NSObject,
             
             do {
                 // Read back the UTI from the URL
-                if let uti = try sampleURL.resourceValues(forKeys: [.typeIdentifierKey]).typeIdentifier {
-                    localYamlUTI = uti
+                // FROM 1.0.1
+                // Use Big Sur's UTType API
+                if #available(macOS 11, *) {
+                    if let uti: UTType = try sampleURL.resourceValues(forKeys: [.contentTypeKey]).contentType {
+                        localYamlUTI = uti.identifier
+                    }
+                } else {
+                    if let uti: String = try sampleURL.resourceValues(forKeys: [.typeIdentifierKey]).typeIdentifier {
+                        localYamlUTI = uti
+                    }
                 }
             } catch {
                 // NOP
