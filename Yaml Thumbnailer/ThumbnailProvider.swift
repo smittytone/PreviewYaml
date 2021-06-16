@@ -14,36 +14,35 @@ import Cocoa
 class ThumbnailProvider: QLThumbnailProvider {
 
     // MARK: Public Properties
-    
-    // NOTE May remove some or all of these later
-    // public var reportError: NSError? = nil
+
+    // Add key required values to self
     var doShowTag: Bool = true
-    
-    
+
+
     // MARK: Private Properties
-    
+
     // FROM 1.0.1
     private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
-    
-    
+
+
     // MARK:- Lifecycle Required Functions
-    
+
     override init() {
-        
+
         /*
          * Override the init() function so that we can do crucial
          * setup in a thread-friendly way and avoid race conditions
          */
-        
+
         // Must call the super class because we don't know
         // what operations it performs
         super.init()
-        
+
         // Set the base values once per instantiation, not every
         // time a string is rendered (which risks a race condition)
         setBaseValues(true)
-        
-        // Get the preference for showing a tag and do it once so it 
+
+        // Get the preference for showing a tag and do it once so it
         // only ever needs to be read from the property from this point on
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
             defaults.synchronize()
@@ -51,15 +50,15 @@ class ThumbnailProvider: QLThumbnailProvider {
         }
     }
 
-    
+
     // MARK:- QLThumbnailProvider Required Functions
 
     override func provideThumbnail(for request: QLFileThumbnailRequest, _ handler: @escaping (QLThumbnailReply?, Error?) -> Void) {
-        
+
         /*
          * This is the main entry point for the macOS thumbnailing system
          */
-        
+
         // Set the thumbnail frame
         // NOTE This is always square, with height matched to width, so adjust
         //      to a 3:4 aspect ratio to maintain the macOS standard doc icon width
@@ -67,7 +66,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                                                 0.0,
                                                 CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ASPECT) * request.maximumSize.height,
                                                 request.maximumSize.height)
-        
+
         handler(QLThumbnailReply.init(contextSize: thumbnailFrame.size) { () -> Bool in
             // Place all the remaining code within the closure passed to 'handler()'
             let success = autoreleasepool { () -> Bool in
@@ -80,7 +79,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                         // as we're not going to read it again any time soon
                         let data: Data = try Data.init(contentsOf: request.fileURL, options: [.uncached])
                         guard let yamlFileString: String = String.init(data: data, encoding: .utf8) else { return false }
-                            
+
                         // Get the Attributed String
                         let yamlAttString: NSAttributedString = getAttributedString(yamlFileString, true)
 
@@ -153,7 +152,7 @@ class ThumbnailProvider: QLThumbnailProvider {
 
                         // Generate the bitmap from the rendered YAML text view
                         guard let imageRep: NSBitmapImageRep = yamlTextField.bitmapImageRepForCachingDisplay(in: yamlFrame) else { return false }
-                        
+
                         // Draw into the bitmap first the YAML view...
                         yamlTextField.cacheDisplay(in: yamlFrame, to: imageRep)
 
@@ -179,9 +178,9 @@ class ThumbnailProvider: QLThumbnailProvider {
         }, nil)
     }
 
-    
+
     // MARK:- Misc Functions
-    
+
     func getTagString(_ tag: String, _ width: CGFloat) -> NSAttributedString {
 
         /*
@@ -191,7 +190,7 @@ class ThumbnailProvider: QLThumbnailProvider {
         // Set the paragraph style we'll use -- just centred text
         let style: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
         style.alignment = .center
-        
+
         // Build the tag's string attributes
         let tagAtts: [NSAttributedString.Key: Any] = [
             .paragraphStyle: style as NSParagraphStyle,

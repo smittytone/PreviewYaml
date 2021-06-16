@@ -38,7 +38,8 @@ struct BUFFOON_CONSTANTS {
         static let WIDTH                    = 768
         static let HEIGHT                   = 1024
         static let ASPECT                   = 0.75
-        static let TAG_HEIGHT               = 214
+        static let TAG_HEIGHT               = 200
+        static let FONT_SIZE                = 130.0
     }
 
     static let BASE_PREVIEW_FONT_SIZE       = 16.0
@@ -48,14 +49,14 @@ struct BUFFOON_CONSTANTS {
     static let CODE_FONT_INDEX              = 2     // Helvetica
 
     static let FONT_SIZE_OPTIONS: [CGFloat] = [10.0, 12.0, 14.0, 16.0, 18.0, 24.0, 28.0]
-    
+
     static let YAML_INDENT                  = 2
 
     // FROM 1.0.1
     static let URL_MAIN                     = "https://smittytone.net/previewyaml/index.html"
     static let APP_STORE                    = "https://apps.apple.com/us/app/previewyaml/id1564574724"
     static let SUITE_NAME                   = ".suite.preview-yaml"
-    
+
     static let TAG_TEXT_SIZE                = 180
     static let TAG_TEXT_MIN_SIZE            = 118
 }
