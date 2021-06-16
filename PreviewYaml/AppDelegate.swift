@@ -143,7 +143,7 @@ final class AppDelegate: NSObject,
         } else if item == self.helpMenuPreviewYaml {
             path += "#how-to-use-previewyaml"
         } else if item == self.helpMenuOthersPreviewMarkdown {
-            path = "https://smittytone.net/previewmarkdown/index.html"
+            path = "https://apps.apple.com/us/app/previewmarkdown/id1492280469?ls=1"
         }
         
         // Open the selected website
