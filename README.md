@@ -40,7 +40,7 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 ## Release Notes
 
-* 1.0.1 *Unreleased*
+* 1.0.1 *18 June 2021*
     * Add links to other PreviewApps.
     * Support macOS 11 Big Sur’s UTType API.
     * Stability improvements.
