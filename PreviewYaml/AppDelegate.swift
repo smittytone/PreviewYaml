@@ -28,6 +28,8 @@ final class AppDelegate: NSObject,
     @IBOutlet var helpMenuYaml: NSMenuItem!
     // FROM 1.0.1
     @IBOutlet var helpMenuOthersPreviewMarkdown: NSMenuItem!
+    // FROM 1.0.2
+    @IBOutlet var helpMenuOthersPreviewCode: NSMenuItem!
     
     // Panel Items
     @IBOutlet var versionLabel: NSTextField!
@@ -144,6 +146,8 @@ final class AppDelegate: NSObject,
             path += "#how-to-use-previewyaml"
         } else if item == self.helpMenuOthersPreviewMarkdown {
             path = "https://apps.apple.com/us/app/previewmarkdown/id1492280469?ls=1"
+        } else if item == self.helpMenuOthersPreviewCode {
+            path = "https://apps.apple.com/us/app/previewcode/id1571797683?ls=1"
         }
         
         // Open the selected website

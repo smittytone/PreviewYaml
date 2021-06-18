@@ -28,6 +28,7 @@
                 <outlet property="fontSizeSlider" destination="OfZ-N6-qKG" id="oDv-Or-Fni"/>
                 <outlet property="helpAppStoreRating" destination="jLd-Pw-5jM" id="P5Q-5y-ShE"/>
                 <outlet property="helpMenuAcknowledgments" destination="F5z-Fy-aVo" id="BcI-3U-6rw"/>
+                <outlet property="helpMenuOthersPreviewCode" destination="wRu-mF-ECh" id="FUk-g8-FN8"/>
                 <outlet property="helpMenuOthersPreviewMarkdown" destination="a5a-JN-xae" id="efo-wb-Yel"/>
                 <outlet property="helpMenuPreviewYaml" destination="Tys-ee-tfE" id="tIC-su-fGU"/>
                 <outlet property="helpMenuYaml" destination="HJD-GL-x7D" id="iqf-E5-c8s"/>
@@ -141,6 +142,12 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" id="5ad-EI-BC8">
                                     <items>
+                                        <menuItem title="PreviewCode" id="wRu-mF-ECh">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="doShowSitesWithSender:" target="Voe-Tx-rLC" id="TmI-vI-uTH"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="PreviewMarkdown" id="a5a-JN-xae">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
