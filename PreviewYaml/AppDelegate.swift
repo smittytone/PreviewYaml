@@ -61,8 +61,8 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var whatsNewWebView: WKWebView!
 
     // MARK:- Private Properies
+    internal var whatsNewNav: WKNavigation? = nil
     private var feedbackTask: URLSessionTask? = nil
-    private var whatsNewNav: WKNavigation? = nil
     private var previewFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
     // private var previewCodeColour: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
     // private var previewCodeFont: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
