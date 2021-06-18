@@ -44,6 +44,7 @@ private var newLine: NSAttributedString = NSAttributedString.init(string: "\n", 
 
 // FROM 1.1.0
 private var fontBaseName: String = BUFFOON_CONSTANTS.DEFAULT_FONT
+private var codeColour: String = BUFFOON_CONSTANTS.CODE_COLOUR
 
 
 // MARK:- Primary Function
@@ -289,7 +290,7 @@ func setBaseValues(_ isThumbnail: Bool) {
         fontBaseSize = CGFloat(isThumbnail
                               ? defaults.float(forKey: "com-bps-previewyaml-thumb-font-size")
                               : defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
-        codeColourIndex       = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
+        //codeColourIndex       = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
         codeFontIndex         = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
         doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
         yamlIndent            = isThumbnail ? 2 : defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
@@ -298,6 +299,7 @@ func setBaseValues(_ isThumbnail: Bool) {
         
         // FROM 1.1.0
         fontBaseName          = defaults.string(forKey: "com-bps-previewyaml-base-font-name") ?? BUFFOON_CONSTANTS.DEFAULT_FONT
+        codeColour            = defaults.string(forKey: "com-bps-previewyaml-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR
     }
     
     // Just in case the above block reads in zero values
@@ -327,7 +329,7 @@ func setBaseValues(_ isThumbnail: Bool) {
     */
     
     keyAtts = [
-        .foregroundColor: getColour(codeColourIndex),
+        .foregroundColor: NSColor.hexToColour(codeColour), //getColour(codeColourIndex)
         .font: font
     ]
     

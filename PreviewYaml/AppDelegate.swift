@@ -53,6 +53,8 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var codeFontPopup: NSPopUpButton!
     @IBOutlet weak var codeColourPopup: NSPopUpButton!
     @IBOutlet weak var codeIndentPopup: NSPopUpButton!
+    // FROM 1.1.0
+    @IBOutlet weak var codeColorWell: NSColorWell!
 
     // What's New Sheet
     @IBOutlet weak var whatsNewWindow: NSWindow!
@@ -77,6 +79,7 @@ final class AppDelegate: NSObject,
 
     // FROM 1.1.0
     private var previewFontName: String = BUFFOON_CONSTANTS.DEFAULT_FONT
+    private var codeColour: String = BUFFOON_CONSTANTS.CODE_COLOUR
     
 
     // MARK:- Class Lifecycle Functions
@@ -286,7 +289,7 @@ final class AppDelegate: NSObject,
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
             self.previewFontSize = CGFloat(defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
             self.previewCodeColour = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
-            self.previewCodeFont = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
+            //self.previewCodeFont = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
             self.previewIndentDepth = defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
             self.doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
             self.doShowTag = defaults.bool(forKey: "com-bps-previewyaml-do-show-tag")
@@ -295,18 +298,21 @@ final class AppDelegate: NSObject,
             
             // FROM 1.1.0
             self.previewFontName = defaults.string(forKey: "com-bps-previewyaml-base-font-name") ?? BUFFOON_CONSTANTS.DEFAULT_FONT
+            self.codeColour = defaults.string(forKey: "com-bps-previewyaml-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR
         }
 
         // Get the menu item index from the stored value
         // NOTE The index is that of the list of available fonts (see 'Common.swift') so
         //      we need to convert this to an equivalent menu index because the menu also
         //      contains a separator and two title items
-        var fontIndex: Int = self.previewCodeFont + 1
-        if fontIndex > 7 { fontIndex += 2 }
-        
         let index: Int = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS.lastIndex(of: self.previewFontSize) ?? 3
         self.fontSizeSlider.floatValue = Float(index)
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
+        
+        /* REMOVE IN 1.1.0
+        var fontIndex: Int = self.previewCodeFont + 1
+        if fontIndex > 7 { fontIndex += 2 }
+        */
         
         // FROM 1.1.0
         // Set the font name popup
@@ -351,6 +357,11 @@ final class AppDelegate: NSObject,
         self.codeIndentPopup.selectItem(at: indents.firstIndex(of: self.previewIndentDepth)!)
         self.codeColourPopup.selectItem(at: self.previewCodeColour)
         
+        // FROM 1.1.0
+        // Set the colour panel's initial view
+        NSColorPanel.setPickerMode(.RGB)
+        self.codeColorWell.color = NSColor.hexToColour(self.codeColour)
+        
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
     }
@@ -368,7 +379,14 @@ final class AppDelegate: NSObject,
     @IBAction private func doClosePreferences(sender: Any) {
 
         // Close the 'Preferences' sheet
-
+        
+        // FROM 1.1.0
+        // Close the colour selection panel if it's open
+        if self.codeColorWell.isActive {
+            NSColorPanel.shared.close()
+            self.codeColorWell.deactivate()
+        }
+        
         self.window.endSheet(self.preferencesWindow)
     }
 
@@ -383,6 +401,14 @@ final class AppDelegate: NSObject,
                                   forKey: "com-bps-previewyaml-code-colour-index")
             }
             
+            let newColour: String = self.codeColorWell.color.hexString
+            if newColour != self.codeColour {
+                self.codeColour = newColour
+                defaults.setValue(newColour,
+                                  forKey: "com-bps-previewyaml-code-colour-hex")
+            }
+            
+            /* REMOVE IN 1.1.0
             // Decode the font menu index value into a font list index
             var fontIndex: Int = self.codeFontPopup.indexOfSelectedItem - 1
             if fontIndex > 6 { fontIndex -= 2 }
@@ -390,6 +416,7 @@ final class AppDelegate: NSObject,
                 defaults.setValue(fontIndex,
                                   forKey: "com-bps-previewyaml-code-font-index")
             }
+            */
             
             let newValue: CGFloat = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[Int(self.fontSizeSlider.floatValue)]
             if newValue != self.previewFontSize {
@@ -443,6 +470,13 @@ final class AppDelegate: NSObject,
 
             // Sync any changes
             defaults.synchronize()
+        }
+        
+        // FROM 1.1.0
+        // Close the colour selection panel if it's open
+        if self.codeColorWell.isActive {
+            NSColorPanel.shared.close()
+            self.codeColorWell.deactivate()
         }
 
         // Remove the sheet now we have the data
@@ -650,12 +684,20 @@ final class AppDelegate: NSObject,
                                   forKey: "com-bps-previewyaml-thumb-font-size")
             }
             
+            
             // Colour of code blocks in the preview, stored as in integer array index
             // Default: 0 (purple)
             let codeColourDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-code-colour-index")
             if codeColourDefault == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR_INDEX,
                                   forKey: "com-bps-previewyaml-code-colour-index")
+            }
+            
+            
+            let codeColourDefault2: Any? = defaults.object(forKey: "com-bps-previewyaml-code-colour-hex")
+            if codeColourDefault2 == nil {
+                defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR,
+                                  forKey: "com-bps-previewyaml-code-colour-hex")
             }
             
             /*
@@ -804,8 +846,4 @@ final class AppDelegate: NSObject,
         return "\(app)/\(version)-\(build) (Mac macOS \(sysVer.majorVersion).\(sysVer.minorVersion).\(sysVer.patchVersion))"
     }
 
-
-
-
 }
-

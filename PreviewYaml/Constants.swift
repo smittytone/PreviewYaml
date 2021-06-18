@@ -62,4 +62,5 @@ struct BUFFOON_CONSTANTS {
     
     // FROM 1.1.0
     static let DEFAULT_FONT                 = "Courier"
+    static let CODE_COLOUR                  = "007D78FF"
 }
