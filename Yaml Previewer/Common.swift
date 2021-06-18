@@ -30,6 +30,7 @@ private var fontBaseSize: CGFloat       = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW
 // FROM 1.1.0
 private var fontBaseName: String        = BUFFOON_CONSTANTS.DEFAULT_FONT
 private var codeColour: String          = BUFFOON_CONSTANTS.CODE_COLOUR
+private var appSuiteName: String        = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
 
 // YAML string attributes...
 private var keyAtts: [NSAttributedString.Key: Any] = [
@@ -49,16 +50,19 @@ private var hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
 private var newLine: NSAttributedString = NSAttributedString.init(string: "\n", attributes: valAtts)
 
 
-// MARK:- Primary Function
+// MARK:- The Primary Function
+
+/**
+ Use YamlSwift to render the input YAML as an NSAttributedString.
+
+ - Parameters:
+    - yamlFileString: The raw YAML code.
+    - isThumbnail:    Are we rendering a thumbnail (`true`) or a preview (`false`).
+
+ - Returns: The rendered source as an NSAttributedString.
+ */
 
 func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAttributedString {
-
-    /*
-     * Use YamlSwift to render the input YAML as an NSAttributedString, which is returned.
-     *
-     * NOTE Set the font colour according to whether we're rendering a thumbail or a preview
-     *      (thumbnails always rendered black on white; previews may be the opposite [dark mode])
-     */
 
     // Set up the base string
     var renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "",
@@ -115,14 +119,19 @@ func getAttributedString(_ yamlFileString: String, _ isThumbnail: Bool) -> NSAtt
 
 // MARK:- Yaml Functions
 
+/**
+ Render a supplied YAML sub-component ('part') to an NSAttributedString.
+
+ Indents the value as required.
+
+ - Parameters:
+    - part:   A partial Yaml object.
+    - indent: The number of indent spaces to add.
+    - isKey:  Is the Yaml part a key?
+
+ - Returns: The rendered string as an NSAttributedString, or nil on error.
+ */
 func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedString? {
-    
-    /*
-     * Render a supplied YAML sub-component ('part') to an NSAttributedString,
-     * indenting as required, and using a different text format for keys.
-     * This is called recursively as it drills down through YAML values.
-     * Returns nil on error
-     */
     
     // Set up the base string
     let returnString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: valAtts)
@@ -220,7 +229,16 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
         }
     case .string:
         if let keyOrValue = part.string {
-            returnString.append(getIndentedString(keyOrValue, indent))
+            let parts: [String] = keyOrValue.components(separatedBy: "\n")
+            if parts.count > 2 {
+                for i in 0..<parts.count {
+                    let part: String = parts[i]
+                    returnString.append(getIndentedString(part + (i < parts.count - 2 ? "\n" : ""), indent))
+                }
+            } else {
+                returnString.append(getIndentedString(keyOrValue, indent))
+            }
+
             returnString.setAttributes((isKey ? keyAtts : valAtts),
                                        range: NSMakeRange(0, returnString.length))
             returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: valAtts) : newLine)
@@ -258,13 +276,16 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
     return nil
 }
 
+/**
+ Return a space-prefix NSAttributedString.
 
+ - Parameters:
+    - baseString: The string to be indented.
+    - indent:     The number of indent spaces to add.
+
+ - Returns: The indented string as an NSAttributedString.
+ */
 func getIndentedString(_ baseString: String, _ indent: Int) -> NSAttributedString {
-    
-    /*
-     * Return a space-prefix NSAttributedString where 'indent' specifies
-     * the number of spaces to add at the start
-     */
     
     let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
     let spaces = "                                                     "
@@ -278,16 +299,19 @@ func getIndentedString(_ baseString: String, _ indent: Int) -> NSAttributedStrin
 
 // MARK:- Formatting Functions
 
+/**
+ Set common base style values for the source code render.
+
+ **NOTE** This should now be called only ONCE, before the code is rendered
+          to avoid threading race conditions.
+
+ - Parameters:
+    - isThumbnail:    Are we rendering a thumbnail (`true`) or a preview (`false`).
+ */
 func setBaseValues(_ isThumbnail: Bool) {
 
-    /*
-     * Set common base style values for the YAML render
-     *
-     * NOTE This should now be called only once
-     */
-
     // The suite name is the app group name, set in each extension's entitlements, and the host app's
-    if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
+    if let defaults = UserDefaults(suiteName: appSuiteName) {
         defaults.synchronize()
         //codeColourIndex       = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
         //codeFontIndex         = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
@@ -388,11 +412,17 @@ func getColour(_ index: Int) -> NSColor {
 
 // MARK:- Misc Functions
 
+/**
+ Generate an NSError for an internal error, specified by its code.
+
+ Codes are listed in `Constants.swift`
+
+ - Parameters:
+    - code: The internal error code.
+
+ - Returns: The described error as an NSError.
+ */
 func setError(_ code: Int) -> NSError {
-    
-    /*
-     * NSError generation function
-     */
     
     var errDesc: String
     
@@ -418,12 +448,15 @@ func setError(_ code: Int) -> NSError {
 
 // MARK: - EXPERIMENTAL
 
+/**
+ Attempt to trap and fix .NaN, -.INF and .INF, which give YamlSwift trouble.
+
+ - Parameters:
+    - yamlString: The YAML file contents.
+
+ - Returns: The corrected YAML content.
+ */
 func fixNan(_ yamlString: String) -> String {
-    
-    /*
-     * Attempt to trap and fix .NaN, -.INF and .INF,
-     * which give YamlSwift trouble
-     */
     
     let regexes = [#"-\.(inf|Inf|INF)+"#, #"\.(inf|Inf|INF)+"#, #"\.(nan|NaN|NAN)+"#]
     let unfixedlines = yamlString.components(separatedBy: CharacterSet.newlines)
