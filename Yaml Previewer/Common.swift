@@ -14,20 +14,26 @@ import AppKit
 
 
 // Use defaults for some user-selectable values
-private var codeColourIndex: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
+/* REMOVE IN 1.1.0
 private var codeFontIndex: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
-private var fontBaseSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
-private var yamlIndent: Int = BUFFOON_CONSTANTS.YAML_INDENT
-private var doShowLightBackground: Bool = false
-private var doShowRawYaml: Bool = false
-private var doIndentScalars: Bool = false
+private var codeColourIndex: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
 private let codeFonts: [String] = ["Helvetica", "ArialMT", "Helvetica", "HelveticaNeue",
                                    "LucidaGrande", "Times-Roman", "Verdana", "AndaleMono",
                                    "Courier", "Menlo-Regular", "Monaco", "PTMono-Regular"]
+*/
+private var yamlIndent: Int             = BUFFOON_CONSTANTS.YAML_INDENT
+private var doShowLightBackground: Bool = false
+private var doShowRawYaml: Bool         = false
+private var doIndentScalars: Bool       = false
+private var fontBaseSize: CGFloat       = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+
+// FROM 1.1.0
+private var fontBaseName: String        = BUFFOON_CONSTANTS.DEFAULT_FONT
+private var codeColour: String          = BUFFOON_CONSTANTS.CODE_COLOUR
 
 // YAML string attributes...
 private var keyAtts: [NSAttributedString.Key: Any] = [
-    .foregroundColor: getColour(codeColourIndex),
+    .foregroundColor: NSColor.hexToColour(codeColour),
     .font: NSFont.systemFont(ofSize: fontBaseSize)
 ]
 
@@ -41,10 +47,6 @@ private var hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
                                     attributes: [.strikethroughStyle: NSUnderlineStyle.patternDot.rawValue,
                                                  .strikethroughColor: NSColor.labelColor])
 private var newLine: NSAttributedString = NSAttributedString.init(string: "\n", attributes: valAtts)
-
-// FROM 1.1.0
-private var fontBaseName: String = BUFFOON_CONSTANTS.DEFAULT_FONT
-private var codeColour: String = BUFFOON_CONSTANTS.CODE_COLOUR
 
 
 // MARK:- Primary Function
@@ -287,15 +289,17 @@ func setBaseValues(_ isThumbnail: Bool) {
     // The suite name is the app group name, set in each extension's entitlements, and the host app's
     if let defaults = UserDefaults(suiteName: MNU_SECRETS.PID + ".suite.preview-yaml") {
         defaults.synchronize()
+        //codeColourIndex       = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
+        //codeFontIndex         = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
+        doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
+        doShowRawYaml         = defaults.bool(forKey: "com-bps-previewyaml-show-bad-yaml")
+        doIndentScalars       = defaults.bool(forKey: "com-bps-previewyaml-do-indent-scalars")
+        
+        yamlIndent            = isThumbnail ? 2 : defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
+        
         fontBaseSize = CGFloat(isThumbnail
                               ? defaults.float(forKey: "com-bps-previewyaml-thumb-font-size")
                               : defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
-        //codeColourIndex       = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
-        codeFontIndex         = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
-        doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
-        yamlIndent            = isThumbnail ? 2 : defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
-        doShowRawYaml         = defaults.bool(forKey: "com-bps-previewyaml-show-bad-yaml")
-        doIndentScalars       = defaults.bool(forKey: "com-bps-previewyaml-do-indent-scalars")
         
         // FROM 1.1.0
         fontBaseName          = defaults.string(forKey: "com-bps-previewyaml-base-font-name") ?? BUFFOON_CONSTANTS.DEFAULT_FONT
@@ -303,7 +307,7 @@ func setBaseValues(_ isThumbnail: Bool) {
     }
     
     // Just in case the above block reads in zero values
-    // NOTE The other valyes CAN be zero
+    // NOTE The other values CAN be zero
     if fontBaseSize < CGFloat(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[0]) ||
         fontBaseSize > CGFloat(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS.count - 1]) {
         fontBaseSize = CGFloat(isThumbnail ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE : BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
@@ -316,7 +320,7 @@ func setBaseValues(_ isThumbnail: Bool) {
     } else {
         font = NSFont.systemFont(ofSize: fontBaseSize)
     }
-    /*
+    /* REMOVE IN 1.1.0
     if codeFontIndex == 0 {
         font = NSFont.systemFont(ofSize: fontBaseSize)
     } else {
@@ -329,7 +333,7 @@ func setBaseValues(_ isThumbnail: Bool) {
     */
     
     keyAtts = [
-        .foregroundColor: NSColor.hexToColour(codeColour), //getColour(codeColourIndex)
+        .foregroundColor: NSColor.hexToColour(codeColour),
         .font: font
     ]
     
@@ -347,6 +351,7 @@ func setBaseValues(_ isThumbnail: Bool) {
 }
 
 
+/* REMOVE IN 1.1.0
 func getColour(_ index: Int) -> NSColor {
 
     /*
@@ -378,7 +383,8 @@ func getColour(_ index: Int) -> NSColor {
             return NSColor.systemGray
     }
 }
-    
+*/
+
 
 // MARK:- Misc Functions
 

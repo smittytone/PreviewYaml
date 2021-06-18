@@ -51,7 +51,7 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var doIndentScalarsCheckbox: NSButton!
     @IBOutlet weak var doShowRawYamlCheckbox: NSButton!
     @IBOutlet weak var codeFontPopup: NSPopUpButton!
-    @IBOutlet weak var codeColourPopup: NSPopUpButton!
+    //@IBOutlet weak var codeColourPopup: NSPopUpButton!
     @IBOutlet weak var codeIndentPopup: NSPopUpButton!
     // FROM 1.1.0
     @IBOutlet weak var codeColorWell: NSColorWell!
@@ -355,10 +355,10 @@ final class AppDelegate: NSObject,
         
         let indents: [Int] = [1, 2, 4, 8]
         self.codeIndentPopup.selectItem(at: indents.firstIndex(of: self.previewIndentDepth)!)
-        self.codeColourPopup.selectItem(at: self.previewCodeColour)
         
         // FROM 1.1.0
         // Set the colour panel's initial view
+        // self.codeColourPopup.selectItem(at: self.previewCodeColour)
         NSColorPanel.setPickerMode(.RGB)
         self.codeColorWell.color = NSColor.hexToColour(self.codeColour)
         
@@ -396,10 +396,12 @@ final class AppDelegate: NSObject,
         // Close the 'Preferences' sheet and save the settings, if they have changed
 
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
+            /* REMOVE IN 1.1.0
             if self.codeColourPopup.indexOfSelectedItem != self.previewCodeColour {
                 defaults.setValue(self.codeColourPopup.indexOfSelectedItem,
                                   forKey: "com-bps-previewyaml-code-colour-index")
             }
+            */
             
             let newColour: String = self.codeColorWell.color.hexString
             if newColour != self.codeColour {
@@ -684,23 +686,25 @@ final class AppDelegate: NSObject,
                                   forKey: "com-bps-previewyaml-thumb-font-size")
             }
             
-            
-            // Colour of code blocks in the preview, stored as in integer array index
+            /* REMOVE IN 1.1.0
             // Default: 0 (purple)
             let codeColourDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-code-colour-index")
             if codeColourDefault == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR_INDEX,
                                   forKey: "com-bps-previewyaml-code-colour-index")
             }
+            */
             
-            
-            let codeColourDefault2: Any? = defaults.object(forKey: "com-bps-previewyaml-code-colour-hex")
-            if codeColourDefault2 == nil {
+            // FROM 1.1.0
+            // Colour of code blocks in the preview, stored as in integer array index
+            // Default: #007D78FF
+            let codeColourDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-code-colour-hex")
+            if codeColourDefault == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR,
                                   forKey: "com-bps-previewyaml-code-colour-hex")
             }
             
-            /*
+            /* REMOVE IN 1.1.0
             // Font for code blocks in the preview, stored as in integer array index
             // Default: 0 (Andale Mono)
             let codeFontDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-code-font-index")
@@ -792,7 +796,7 @@ final class AppDelegate: NSObject,
             do {
                 // Read back the UTI from the URL
                 // FROM 1.0.1
-                // Use Big Sur's UTType API
+                // Use Big Sur's UTType API if available
                 if #available(macOS 11, *) {
                     if let uti: UTType = try sampleURL.resourceValues(forKeys: [.contentTypeKey]).contentType {
                         localYamlUTI = uti.identifier

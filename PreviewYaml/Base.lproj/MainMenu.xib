@@ -17,7 +17,6 @@
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="PreviewYaml" customModuleProvider="target">
             <connections>
                 <outlet property="codeColorWell" destination="c2F-Ul-2wK" id="OSY-YP-wpE"/>
-                <outlet property="codeColourPopup" destination="7a6-Mb-1dq" id="F0v-5e-7Xq"/>
                 <outlet property="codeFontPopup" destination="GS0-Os-jnX" id="K1D-1V-zvO"/>
                 <outlet property="codeIndentPopup" destination="fen-aP-loU" id="QQE-cg-uX4"/>
                 <outlet property="connectionProgress" destination="tAy-4n-Mlm" id="JrN-W5-JML"/>
@@ -203,8 +202,8 @@
             <value key="maxSize" type="size" width="610" height="432"/>
             <value key="minFullScreenContentSize" type="size" width="610" height="432"/>
             <value key="maxFullScreenContentSize" type="size" width="610" height="432"/>
-            <view key="contentView" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="613" height="432"/>
+            <view key="contentView" misplaced="YES" id="EiT-Mj-1SZ">
+                <rect key="frame" x="0.0" y="0.0" width="610" height="432"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gnK-6R-XxR">
@@ -463,50 +462,6 @@ DQ
                             <action selector="doSavePreferencesWithSender:" target="Voe-Tx-rLC" id="hOW-fE-aH9"/>
                         </connections>
                     </button>
-                    <popUpButton hidden="YES" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="7a6-Mb-1dq">
-                        <rect key="frame" x="287" y="219" width="103" height="25"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="96" id="0Gy-17-nd4"/>
-                            <constraint firstAttribute="height" constant="20" id="OpM-b4-fR7"/>
-                        </constraints>
-                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" imagePosition="only" alignment="left" lineBreakMode="truncatingTail" enabled="NO" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="Een-VR-pFk" id="1fQ-Vv-ame">
-                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
-                            <menu key="menu" id="Ynf-KS-9z2">
-                                <items>
-                                    <menuItem state="on" image="swatch_purple" id="Een-VR-pFk"/>
-                                    <menuItem image="swatch_blue" id="h3z-uP-LO1"/>
-                                    <menuItem image="swatch_red" id="Z7q-Mj-J8s">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                    <menuItem image="swatch_green" id="lFm-ue-zJj">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                    <menuItem image="swatch_orange" id="s7c-tO-PkA">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                    <menuItem image="swatch_pink" id="T3W-d8-Gkn">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                    <menuItem image="swatch_teal" id="l4T-8C-utk">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                    <menuItem image="swatch_brown" id="cEI-hh-d2R">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                    <menuItem image="swatch_yellow" id="VQc-lU-Z2g">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                    <menuItem image="swatch_indigo" id="78C-iN-Khe">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                    <menuItem image="swatch_grey" id="q22-gD-SV2">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                </items>
-                            </menu>
-                        </popUpButtonCell>
-                    </popUpButton>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="YAR-RZ-VG6">
                         <rect key="frame" x="18" y="225" width="266" height="16"/>
                         <constraints>
@@ -577,7 +532,7 @@ DQ
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="262" id="BJ8-fB-pr7"/>
                             <constraint firstAttribute="height" constant="16" id="tSs-tn-OHq"/>
                         </constraints>
-                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Preview font:" id="mDA-5G-Kv9">
+                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Preview monospace font:" id="mDA-5G-Kv9">
                             <font key="font" usesAppearanceFont="YES"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -586,8 +541,7 @@ DQ
                     <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fen-aP-loU">
                         <rect key="frame" x="287" y="189" width="78" height="25"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="71" id="4Rs-I2-S47"/>
-                            <constraint firstAttribute="height" constant="20" id="6WF-0T-BEy"/>
+                            <constraint firstAttribute="width" constant="71" id="bBf-kv-yfi"/>
                         </constraints>
                         <popUpButtonCell key="cell" type="push" title="1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="kfH-8G-ucs" id="qXL-EO-lAd">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -667,9 +621,12 @@ DQ
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c2F-Ul-2wK">
+                    <colorWell translatesAutoresizingMaskIntoConstraints="NO" id="c2F-Ul-2wK">
                         <rect key="frame" x="290" y="222" width="44" height="23"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="23" id="OLh-E5-CLC"/>
+                            <constraint firstAttribute="width" constant="44" id="rm9-df-SwA"/>
+                        </constraints>
                         <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </colorWell>
                 </subviews>
@@ -677,7 +634,7 @@ DQ
                     <constraint firstAttribute="bottom" secondItem="L3S-3t-ZLg" secondAttribute="bottom" constant="20" symbolic="YES" id="2mX-5U-b59"/>
                     <constraint firstAttribute="trailing" secondItem="E2f-Ly-G4Y" secondAttribute="trailing" constant="11" id="3He-cf-oRe"/>
                     <constraint firstItem="INC-SQ-xtR" firstAttribute="top" secondItem="Z9F-Y6-BVI" secondAttribute="bottom" constant="8" id="3kA-S7-lUz"/>
-                    <constraint firstItem="BoQ-JX-H8c" firstAttribute="top" secondItem="fen-aP-loU" secondAttribute="bottom" constant="18" id="5vZ-Ea-MYZ"/>
+                    <constraint firstItem="fen-aP-loU" firstAttribute="leading" secondItem="c2F-Ul-2wK" secondAttribute="leading" id="5fF-Li-sjD"/>
                     <constraint firstItem="Z9F-Y6-BVI" firstAttribute="leading" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="20" symbolic="YES" id="7sX-FZ-r3J"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="6d7-zI-kTO" secondAttribute="trailing" constant="20" symbolic="YES" id="AET-XM-Lvn"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="GS0-Os-jnX" secondAttribute="trailing" constant="20" symbolic="YES" id="AUS-9r-3Zv"/>
@@ -688,11 +645,13 @@ DQ
                     <constraint firstItem="6d7-zI-kTO" firstAttribute="leading" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="39" id="I9X-ua-Yuj"/>
                     <constraint firstAttribute="trailing" secondItem="INC-SQ-xtR" secondAttribute="trailing" constant="20" symbolic="YES" id="Ia3-BO-GBD"/>
                     <constraint firstItem="cLA-VO-hzN" firstAttribute="leading" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="20" symbolic="YES" id="Je0-Ki-KgN"/>
+                    <constraint firstItem="c2F-Ul-2wK" firstAttribute="leading" secondItem="YAR-RZ-VG6" secondAttribute="trailing" constant="8" symbolic="YES" id="Kje-8t-6Pg"/>
                     <constraint firstItem="GS0-Os-jnX" firstAttribute="top" secondItem="E2f-Ly-G4Y" secondAttribute="bottom" constant="8" id="NJY-JH-pgp"/>
+                    <constraint firstItem="fen-aP-loU" firstAttribute="centerY" secondItem="Sk6-Ra-IOr" secondAttribute="centerY" id="ORI-Lf-8Qp"/>
                     <constraint firstAttribute="trailing" secondItem="BoQ-JX-H8c" secondAttribute="trailing" constant="20" symbolic="YES" id="Od4-Oz-XMI"/>
                     <constraint firstAttribute="trailing" secondItem="6NP-d0-Kh9" secondAttribute="trailing" constant="20" symbolic="YES" id="Pkd-ij-0N9"/>
                     <constraint firstItem="6NP-d0-Kh9" firstAttribute="leading" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="20" symbolic="YES" id="Q4G-pI-Ztu"/>
-                    <constraint firstItem="fen-aP-loU" firstAttribute="top" secondItem="7a6-Mb-1dq" secondAttribute="bottom" constant="10" symbolic="YES" id="R7A-oe-kbH"/>
+                    <constraint firstItem="c2F-Ul-2wK" firstAttribute="top" secondItem="GS0-Os-jnX" secondAttribute="bottom" constant="8" symbolic="YES" id="QyI-eh-TeT"/>
                     <constraint firstAttribute="trailing" secondItem="L3S-3t-ZLg" secondAttribute="trailing" constant="20" symbolic="YES" id="Uew-8Y-RGR"/>
                     <constraint firstItem="YAR-RZ-VG6" firstAttribute="top" secondItem="Abc-Nd-4fL" secondAttribute="bottom" constant="14" id="UzV-Gj-4Db"/>
                     <constraint firstItem="Z9F-Y6-BVI" firstAttribute="top" secondItem="cLA-VO-hzN" secondAttribute="bottom" constant="6" symbolic="YES" id="XJN-8o-DMk"/>
@@ -702,15 +661,13 @@ DQ
                     <constraint firstItem="Abc-Nd-4fL" firstAttribute="leading" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="20" symbolic="YES" id="afP-8k-Ufl"/>
                     <constraint firstAttribute="trailing" secondItem="Z9F-Y6-BVI" secondAttribute="trailing" constant="20" symbolic="YES" id="bKX-oI-xjI"/>
                     <constraint firstItem="qir-zB-bPV" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="20" symbolic="YES" id="c6Y-9I-hpj"/>
-                    <constraint firstItem="fen-aP-loU" firstAttribute="leading" secondItem="Sk6-Ra-IOr" secondAttribute="trailing" constant="8" symbolic="YES" id="ckw-Wu-wVf"/>
-                    <constraint firstItem="7a6-Mb-1dq" firstAttribute="leading" secondItem="YAR-RZ-VG6" secondAttribute="trailing" constant="8" symbolic="YES" id="ctA-K9-fY5"/>
                     <constraint firstItem="OfZ-N6-qKG" firstAttribute="top" secondItem="6NP-d0-Kh9" secondAttribute="bottom" constant="8" symbolic="YES" id="dtO-sW-DLI"/>
                     <constraint firstItem="8hT-Js-gGr" firstAttribute="top" secondItem="OfZ-N6-qKG" secondAttribute="bottom" constant="10" id="dtc-h3-O61"/>
                     <constraint firstItem="BoQ-JX-H8c" firstAttribute="leading" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="20" symbolic="YES" id="elU-hV-BeE"/>
+                    <constraint firstItem="BoQ-JX-H8c" firstAttribute="top" secondItem="fen-aP-loU" secondAttribute="bottom" constant="18" id="fNm-od-EOP"/>
                     <constraint firstItem="2HA-Yj-cyf" firstAttribute="leading" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="20" symbolic="YES" id="gFe-Vk-dSj"/>
                     <constraint firstItem="Sk6-Ra-IOr" firstAttribute="leading" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="20" symbolic="YES" id="gHu-Mf-q2a"/>
                     <constraint firstItem="8hT-Js-gGr" firstAttribute="leading" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="20" symbolic="YES" id="giP-3H-bWQ"/>
-                    <constraint firstItem="7a6-Mb-1dq" firstAttribute="top" secondItem="GS0-Os-jnX" secondAttribute="bottom" constant="10" symbolic="YES" id="jtl-Ry-UvT"/>
                     <constraint firstAttribute="trailing" secondItem="2HA-Yj-cyf" secondAttribute="trailing" constant="20" symbolic="YES" id="lEL-yJ-gaY"/>
                     <constraint firstItem="Abc-Nd-4fL" firstAttribute="top" secondItem="E2f-Ly-G4Y" secondAttribute="bottom" constant="10" id="lg7-NQ-XRJ"/>
                     <constraint firstItem="YAR-RZ-VG6" firstAttribute="leading" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="20" symbolic="YES" id="mDf-xM-Bcf"/>
@@ -889,16 +846,5 @@ Gw
     </objects>
     <resources>
         <image name="app_logo" width="64" height="64"/>
-        <image name="swatch_blue" width="64" height="16"/>
-        <image name="swatch_brown" width="64" height="16"/>
-        <image name="swatch_green" width="64" height="16"/>
-        <image name="swatch_grey" width="64" height="16"/>
-        <image name="swatch_indigo" width="64" height="16"/>
-        <image name="swatch_orange" width="64" height="16"/>
-        <image name="swatch_pink" width="64" height="16"/>
-        <image name="swatch_purple" width="64" height="16"/>
-        <image name="swatch_red" width="64" height="16"/>
-        <image name="swatch_teal" width="64" height="16"/>
-        <image name="swatch_yellow" width="64" height="16"/>
     </resources>
 </document>
