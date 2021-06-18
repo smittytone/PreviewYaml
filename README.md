@@ -1,4 +1,4 @@
-# PreviewYaml 1.0.2
+# PreviewYaml 1.1.0
 
 App Extension-based macOS QuickLook previews and Finder thumbnails for [YAML](https://yaml.org) files.
 
@@ -14,10 +14,10 @@ You can disable and re-enable the Yaml Previewer and Yaml Thumbnailer extensions
 
 You can alter some of the key elements of the preview by using the **Preferences** panel:
 
-- The colour of keys.
-- The preview’s font.
-- The preview’s text size.
-- Level of indentation.
+- The colour of keys, selected using the macOS colour picker.
+- The preview’s font, which you can now choose from all the monospace fonts installed on your system.
+- The preview’s text size, from 10pt to 28pt.
+- Level of indentation: 1, 2, 4 or 8 spaces.
 - Whether preview should be display white-on-black even in macOS’ Dark Mode.
 
 Changing these settings will affect previews immediately, but may not affect thumbnails until you open a folder that has not been previously opened in the current login session, you edit a thumbnail, or you log back into your Mac account.
@@ -40,8 +40,10 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 ## Release Notes
 
-* 1.0.2 *Unreleased*
-    * Better scaling for retina displays.
+* 1.1.0 *Unreleased*
+    * Allow any installed monospace font to be selected.
+    * Allow any colour to be chosen using macOS’ colour picker.
+    * Link to [PreviewCode](https://smittytone.net/previewcode/index.html).
 * 1.0.1 *18 June 2021*
     * Add links to other PreviewApps.
     * Support macOS 11 Big Sur’s UTType API.
