@@ -321,27 +321,29 @@ final class AppDelegate: NSObject,
         self.codeFontPopup.removeAllItems()
         if let fonts: [String] = fm.availableFontNames(with: .fixedPitchFontMask) {
             for font in fonts {
-                if !font.hasPrefix(".") {
-                    // Set the font's display name...
-                    var fontDisplayName: String? = nil
-                    if let namedFont: NSFont = NSFont.init(name: font, size: self.previewFontSize) {
-                        fontDisplayName = namedFont.displayName
-                    }
+                if font.hasPrefix(".") || font == "AppleColorEmoji" || (font as NSString).hasPrefix("AppleBraille") {
+                    continue
+                }
+                
+                // Set the font's display name...
+                var fontDisplayName: String? = nil
+                if let namedFont: NSFont = NSFont.init(name: font, size: self.previewFontSize) {
+                    fontDisplayName = namedFont.displayName
+                }
+                
+                if fontDisplayName == nil {
+                    fontDisplayName = font.replacingOccurrences(of: "-", with: " ")
+                }
+                
+                // ...and add it to the popup
+                self.codeFontPopup.addItem(withTitle: fontDisplayName!)
+                
+                // Retain the font's PostScript name for use later
+                if let addedMenuItem: NSMenuItem = self.codeFontPopup.item(at: self.codeFontPopup.itemArray.count - 1) {
+                    addedMenuItem.representedObject = font
                     
-                    if fontDisplayName == nil {
-                        fontDisplayName = font.replacingOccurrences(of: "-", with: " ")
-                    }
-                    
-                    // ...and add it to the popup
-                    self.codeFontPopup.addItem(withTitle: fontDisplayName!)
-                    
-                    // Retain the font's PostScript name for use later
-                    if let addedMenuItem: NSMenuItem = self.codeFontPopup.item(at: self.codeFontPopup.itemArray.count - 1) {
-                        addedMenuItem.representedObject = font
-                        
-                        if font == self.previewFontName {
-                            self.codeFontPopup.select(addedMenuItem)
-                        }
+                    if font == self.previewFontName {
+                        self.codeFontPopup.select(addedMenuItem)
                     }
                 }
             }
