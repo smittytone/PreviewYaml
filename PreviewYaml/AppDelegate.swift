@@ -63,7 +63,7 @@ final class AppDelegate: NSObject,
     private var whatsNewNav: WKNavigation? = nil
     private var previewFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
     private var previewCodeColour: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
-    private var previewCodeFont: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
+    // private var previewCodeFont: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
     private var previewIndentDepth: Int = BUFFOON_CONSTANTS.YAML_INDENT
     private var doShowLightBackground: Bool = false
     private var doShowTag: Bool = false
@@ -75,6 +75,9 @@ final class AppDelegate: NSObject,
     // FROM 1.0.1
     private var feedbackPath: String = MNU_SECRETS.ADDRESS.A
 
+    // FROM 1.1.0
+    private var previewFontName: String = BUFFOON_CONSTANTS.DEFAULT_FONT
+    
 
     // MARK:- Class Lifecycle Functions
 
@@ -289,6 +292,9 @@ final class AppDelegate: NSObject,
             self.doShowTag = defaults.bool(forKey: "com-bps-previewyaml-do-show-tag")
             self.doShowRawYaml = defaults.bool(forKey: "com-bps-previewyaml-show-bad-yaml")
             self.doIndentScalars = defaults.bool(forKey: "com-bps-previewyaml-do-indent-scalars")
+            
+            // FROM 1.1.0
+            self.previewFontName = defaults.string(forKey: "com-bps-previewyaml-base-font-name") ?? BUFFOON_CONSTANTS.DEFAULT_FONT
         }
 
         // Get the menu item index from the stored value
@@ -299,11 +305,43 @@ final class AppDelegate: NSObject,
         if fontIndex > 7 { fontIndex += 2 }
         
         let index: Int = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS.lastIndex(of: self.previewFontSize) ?? 3
-        
         self.fontSizeSlider.floatValue = Float(index)
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
-        self.codeColourPopup.selectItem(at: self.previewCodeColour)
-        self.codeFontPopup.selectItem(at: fontIndex)
+        
+        // FROM 1.1.0
+        // Set the font name popup
+        // List the current system's monospace fonts
+        //self.codeFontPopup.selectItem(at: fontIndex)
+        let fm: NSFontManager = NSFontManager.shared
+        self.codeFontPopup.removeAllItems()
+        if let fonts: [String] = fm.availableFontNames(with: .fixedPitchFontMask) {
+            for font in fonts {
+                if !font.hasPrefix(".") {
+                    // Set the font's display name...
+                    var fontDisplayName: String? = nil
+                    if let namedFont: NSFont = NSFont.init(name: font, size: self.previewFontSize) {
+                        fontDisplayName = namedFont.displayName
+                    }
+                    
+                    if fontDisplayName == nil {
+                        fontDisplayName = font.replacingOccurrences(of: "-", with: " ")
+                    }
+                    
+                    // ...and add it to the popup
+                    self.codeFontPopup.addItem(withTitle: fontDisplayName!)
+                    
+                    // Retain the font's PostScript name for use later
+                    if let addedMenuItem: NSMenuItem = self.codeFontPopup.item(at: self.codeFontPopup.itemArray.count - 1) {
+                        addedMenuItem.representedObject = font
+                        
+                        if font == self.previewFontName {
+                            self.codeFontPopup.select(addedMenuItem)
+                        }
+                    }
+                }
+            }
+        }
+        
         self.useLightCheckbox.state = self.doShowLightBackground ? .on : .off
         self.doShowTagCheckbox.state = self.doShowTag ? .on : .off
         self.doShowRawYamlCheckbox.state = self.doShowRawYaml ? .on : .off
@@ -311,6 +349,7 @@ final class AppDelegate: NSObject,
         
         let indents: [Int] = [1, 2, 4, 8]
         self.codeIndentPopup.selectItem(at: indents.firstIndex(of: self.previewIndentDepth)!)
+        self.codeColourPopup.selectItem(at: self.previewCodeColour)
         
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
@@ -358,8 +397,9 @@ final class AppDelegate: NSObject,
                                   forKey: "com-bps-previewyaml-base-font-size")
             }
             
+            // FROM 1.1.0 -- don't keep setting this
             // Set this here for now
-            defaults.setValue(CGFloat(32.0), forKey: "com-bps-previewyaml-thumb-font-size")
+            // defaults.setValue(CGFloat(32.0), forKey: "com-bps-previewyaml-thumb-font-size")
 
             var state: Bool = self.useLightCheckbox.state == .on
             if self.doShowLightBackground != state {
@@ -389,6 +429,16 @@ final class AppDelegate: NSObject,
             let indent: Int = indents[self.codeIndentPopup.indexOfSelectedItem]
             if self.previewIndentDepth != indent {
                 defaults.setValue(indent, forKey: "com-bps-previewyaml-yaml-indent")
+            }
+            
+            // FROM 1.1.0
+            // Set the chosen font if it has changed
+            if let selectedMenuItem: NSMenuItem = self.codeFontPopup.selectedItem {
+                let selectedName: String = selectedMenuItem.representedObject as! String
+                if selectedName != self.previewFontName {
+                    self.previewFontName = selectedName
+                    defaults.setValue(selectedName, forKey: "com-bps-previewyaml-base-font-name")
+                }
             }
 
             // Sync any changes
@@ -593,13 +643,13 @@ final class AppDelegate: NSObject,
             }
 
             // Thumbnail view base font size, stored as a CGFloat, not currently used
-            // Default: 32.0
+            // Default: 28.0
             let thumbFontSizeDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-thumb-font-size")
             if thumbFontSizeDefault == nil {
                 defaults.setValue(CGFloat(BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE),
                                   forKey: "com-bps-previewyaml-thumb-font-size")
             }
-
+            
             // Colour of code blocks in the preview, stored as in integer array index
             // Default: 0 (purple)
             let codeColourDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-code-colour-index")
@@ -607,7 +657,8 @@ final class AppDelegate: NSObject,
                 defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR_INDEX,
                                   forKey: "com-bps-previewyaml-code-colour-index")
             }
-
+            
+            /*
             // Font for code blocks in the preview, stored as in integer array index
             // Default: 0 (Andale Mono)
             let codeFontDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-code-font-index")
@@ -615,7 +666,17 @@ final class AppDelegate: NSObject,
                 defaults.setValue(BUFFOON_CONSTANTS.CODE_FONT_INDEX,
                                   forKey: "com-bps-previewyaml-code-font-index")
             }
-
+            */
+            
+            // FROM 1.1.0
+            // Font for previews and thumbnails
+            // Default: Courier
+            let codeFontName: Any? = defaults.object(forKey: "com-bps-previewyaml-base-font-name")
+            if codeFontName == nil {
+                defaults.setValue(BUFFOON_CONSTANTS.DEFAULT_FONT,
+                                  forKey: "com-bps-previewyaml-base-font-name")
+            }
+            
             // Use light background even in dark mode, stored as a bool
             // Default: false
             let useLightDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-do-use-light")

@@ -42,6 +42,9 @@ private var hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
                                                  .strikethroughColor: NSColor.labelColor])
 private var newLine: NSAttributedString = NSAttributedString.init(string: "\n", attributes: valAtts)
 
+// FROM 1.1.0
+private var fontBaseName: String = BUFFOON_CONSTANTS.DEFAULT_FONT
+
 
 // MARK:- Primary Function
 
@@ -292,6 +295,9 @@ func setBaseValues(_ isThumbnail: Bool) {
         yamlIndent            = isThumbnail ? 2 : defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
         doShowRawYaml         = defaults.bool(forKey: "com-bps-previewyaml-show-bad-yaml")
         doIndentScalars       = defaults.bool(forKey: "com-bps-previewyaml-do-indent-scalars")
+        
+        // FROM 1.1.0
+        fontBaseName          = defaults.string(forKey: "com-bps-previewyaml-base-font-name") ?? BUFFOON_CONSTANTS.DEFAULT_FONT
     }
     
     // Just in case the above block reads in zero values
@@ -303,6 +309,12 @@ func setBaseValues(_ isThumbnail: Bool) {
 
     // Set the YAML key:value fonts and sizes
     var font: NSFont
+    if let chosenFont: NSFont = NSFont.init(name: fontBaseName, size: fontBaseSize) {
+        font = chosenFont
+    } else {
+        font = NSFont.systemFont(ofSize: fontBaseSize)
+    }
+    /*
     if codeFontIndex == 0 {
         font = NSFont.systemFont(ofSize: fontBaseSize)
     } else {
@@ -312,6 +324,7 @@ func setBaseValues(_ isThumbnail: Bool) {
             font = NSFont.systemFont(ofSize: fontBaseSize)
         }
     }
+    */
     
     keyAtts = [
         .foregroundColor: getColour(codeColourIndex),

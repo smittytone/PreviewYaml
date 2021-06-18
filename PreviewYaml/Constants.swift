@@ -59,4 +59,7 @@ struct BUFFOON_CONSTANTS {
 
     static let TAG_TEXT_SIZE                = 180
     static let TAG_TEXT_MIN_SIZE            = 118
+    
+    // FROM 1.1.0
+    static let DEFAULT_FONT                 = "Courier"
 }
