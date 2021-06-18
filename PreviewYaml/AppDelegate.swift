@@ -782,20 +782,4 @@ final class AppDelegate: NSObject,
         return localYamlUTI
     }
 
-
-    // MARK: - WKWebNavigation Delegate Functions
-
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-
-        // Asynchronously show the sheet once the HTML has loaded
-        // (triggered by delegate method)
-
-        if let nav = self.whatsNewNav {
-            if nav == navigation {
-                // Display the sheet
-                self.window.beginSheet(self.whatsNewWindow, completionHandler: nil)
-            }
-        }
-    }
-
 }
