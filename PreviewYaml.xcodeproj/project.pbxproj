@@ -39,6 +39,7 @@
 		3BB64E1D2632033F003CD14D /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E1A2632033F003CD14D /* Secrets.swift */; };
 		3BB64E3426320C5B003CD14D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8A26320065003CD14D /* Assets.xcassets */; };
 		3BB64E3A26320C6F003CD14D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8A26320065003CD14D /* Assets.xcassets */; };
+		3BDE3EF4267CE6C10037351C /* GenericExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDE3EF3267CE6C10037351C /* GenericExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,6 +119,7 @@
 		3BB64DF42632014D003CD14D /* licences.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = licences.txt; sourceTree = "<group>"; };
 		3BB64E112632023C003CD14D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3BB64E1A2632033F003CD14D /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Secrets.swift; path = ../../../OneDrive/Programming/mnu/Secrets.swift; sourceTree = "<group>"; };
+		3BDE3EF3267CE6C10037351C /* GenericExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,6 +197,7 @@
 				3BB64E1A2632033F003CD14D /* Secrets.swift */,
 				3BB64E112632023C003CD14D /* Constants.swift */,
 				3BB64D8826320064003CD14D /* AppDelegate.swift */,
+				3BDE3EF3267CE6C10037351C /* GenericExtensions.swift */,
 				3B07D225267CA77500BAEF6B /* NSColorExtension.swift */,
 				3BB64D8A26320065003CD14D /* Assets.xcassets */,
 				3B21718826344E88000C5AF6 /* new */,
@@ -461,6 +464,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BB64D8926320064003CD14D /* AppDelegate.swift in Sources */,
+				3BDE3EF4267CE6C10037351C /* GenericExtensions.swift in Sources */,
 				3BB64E1B2632033F003CD14D /* Secrets.swift in Sources */,
 				3B07D226267CA77500BAEF6B /* NSColorExtension.swift in Sources */,
 				3BB64E122632023C003CD14D /* Constants.swift in Sources */,

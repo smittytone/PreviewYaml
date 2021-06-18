@@ -258,67 +258,6 @@ final class AppDelegate: NSObject,
     }
     
 
-    /**
-     Send the feedback string etc.
-
-     - Parameters:
-        - feedback: The text of the user's comment.
-
-     - Returns: A URLSessionTask primed to send the comment, or `nil` on error.
-     */
-    private func submitFeedback(_ feedback: String) -> URLSessionTask? {
-        
-        // Send the feedback string etc.
-        
-        // First get the data we need to build the user agent string
-        let userAgent: String = getUserAgentForFeedback()
-        let endPoint: String = MNU_SECRETS.ADDRESS.B
-        
-        // Get the date as a string
-        let dateString: String = getDateForFeedback()
-
-        // Assemble the message string
-        let dataString: String = """
-         *FEEDBACK REPORT*
-         *Date:* \(dateString)
-         *User Agent:* \(userAgent)
-         *UTI:* \(self.localYamlUTI)
-         *FEEDBACK:*
-         \(feedback)
-         """
-
-        // Build the data we will POST:
-        let dict: NSMutableDictionary = NSMutableDictionary()
-        dict.setObject(dataString,
-                        forKey: NSString.init(string: "text"))
-        dict.setObject(true, forKey: NSString.init(string: "mrkdwn"))
-        
-        // Make and return the HTTPS request for sending
-        if let url: URL = URL.init(string: self.feedbackPath + endPoint) {
-            var request: URLRequest = URLRequest.init(url: url)
-            request.httpMethod = "POST"
-
-            do {
-                request.httpBody = try JSONSerialization.data(withJSONObject: dict,
-                                                              options:JSONSerialization.WritingOptions.init(rawValue: 0))
-
-                request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
-                request.addValue("application/json", forHTTPHeaderField: "Content-type")
-
-                let config: URLSessionConfiguration = URLSessionConfiguration.ephemeral
-                let session: URLSession = URLSession.init(configuration: config,
-                                                          delegate: self,
-                                                          delegateQueue: OperationQueue.main)
-                return session.dataTask(with: request)
-            } catch {
-                // NOP
-            }
-        }
-        
-        return nil
-    }
-
-
     // MARK: Preferences Functions
 
     /**
@@ -622,98 +561,7 @@ final class AppDelegate: NSObject,
     }
 
 
-    // MARK:- Process Handling Functions
-
-    /**
-     Generic macOS process creation and run function.
-
-     Make sure we clear the preference flag for this minor version, so that
-     the sheet is not displayed next time the app is run (unless the version changes)
-
-     - Parameters:
-        - app: The location of the app.
-        - with: Array of arguments to pass to the app
-
-     - Returns: `true` if the operation was successful, otherwise `false`
-     */
-    private func runProcess(app path: String, with args: [String]) -> Bool {
-
-        let task: Process = Process()
-        task.executableURL = URL.init(fileURLWithPath: path)
-        task.arguments = args
-
-        // Pipe out the output to avoid putting it in the log
-        let outputPipe = Pipe()
-        task.standardOutput = outputPipe
-        task.standardError = outputPipe
-
-        do {
-            try task.run()
-        } catch {
-            return false
-        }
-
-        // Block until the task has completed (short tasks ONLY)
-        task.waitUntilExit()
-
-        if !task.isRunning {
-            if (task.terminationStatus != 0) {
-                // Command failed -- collect the output if there is any
-                let outputHandle = outputPipe.fileHandleForReading
-                var outString: String = ""
-                if let line = String(data: outputHandle.availableData, encoding: String.Encoding.utf8) {
-                    outString = line
-                }
-
-                if outString.count > 0 {
-                    print("\(outString)")
-                } else {
-                    print("Error", "Exit code \(task.terminationStatus)")
-                }
-                return false
-            }
-        }
-
-        return true
-    }
-
-
     // MARK: - Misc Functions
-
-    /**
-     Present an error message specific to sending feedback.
-
-     This is called from multiple locations: if the initial request can't be created,
-     there was a send failure, or a server error
-     */
-    private func sendFeedbackError() {
-
-        let alert: NSAlert = showAlert("Feedback Could Not Be Sent",
-                                       "Unfortunately, your comments could not be send at this time. Please try again later.")
-        alert.beginSheetModal(for: self.reportWindow,
-                              completionHandler: nil)
-        
-    }
-
-
-    /**
-     Generic alert generator.
-
-     - Parameters:
-        - head:    The alert's title.
-        - message: The alert's message.
-
-     - Returns: The NSAlert
-     */
-    private func showAlert(_ head: String, _ message: String) -> NSAlert {
-
-        let alert: NSAlert = NSAlert()
-        alert.messageText = head
-        alert.informativeText = message
-        alert.addButton(withTitle: "OK")
-        return alert
-    }
-
 
     /**
      Called by the app at launch to register its initial defaults.
@@ -833,6 +681,68 @@ final class AppDelegate: NSObject,
 
     }
     
+
+    /**
+     Send the feedback string etc.
+
+     - Parameters:
+        - feedback: The text of the user's comment.
+
+     - Returns: A URLSessionTask primed to send the comment, or `nil` on error.
+     */
+    private func submitFeedback(_ feedback: String) -> URLSessionTask? {
+
+        // Send the feedback string etc.
+
+        // First get the data we need to build the user agent string
+        let userAgent: String = getUserAgentForFeedback()
+        let endPoint: String = MNU_SECRETS.ADDRESS.B
+
+        // Get the date as a string
+        let dateString: String = getDateForFeedback()
+
+        // Assemble the message string
+        let dataString: String = """
+         *FEEDBACK REPORT*
+         *Date:* \(dateString)
+         *User Agent:* \(userAgent)
+         *UTI:* \(self.localYamlUTI)
+         *FEEDBACK:*
+         \(feedback)
+         """
+
+        // Build the data we will POST:
+        let dict: NSMutableDictionary = NSMutableDictionary()
+        dict.setObject(dataString,
+                        forKey: NSString.init(string: "text"))
+        dict.setObject(true, forKey: NSString.init(string: "mrkdwn"))
+
+        // Make and return the HTTPS request for sending
+        if let url: URL = URL.init(string: self.feedbackPath + endPoint) {
+            var request: URLRequest = URLRequest.init(url: url)
+            request.httpMethod = "POST"
+
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: dict,
+                                                              options:JSONSerialization.WritingOptions.init(rawValue: 0))
+
+                request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
+                request.addValue("application/json", forHTTPHeaderField: "Content-type")
+
+                let config: URLSessionConfiguration = URLSessionConfiguration.ephemeral
+                let session: URLSession = URLSession.init(configuration: config,
+                                                          delegate: self,
+                                                          delegateQueue: OperationQueue.main)
+                return session.dataTask(with: request)
+            } catch {
+                // NOP
+            }
+        }
+
+        return nil
+    }
+
+
     /**
      Determine the UTI of a sample YAML file stored in the Bundle.
 
@@ -870,84 +780,6 @@ final class AppDelegate: NSObject,
         }
         
         return localYamlUTI
-    }
-
-
-    /**
-     Build a basic 'major.manor' version string for prefs usage.
-
-     - Returns: The version string
-     */
-    private func getVersion() -> String {
-
-        let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-        let parts: [String] = (version as NSString).components(separatedBy: ".")
-        return parts[0] + "-" + parts[1]
-    }
-    
-
-    /**
-     Build a date string string for feedback usage.
-
-     - Returns: The date string
-     */
-    private func getDateForFeedback() -> String {
-
-        let date: Date = Date()
-        let dateFormatter: DateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        return dateFormatter.string(from: date)
-    }
-
-
-    /**
-     Build a user-agent string string for feedback usage.
-
-     - Returns: The user-agent string
-     */
-    private func getUserAgentForFeedback() -> String {
-
-        // Refactor code out into separate function for clarity
-
-        let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
-        let bundle: Bundle = Bundle.main
-        let app: String = bundle.object(forInfoDictionaryKey: "CFBundleExecutable") as! String
-        let version: String = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-        let build: String = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as! String
-        return "\(app)/\(version)-\(build) (Mac macOS \(sysVer.majorVersion).\(sysVer.minorVersion).\(sysVer.patchVersion))"
-    }
-
-
-    // MARK: - URLSession Delegate Functions
-
-    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-
-        // Some sort of connection error - report it
-        self.connectionProgress.stopAnimation(self)
-        sendFeedbackError()
-    }
-
-
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-
-        // The operation to send the comment completed
-        self.connectionProgress.stopAnimation(self)
-        if let _ = error {
-            // An error took place - report it
-            sendFeedbackError()
-        } else {
-            // The comment was submitted successfully
-            let alert: NSAlert = showAlert("Thanks For Your Feedback!",
-                                           "Your comments have been received and we’ll take a look at them shortly.")
-            alert.beginSheetModal(for: self.reportWindow) { (resp) in
-                // Close the feedback window when the modal alert returns
-                let _: Timer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false) { timer in
-                    self.window.endSheet(self.reportWindow)
-                }
-            }
-        }
     }
 
 
