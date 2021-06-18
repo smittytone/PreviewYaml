@@ -288,8 +288,9 @@ final class AppDelegate: NSObject,
         // the host app and of each extension
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
             //self.previewCodeFont = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
-            //self.previewFontSize = CGFloat(defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
+            self.previewFontSize = CGFloat(defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
             self.previewIndentDepth = defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
+            
             self.doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
             self.doShowTag = defaults.bool(forKey: "com-bps-previewyaml-do-show-tag")
             self.doShowRawYaml = defaults.bool(forKey: "com-bps-previewyaml-show-bad-yaml")
