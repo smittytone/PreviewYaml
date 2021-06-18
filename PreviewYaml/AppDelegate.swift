@@ -64,7 +64,7 @@ final class AppDelegate: NSObject,
     private var feedbackTask: URLSessionTask? = nil
     private var whatsNewNav: WKNavigation? = nil
     private var previewFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
-    private var previewCodeColour: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
+    // private var previewCodeColour: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
     // private var previewCodeFont: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
     private var previewIndentDepth: Int = BUFFOON_CONSTANTS.YAML_INDENT
     private var doShowLightBackground: Bool = false
@@ -287,9 +287,8 @@ final class AppDelegate: NSObject,
         // The suite name is the app group name, set in each the entitlements file of
         // the host app and of each extension
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            self.previewFontSize = CGFloat(defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
-            self.previewCodeColour = defaults.integer(forKey: "com-bps-previewyaml-code-colour-index")
             //self.previewCodeFont = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
+            //self.previewFontSize = CGFloat(defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
             self.previewIndentDepth = defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
             self.doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
             self.doShowTag = defaults.bool(forKey: "com-bps-previewyaml-do-show-tag")

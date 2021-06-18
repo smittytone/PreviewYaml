@@ -202,7 +202,7 @@
             <value key="maxSize" type="size" width="610" height="432"/>
             <value key="minFullScreenContentSize" type="size" width="610" height="432"/>
             <value key="maxFullScreenContentSize" type="size" width="610" height="432"/>
-            <view key="contentView" misplaced="YES" id="EiT-Mj-1SZ">
+            <view key="contentView" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="610" height="432"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
@@ -333,19 +333,19 @@ DQ
                 </subviews>
                 <constraints>
                     <constraint firstItem="Pfk-9U-7X4" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="14v-aV-Bvr"/>
-                    <constraint firstItem="H25-9I-Shn" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" id="3Va-fZ-XYH"/>
+                    <constraint firstItem="H25-9I-Shn" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" constant="2" id="3Va-fZ-XYH"/>
                     <constraint firstItem="gnK-6R-XxR" firstAttribute="top" secondItem="yKK-Oa-7KG" secondAttribute="bottom" constant="8" symbolic="YES" id="93L-gx-E6D"/>
-                    <constraint firstItem="wao-aS-JHP" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" id="9Kw-81-iVe"/>
+                    <constraint firstItem="wao-aS-JHP" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" constant="2" id="9Kw-81-iVe"/>
                     <constraint firstItem="oFK-cW-IUJ" firstAttribute="top" secondItem="uyh-RX-zrN" secondAttribute="bottom" constant="8" symbolic="YES" id="9Xo-ox-oXg"/>
-                    <constraint firstItem="uyh-RX-zrN" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" id="AIE-df-oRW"/>
-                    <constraint firstAttribute="trailing" secondItem="oFK-cW-IUJ" secondAttribute="trailing" constant="20" symbolic="YES" id="AyM-H0-y36"/>
+                    <constraint firstItem="uyh-RX-zrN" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" constant="2" id="AIE-df-oRW"/>
+                    <constraint firstAttribute="trailing" secondItem="oFK-cW-IUJ" secondAttribute="trailing" constant="17" id="AyM-H0-y36"/>
                     <constraint firstItem="wsQ-ot-4qZ" firstAttribute="top" secondItem="H25-9I-Shn" secondAttribute="bottom" constant="12" symbolic="YES" id="BK0-X8-vth"/>
                     <constraint firstItem="PVG-26-lfC" firstAttribute="top" secondItem="gnK-6R-XxR" secondAttribute="bottom" constant="8" symbolic="YES" id="HxQ-wb-GXf"/>
-                    <constraint firstAttribute="trailing" secondItem="Pfk-9U-7X4" secondAttribute="trailing" constant="20" symbolic="YES" id="Jsa-Km-ZuI"/>
-                    <constraint firstAttribute="trailing" secondItem="9WJ-du-sIm" secondAttribute="trailing" constant="20" symbolic="YES" id="MHi-oK-1hh"/>
+                    <constraint firstAttribute="trailing" secondItem="Pfk-9U-7X4" secondAttribute="trailing" constant="17" id="Jsa-Km-ZuI"/>
+                    <constraint firstAttribute="trailing" secondItem="9WJ-du-sIm" secondAttribute="trailing" constant="17" id="MHi-oK-1hh"/>
                     <constraint firstItem="yKK-Oa-7KG" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" constant="20" symbolic="YES" id="PjX-hI-0Fc"/>
                     <constraint firstItem="oFK-cW-IUJ" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="Rda-e7-ehJ"/>
-                    <constraint firstAttribute="trailing" secondItem="PVG-26-lfC" secondAttribute="trailing" constant="20" symbolic="YES" id="al2-2d-uhR"/>
+                    <constraint firstAttribute="trailing" secondItem="PVG-26-lfC" secondAttribute="trailing" constant="17" id="al2-2d-uhR"/>
                     <constraint firstItem="uyh-RX-zrN" firstAttribute="top" secondItem="Pfk-9U-7X4" secondAttribute="bottom" constant="8" symbolic="YES" id="bGi-ak-jmt"/>
                     <constraint firstItem="Pfk-9U-7X4" firstAttribute="top" secondItem="PVG-26-lfC" secondAttribute="bottom" constant="8" symbolic="YES" id="bnV-wk-ZVn"/>
                     <constraint firstAttribute="bottom" secondItem="wao-aS-JHP" secondAttribute="bottom" constant="20" symbolic="YES" id="f00-Wu-tTW"/>
@@ -353,10 +353,10 @@ DQ
                     <constraint firstItem="9WJ-du-sIm" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="pAt-fz-Z8T"/>
                     <constraint firstItem="9WJ-du-sIm" firstAttribute="top" secondItem="wsQ-ot-4qZ" secondAttribute="bottom" constant="20" symbolic="YES" id="pW0-t9-hTQ"/>
                     <constraint firstItem="PVG-26-lfC" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="qcL-TK-KCh"/>
-                    <constraint firstAttribute="trailing" secondItem="gnK-6R-XxR" secondAttribute="trailing" constant="20" symbolic="YES" id="r8r-ar-8AU"/>
-                    <constraint firstItem="yKK-Oa-7KG" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" id="sio-Im-vEF"/>
+                    <constraint firstAttribute="trailing" secondItem="gnK-6R-XxR" secondAttribute="trailing" constant="17" id="r8r-ar-8AU"/>
+                    <constraint firstItem="yKK-Oa-7KG" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" constant="2" id="sio-Im-vEF"/>
                     <constraint firstItem="wao-aS-JHP" firstAttribute="top" secondItem="9WJ-du-sIm" secondAttribute="bottom" constant="20" symbolic="YES" id="uFh-qf-hO4"/>
-                    <constraint firstItem="wsQ-ot-4qZ" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" id="w24-8k-nxM"/>
+                    <constraint firstItem="wsQ-ot-4qZ" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" constant="2" id="w24-8k-nxM"/>
                 </constraints>
             </view>
             <point key="canvasLocation" x="-196.5" y="-199"/>
@@ -668,6 +668,7 @@ DQ
                     <constraint firstItem="2HA-Yj-cyf" firstAttribute="leading" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="20" symbolic="YES" id="gFe-Vk-dSj"/>
                     <constraint firstItem="Sk6-Ra-IOr" firstAttribute="leading" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="20" symbolic="YES" id="gHu-Mf-q2a"/>
                     <constraint firstItem="8hT-Js-gGr" firstAttribute="leading" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="20" symbolic="YES" id="giP-3H-bWQ"/>
+                    <constraint firstItem="fen-aP-loU" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Sk6-Ra-IOr" secondAttribute="trailing" constant="8" symbolic="YES" id="j1m-S7-eiN"/>
                     <constraint firstAttribute="trailing" secondItem="2HA-Yj-cyf" secondAttribute="trailing" constant="20" symbolic="YES" id="lEL-yJ-gaY"/>
                     <constraint firstItem="Abc-Nd-4fL" firstAttribute="top" secondItem="E2f-Ly-G4Y" secondAttribute="bottom" constant="10" id="lg7-NQ-XRJ"/>
                     <constraint firstItem="YAR-RZ-VG6" firstAttribute="leading" secondItem="sR8-0k-h5k" secondAttribute="leading" constant="20" symbolic="YES" id="mDf-xM-Bcf"/>
