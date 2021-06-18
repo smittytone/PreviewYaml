@@ -125,6 +125,12 @@ final class AppDelegate: NSObject,
 
     // MARK:- Action Functions
 
+    /**
+     Called from **File > Close** and the various Quit controls.
+
+     - Parameters:
+        - sender: The source of the action.
+     */
     @IBAction private func doClose(_ sender: Any) {
         
         // Reset the QL thumbnail cache... just in case it helps
@@ -135,6 +141,12 @@ final class AppDelegate: NSObject,
     }
     
     
+    /**
+     Called from various **Help** items to open various websites.
+
+     - Parameters:
+        - sender: The source of the action.
+     */
     @IBAction @objc private func doShowSites(sender: Any) {
         
         // Open the websites for contributors, help and suc
@@ -160,7 +172,12 @@ final class AppDelegate: NSObject,
         NSWorkspace.shared.open(URL.init(string:path)!)
     }
 
+    /**
+     Open the System Preferences app at the Extensions pane.
 
+     - Parameters:
+        - sender: The source of the action.
+     */
     @IBAction private func doOpenSysPrefs(sender: Any) {
 
         // Open the System Preferences app at the Extensions pane
@@ -169,11 +186,14 @@ final class AppDelegate: NSObject,
 
 
     // MARK: Report Functions
-    
-    @IBAction @objc private func doShowReportWindow(sender: Any?) {
 
-        // Display a window in which the user can submit feedback,
-        // or report a bug
+    /**
+     Display a window in which the user can submit feedback, or report a bug.
+
+     - Parameters:
+        - sender: The source of the action.
+     */
+    @IBAction @objc private func doShowReportWindow(sender: Any?) {
 
         // Reset the UI
         self.connectionProgress.stopAnimation(self)
@@ -184,6 +204,12 @@ final class AppDelegate: NSObject,
     }
 
 
+    /**
+     User has clicked the Report window's **Cancel** button, so just close the sheet.
+
+     - Parameters:
+        - sender: The source of the action.
+     */
     @IBAction @objc private func doCancelReportWindow(sender: Any) {
 
         // User has clicked the Report window's 'Cancel' button,
@@ -193,7 +219,14 @@ final class AppDelegate: NSObject,
         self.window.endSheet(self.reportWindow)
     }
 
+    /**
+     User has clicked the Report window's **Send** button.
 
+     Get the message (if there is one) from the text field and submit it.
+
+     - Parameters:
+        - sender: The source of the action.
+     */
     @IBAction @objc private func doSendFeedback(sender: Any) {
 
         // User has clicked the Report window's 'Send' button,
@@ -224,7 +257,15 @@ final class AppDelegate: NSObject,
         //      or an error occured with setting up the feedback session
     }
     
-    
+
+    /**
+     Send the feedback string etc.
+
+     - Parameters:
+        - feedback: The text of the user's comment.
+
+     - Returns: A URLSessionTask primed to send the comment, or `nil` on error.
+     */
     private func submitFeedback(_ feedback: String) -> URLSessionTask? {
         
         // Send the feedback string etc.
@@ -279,7 +320,13 @@ final class AppDelegate: NSObject,
 
 
     // MARK: Preferences Functions
-    
+
+    /**
+     Initialise and display the **Preferences** sheet.
+
+     - Parameters:
+        - sender: The source of the action.
+     */
     @IBAction private func doShowPreferences(sender: Any) {
 
         // Display the 'Preferences' sheet
@@ -369,19 +416,27 @@ final class AppDelegate: NSObject,
     }
 
 
+    /**
+        When the font size slider is moved and released, this function updates the font size readout.
+
+        - Parameters:
+            - sender: The source of the action.
+     */
     @IBAction private func doMoveSlider(sender: Any) {
         
-        // When the slider is moved and released, this function updates
-        // the font size readout
         let index: Int = Int(self.fontSizeSlider.floatValue)
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
     }
 
 
+    /**
+        Close the **Preferences** sheet without saving.
+
+        - Parameters:
+            - sender: The source of the action.
+     */
     @IBAction private func doClosePreferences(sender: Any) {
 
-        // Close the 'Preferences' sheet
-        
         // FROM 1.1.0
         // Close the colour selection panel if it's open
         if self.codeColorWell.isActive {
@@ -393,9 +448,13 @@ final class AppDelegate: NSObject,
     }
 
 
-    @IBAction private func doSavePreferences(sender: Any) {
+    /**
+        Close the **Preferences** sheet and save any settings that have changed.
 
-        // Close the 'Preferences' sheet and save the settings, if they have changed
+        - Parameters:
+            - sender: The source of the action.
+     */
+    @IBAction private func doSavePreferences(sender: Any) {
 
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
             /* REMOVE IN 1.1.0
@@ -489,12 +548,20 @@ final class AppDelegate: NSObject,
 
 
     // MARK: What's New Sheet Functions
-    
+
+    /**
+        Show the **What's New** sheet.
+
+        If we're on a new, non-patch version, of the user has explicitly
+        asked to see it with a menu click See if we're coming from a menu click
+        (`sender != self`) or directly in code from *appDidFinishLoading()*
+        (`sender == self`)
+
+        - Parameters:
+            - sender: The source of the action.
+     */
     @IBAction private func doShowWhatsNew(_ sender: Any) {
 
-        // Show the 'What's New' sheet, if we're on a new, non-patch version,
-        // of the user has explicitly asked to see it with a menu click
-           
         // See if we're coming from a menu click (sender != self) or
         // directly in code from 'appDidFinishLoading()' (sender == self)
         var doShowSheet: Bool = type(of: self) != type(of: sender)
@@ -523,10 +590,16 @@ final class AppDelegate: NSObject,
     }
 
 
-    @IBAction private func doCloseWhatsNew(_ sender: Any) {
+    /**
+        Close the **What's New** sheet.
 
-        // Close the 'What's New' sheet, making sure we clear the preference flag for this minor version,
-        // so that the sheet is not displayed next time the app is run (unless the version changes)
+        Make sure we clear the preference flag for this minor version, so that
+        the sheet is not displayed next time the app is run (unless the version changes)
+
+        - Parameters:
+            - sender: The source of the action.
+     */
+    @IBAction private func doCloseWhatsNew(_ sender: Any) {
 
         // Close the sheet
         self.window.endSheet(self.whatsNewWindow)
@@ -549,9 +622,21 @@ final class AppDelegate: NSObject,
     }
 
 
-    private func runProcess(app path: String, with args: [String]) -> Bool {
+    // MARK:- Process Handling Functions
 
-        // Generic task creation and run function
+    /**
+     Generic macOS process creation and run function.
+
+     Make sure we clear the preference flag for this minor version, so that
+     the sheet is not displayed next time the app is run (unless the version changes)
+
+     - Parameters:
+        - app: The location of the app.
+        - with: Array of arguments to pass to the app
+
+     - Returns: `true` if the operation was successful, otherwise `false`
+     */
+    private func runProcess(app path: String, with args: [String]) -> Bool {
 
         let task: Process = Process()
         task.executableURL = URL.init(fileURLWithPath: path)
@@ -593,60 +678,16 @@ final class AppDelegate: NSObject,
     }
 
 
-    // MARK: - URLSession Delegate Functions
-
-    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
-
-        // Some sort of connection error - report it
-        self.connectionProgress.stopAnimation(self)
-        sendFeedbackError()
-    }
-
-
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-
-        // The operation to send the comment completed
-        self.connectionProgress.stopAnimation(self)
-        if let _ = error {
-            // An error took place - report it
-            sendFeedbackError()
-        } else {
-            // The comment was submitted successfully
-            let alert: NSAlert = showAlert("Thanks For Your Feedback!",
-                                           "Your comments have been received and we’ll take a look at them shortly.")
-            alert.beginSheetModal(for: self.reportWindow) { (resp) in
-                // Close the feedback window when the modal alert returns
-                let _: Timer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false) { timer in
-                    self.window.endSheet(self.reportWindow)
-                }
-            }
-        }
-    }
-
-    
-    // MARK: - WKWebNavigation Delegate Functions
-    
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-
-        // Asynchronously show the sheet once the HTML has loaded
-        // (triggered by delegate method)
-
-        if let nav = self.whatsNewNav {
-            if nav == navigation {
-                // Display the sheet
-                self.window.beginSheet(self.whatsNewWindow, completionHandler: nil)
-            }
-        }
-    }
-
-
     // MARK: - Misc Functions
 
+    /**
+     Present an error message specific to sending feedback.
+
+     This is called from multiple locations: if the initial request can't be created,
+     there was a send failure, or a server error
+     */
     private func sendFeedbackError() {
 
-        // Present an error message specific to sending feedback
-        // This is called from multiple locations: if the initial request can't be created,
-        // there was a send failure, or a server error
         let alert: NSAlert = showAlert("Feedback Could Not Be Sent",
                                        "Unfortunately, your comments could not be send at this time. Please try again later.")
         alert.beginSheetModal(for: self.reportWindow,
@@ -655,9 +696,17 @@ final class AppDelegate: NSObject,
     }
 
 
+    /**
+     Generic alert generator.
+
+     - Parameters:
+        - head:    The alert's title.
+        - message: The alert's message.
+
+     - Returns: The NSAlert
+     */
     private func showAlert(_ head: String, _ message: String) -> NSAlert {
 
-        // Generic alert presentation
         let alert: NSAlert = NSAlert()
         alert.messageText = head
         alert.informativeText = message
@@ -666,12 +715,13 @@ final class AppDelegate: NSObject,
     }
 
 
+    /**
+     Called by the app at launch to register its initial defaults.
+     */
     private func registerPreferences() {
 
-        // Called by the app at launch to register its initial defaults
-
+        // Check if each preference value exists -- set if it doesn't
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            // Check if each preference value exists -- set if it doesn't
             // Preview body font size, stored as a CGFloat
             // Default: 16.0
             let bodyFontSizeDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-base-font-size")
@@ -783,7 +833,13 @@ final class AppDelegate: NSObject,
 
     }
     
-    
+    /**
+     Determine the UTI of a sample YAML file stored in the Bundle.
+
+     Used for debugging and relayed via the feedback sheet, if used.
+
+     - Returns: The YAML file UTI.
+     */
     private func getLocalYamlUTI() -> String {
         
         // This is not PII. It used solely for debugging purposes
@@ -817,19 +873,25 @@ final class AppDelegate: NSObject,
     }
 
 
-    private func getVersion() -> String {
+    /**
+     Build a basic 'major.manor' version string for prefs usage.
 
-        // Build a basic 'major.manor' version string for prefs usage
+     - Returns: The version string
+     */
+    private func getVersion() -> String {
 
         let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         let parts: [String] = (version as NSString).components(separatedBy: ".")
         return parts[0] + "-" + parts[1]
     }
     
-    
-    private func getDateForFeedback() -> String {
 
-        // Refactor code out into separate function for clarity
+    /**
+     Build a date string string for feedback usage.
+
+     - Returns: The date string
+     */
+    private func getDateForFeedback() -> String {
 
         let date: Date = Date()
         let dateFormatter: DateFormatter = DateFormatter()
@@ -840,6 +902,11 @@ final class AppDelegate: NSObject,
     }
 
 
+    /**
+     Build a user-agent string string for feedback usage.
+
+     - Returns: The user-agent string
+     */
     private func getUserAgentForFeedback() -> String {
 
         // Refactor code out into separate function for clarity
@@ -850,6 +917,53 @@ final class AppDelegate: NSObject,
         let version: String = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         let build: String = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as! String
         return "\(app)/\(version)-\(build) (Mac macOS \(sysVer.majorVersion).\(sysVer.minorVersion).\(sysVer.patchVersion))"
+    }
+
+
+    // MARK: - URLSession Delegate Functions
+
+    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+
+        // Some sort of connection error - report it
+        self.connectionProgress.stopAnimation(self)
+        sendFeedbackError()
+    }
+
+
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+
+        // The operation to send the comment completed
+        self.connectionProgress.stopAnimation(self)
+        if let _ = error {
+            // An error took place - report it
+            sendFeedbackError()
+        } else {
+            // The comment was submitted successfully
+            let alert: NSAlert = showAlert("Thanks For Your Feedback!",
+                                           "Your comments have been received and we’ll take a look at them shortly.")
+            alert.beginSheetModal(for: self.reportWindow) { (resp) in
+                // Close the feedback window when the modal alert returns
+                let _: Timer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false) { timer in
+                    self.window.endSheet(self.reportWindow)
+                }
+            }
+        }
+    }
+
+
+    // MARK: - WKWebNavigation Delegate Functions
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+
+        // Asynchronously show the sheet once the HTML has loaded
+        // (triggered by delegate method)
+
+        if let nav = self.whatsNewNav {
+            if nav == navigation {
+                // Display the sheet
+                self.window.beginSheet(self.whatsNewWindow, completionHandler: nil)
+            }
+        }
     }
 
 }

@@ -13,13 +13,13 @@ import Cocoa
 
 class ThumbnailProvider: QLThumbnailProvider {
 
-    // MARK: Public Properties
+    // MARK:- Public Properties
 
     // Add key required values to self
     var doShowTag: Bool = true
 
 
-    // MARK: Private Properties
+    // MARK:- Private Properties
 
     // FROM 1.0.1
     private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME

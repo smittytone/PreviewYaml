@@ -8,3 +8,8 @@ steeple:
   - 2002
   - 2020
 is-null:
+help: |
+      This is some multiline text.
+      Which means it appears on multiple lines.
+      That's more than one lines.
+brief: But this is only one line.
