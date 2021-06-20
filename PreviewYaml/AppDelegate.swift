@@ -78,8 +78,8 @@ final class AppDelegate: NSObject,
     private var feedbackPath: String = MNU_SECRETS.ADDRESS.A
 
     // FROM 1.1.0
-    private var previewFontName: String = BUFFOON_CONSTANTS.DEFAULT_FONT
-    private var codeColour: String = BUFFOON_CONSTANTS.CODE_COLOUR
+    private var previewFontName: String = BUFFOON_CONSTANTS.CODE_FONT_NAME
+    private var codeColourHex: String = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
     
 
     // MARK:- Class Lifecycle Functions
@@ -283,8 +283,8 @@ final class AppDelegate: NSObject,
             self.doIndentScalars = defaults.bool(forKey: "com-bps-previewyaml-do-indent-scalars")
             
             // FROM 1.1.0
-            self.previewFontName = defaults.string(forKey: "com-bps-previewyaml-base-font-name") ?? BUFFOON_CONSTANTS.DEFAULT_FONT
-            self.codeColour = defaults.string(forKey: "com-bps-previewyaml-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR
+            self.previewFontName = defaults.string(forKey: "com-bps-previewyaml-base-font-name") ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
+            self.codeColourHex = defaults.string(forKey: "com-bps-previewyaml-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
         }
 
         // Get the menu item index from the stored value
@@ -348,7 +348,7 @@ final class AppDelegate: NSObject,
         // Set the colour panel's initial view
         // self.codeColourPopup.selectItem(at: self.previewCodeColour)
         NSColorPanel.setPickerMode(.RGB)
-        self.codeColorWell.color = NSColor.hexToColour(self.codeColour)
+        self.codeColorWell.color = NSColor.hexToColour(self.codeColourHex)
         
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
@@ -404,8 +404,8 @@ final class AppDelegate: NSObject,
             */
             
             let newColour: String = self.codeColorWell.color.hexString
-            if newColour != self.codeColour {
-                self.codeColour = newColour
+            if newColour != self.codeColourHex {
+                self.codeColourHex = newColour
                 defaults.setValue(newColour,
                                   forKey: "com-bps-previewyaml-code-colour-hex")
             }
@@ -600,7 +600,7 @@ final class AppDelegate: NSObject,
             // Default: #007D78FF
             let codeColourDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-code-colour-hex")
             if codeColourDefault == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR,
+                defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR_HEX,
                                   forKey: "com-bps-previewyaml-code-colour-hex")
             }
             
@@ -619,7 +619,7 @@ final class AppDelegate: NSObject,
             // Default: Courier
             let codeFontName: Any? = defaults.object(forKey: "com-bps-previewyaml-base-font-name")
             if codeFontName == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.DEFAULT_FONT,
+                defaults.setValue(BUFFOON_CONSTANTS.CODE_FONT_NAME,
                                   forKey: "com-bps-previewyaml-base-font-name")
             }
             

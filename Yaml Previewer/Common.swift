@@ -28,8 +28,8 @@ private var doIndentScalars: Bool       = false
 private var fontBaseSize: CGFloat       = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
 
 // FROM 1.1.0
-private var fontBaseName: String        = BUFFOON_CONSTANTS.DEFAULT_FONT
-private var codeColour: String          = BUFFOON_CONSTANTS.CODE_COLOUR
+private var fontBaseName: String        = BUFFOON_CONSTANTS.CODE_FONT_NAME
+private var codeColour: String          = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
 private var appSuiteName: String        = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
 
 // YAML string attributes...
@@ -276,6 +276,7 @@ func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedStrin
     return nil
 }
 
+
 /**
  Return a space-prefix NSAttributedString.
 
@@ -300,9 +301,9 @@ func getIndentedString(_ baseString: String, _ indent: Int) -> NSAttributedStrin
 // MARK:- Formatting Functions
 
 /**
- Set common base style values for the source code render.
+ Set common base style values for the YAML render.
 
- **NOTE** This should now be called only ONCE, before the code is rendered
+ **NOTE** This should now be called only **once**, before the code is rendered
           to avoid threading race conditions.
 
  - Parameters:
@@ -326,8 +327,8 @@ func setBaseValues(_ isThumbnail: Bool) {
                               : defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
         
         // FROM 1.1.0
-        fontBaseName          = defaults.string(forKey: "com-bps-previewyaml-base-font-name") ?? BUFFOON_CONSTANTS.DEFAULT_FONT
-        codeColour            = defaults.string(forKey: "com-bps-previewyaml-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR
+        fontBaseName          = defaults.string(forKey: "com-bps-previewyaml-base-font-name") ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
+        codeColour            = defaults.string(forKey: "com-bps-previewyaml-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
     }
     
     // Just in case the above block reads in zero values

@@ -151,8 +151,6 @@ class ThumbnailProvider: QLThumbnailProvider {
     /**
      Create an attributed string for a file icon tag.
 
-     We'll use it to determine the file's programming language.
-
      - Parameters:
         - tag:   The text of the tag.
         - width: The fractional pixel width we need to tag to fit into.
