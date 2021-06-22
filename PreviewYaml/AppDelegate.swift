@@ -43,6 +43,7 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var connectionProgress: NSProgressIndicator!
 
     // Preferences Sheet
+    //@IBOutlet weak var codeColourPopup: NSPopUpButton!
     @IBOutlet weak var preferencesWindow: NSWindow!
     @IBOutlet weak var fontSizeSlider: NSSlider!
     @IBOutlet weak var fontSizeLabel: NSTextField!
@@ -51,7 +52,6 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var doIndentScalarsCheckbox: NSButton!
     @IBOutlet weak var doShowRawYamlCheckbox: NSButton!
     @IBOutlet weak var codeFontPopup: NSPopUpButton!
-    //@IBOutlet weak var codeColourPopup: NSPopUpButton!
     @IBOutlet weak var codeIndentPopup: NSPopUpButton!
     // FROM 1.1.0
     @IBOutlet weak var codeColorWell: NSColorWell!
@@ -59,27 +59,28 @@ final class AppDelegate: NSObject,
     // What's New Sheet
     @IBOutlet weak var whatsNewWindow: NSWindow!
     @IBOutlet weak var whatsNewWebView: WKWebView!
+    
 
     // MARK:- Private Properies
-    internal var whatsNewNav: WKNavigation? = nil
-    private var feedbackTask: URLSessionTask? = nil
-    private var previewFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
     // private var previewCodeColour: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
     // private var previewCodeFont: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
-    private var previewIndentDepth: Int = BUFFOON_CONSTANTS.YAML_INDENT
+    internal var whatsNewNav: WKNavigation? = nil
+    private var feedbackTask: URLSessionTask? = nil
+    private var indentDepth: Int = BUFFOON_CONSTANTS.YAML_INDENT
+    private var localYamlUTI: String = "N/A"
+    private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
     private var doShowLightBackground: Bool = false
     private var doShowTag: Bool = false
     private var doShowRawYaml: Bool = false
     private var doIndentScalars: Bool = false
-    private var localYamlUTI: String = "N/A"
-    private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
-
+    
     // FROM 1.0.1
     private var feedbackPath: String = MNU_SECRETS.ADDRESS.A
 
     // FROM 1.1.0
-    private var previewFontName: String = BUFFOON_CONSTANTS.CODE_FONT_NAME
+    private var codeFontName: String = BUFFOON_CONSTANTS.CODE_FONT_NAME
     private var codeColourHex: String = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+    private var codeFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
     
 
     // MARK:- Class Lifecycle Functions
@@ -274,8 +275,8 @@ final class AppDelegate: NSObject,
         // the host app and of each extension
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
             //self.previewCodeFont = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
-            self.previewFontSize = CGFloat(defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
-            self.previewIndentDepth = defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
+            self.codeFontSize = CGFloat(defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
+            self.indentDepth = defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
             
             self.doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
             self.doShowTag = defaults.bool(forKey: "com-bps-previewyaml-do-show-tag")
@@ -283,7 +284,7 @@ final class AppDelegate: NSObject,
             self.doIndentScalars = defaults.bool(forKey: "com-bps-previewyaml-do-indent-scalars")
             
             // FROM 1.1.0
-            self.previewFontName = defaults.string(forKey: "com-bps-previewyaml-base-font-name") ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
+            self.codeFontName = defaults.string(forKey: "com-bps-previewyaml-base-font-name") ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
             self.codeColourHex = defaults.string(forKey: "com-bps-previewyaml-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
         }
 
@@ -291,9 +292,23 @@ final class AppDelegate: NSObject,
         // NOTE The index is that of the list of available fonts (see 'Common.swift') so
         //      we need to convert this to an equivalent menu index because the menu also
         //      contains a separator and two title items
-        let index: Int = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS.lastIndex(of: self.previewFontSize) ?? 3
+        let index: Int = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS.lastIndex(of: self.codeFontSize) ?? 3
         self.fontSizeSlider.floatValue = Float(index)
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
+        
+        self.useLightCheckbox.state = self.doShowLightBackground ? .on : .off
+        self.doShowTagCheckbox.state = self.doShowTag ? .on : .off
+        self.doShowRawYamlCheckbox.state = self.doShowRawYaml ? .on : .off
+        self.doIndentScalarsCheckbox.state = self.doIndentScalars ? .on : .off
+        
+        let indents: [Int] = [1, 2, 4, 8]
+        self.codeIndentPopup.selectItem(at: indents.firstIndex(of: self.indentDepth)!)
+        
+        // FROM 1.1.0
+        // Set the colour panel's initial view
+        // self.codeColourPopup.selectItem(at: self.previewCodeColour)
+        NSColorPanel.setPickerMode(.RGB)
+        self.codeColorWell.color = NSColor.hexToColour(self.codeColourHex)
         
         /* REMOVE IN 1.1.0
         var fontIndex: Int = self.previewCodeFont + 1
@@ -305,6 +320,7 @@ final class AppDelegate: NSObject,
         // List the current system's monospace fonts
         //self.codeFontPopup.selectItem(at: fontIndex)
         let fm: NSFontManager = NSFontManager.shared
+        var selectedItem: NSMenuItem? = nil
         self.codeFontPopup.removeAllItems()
         if let fonts: [String] = fm.availableFontNames(with: .fixedPitchFontMask) {
             for font in fonts {
@@ -314,11 +330,9 @@ final class AppDelegate: NSObject,
                 
                 // Set the font's display name...
                 var fontDisplayName: String? = nil
-                if let namedFont: NSFont = NSFont.init(name: font, size: self.previewFontSize) {
+                if let namedFont: NSFont = NSFont.init(name: font, size: self.codeFontSize) {
                     fontDisplayName = namedFont.displayName
-                }
-                
-                if fontDisplayName == nil {
+                } else {
                     fontDisplayName = font.replacingOccurrences(of: "-", with: " ")
                 }
                 
@@ -326,29 +340,20 @@ final class AppDelegate: NSObject,
                 self.codeFontPopup.addItem(withTitle: fontDisplayName!)
                 
                 // Retain the font's PostScript name for use later
-                if let addedMenuItem: NSMenuItem = self.codeFontPopup.item(at: self.codeFontPopup.itemArray.count - 1) {
+                if let addedMenuItem: NSMenuItem = self.codeFontPopup.lastItem {
                     addedMenuItem.representedObject = font
                     
-                    if font == self.previewFontName {
-                        self.codeFontPopup.select(addedMenuItem)
+                    if self.codeFontName == font {
+                        selectedItem = addedMenuItem
                     }
                 }
             }
         }
         
-        self.useLightCheckbox.state = self.doShowLightBackground ? .on : .off
-        self.doShowTagCheckbox.state = self.doShowTag ? .on : .off
-        self.doShowRawYamlCheckbox.state = self.doShowRawYaml ? .on : .off
-        self.doIndentScalarsCheckbox.state = self.doIndentScalars ? .on : .off
-        
-        let indents: [Int] = [1, 2, 4, 8]
-        self.codeIndentPopup.selectItem(at: indents.firstIndex(of: self.previewIndentDepth)!)
-        
-        // FROM 1.1.0
-        // Set the colour panel's initial view
-        // self.codeColourPopup.selectItem(at: self.previewCodeColour)
-        NSColorPanel.setPickerMode(.RGB)
-        self.codeColorWell.color = NSColor.hexToColour(self.codeColourHex)
+        // Select the current font
+        if selectedItem != nil  {
+            self.codeFontPopup.select(selectedItem!)
+        }
         
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
@@ -401,16 +406,7 @@ final class AppDelegate: NSObject,
                 defaults.setValue(self.codeColourPopup.indexOfSelectedItem,
                                   forKey: "com-bps-previewyaml-code-colour-index")
             }
-            */
             
-            let newColour: String = self.codeColorWell.color.hexString
-            if newColour != self.codeColourHex {
-                self.codeColourHex = newColour
-                defaults.setValue(newColour,
-                                  forKey: "com-bps-previewyaml-code-colour-hex")
-            }
-            
-            /* REMOVE IN 1.1.0
             // Decode the font menu index value into a font list index
             var fontIndex: Int = self.codeFontPopup.indexOfSelectedItem - 1
             if fontIndex > 6 { fontIndex -= 2 }
@@ -420,8 +416,15 @@ final class AppDelegate: NSObject,
             }
             */
             
+            let newColour: String = self.codeColorWell.color.hexString
+            if newColour != self.codeColourHex {
+                self.codeColourHex = newColour
+                defaults.setValue(newColour,
+                                  forKey: "com-bps-previewyaml-code-colour-hex")
+            }
+            
             let newValue: CGFloat = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[Int(self.fontSizeSlider.floatValue)]
-            if newValue != self.previewFontSize {
+            if newValue != self.codeFontSize {
                 defaults.setValue(newValue,
                                   forKey: "com-bps-previewyaml-base-font-size")
             }
@@ -456,7 +459,7 @@ final class AppDelegate: NSObject,
             
             let indents: [Int] = [1, 2, 4, 8]
             let indent: Int = indents[self.codeIndentPopup.indexOfSelectedItem]
-            if self.previewIndentDepth != indent {
+            if self.indentDepth != indent {
                 defaults.setValue(indent, forKey: "com-bps-previewyaml-yaml-indent")
             }
             
@@ -464,8 +467,8 @@ final class AppDelegate: NSObject,
             // Set the chosen font if it has changed
             if let selectedMenuItem: NSMenuItem = self.codeFontPopup.selectedItem {
                 let selectedName: String = selectedMenuItem.representedObject as! String
-                if selectedName != self.previewFontName {
-                    self.previewFontName = selectedName
+                if selectedName != self.codeFontName {
+                    self.codeFontName = selectedName
                     defaults.setValue(selectedName, forKey: "com-bps-previewyaml-base-font-name")
                 }
             }
