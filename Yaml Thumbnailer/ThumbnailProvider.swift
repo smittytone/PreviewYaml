@@ -58,7 +58,11 @@ class ThumbnailProvider: QLThumbnailProvider {
         /*
          * This is the main entry point for the macOS thumbnailing system
          */
-
+        
+        // FROM 1.1.0
+        // Pull in 'self' values to save including them in closures
+        let showTag = self.doShowTag
+        
         // Set the thumbnail frame
         // NOTE This is always square, with height matched to width, so adjust
         //      to a 3:4 aspect ratio to maintain the macOS standard doc icon width
@@ -103,17 +107,28 @@ class ThumbnailProvider: QLThumbnailProvider {
                         var tagTextField: NSTextField? = nil
                         var tagFrame: CGRect? = nil
 
-                        if self.doShowTag {
+                        if showTag {
                             // Define the frame of the tag area
                             tagFrame = CGRect.init(x: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X,
                                                    y: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_Y,
                                                    width: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH,
                                                    height: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.TAG_HEIGHT)
+                            
+                            // Set the paragraph style we'll use -- just centred text
+                            let style: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
+                            style.alignment = .center
+
+                            // Build the tag's string attributes
+                            let tagAtts: [NSAttributedString.Key: Any] = [
+                                .paragraphStyle: style as NSParagraphStyle,
+                                .font: NSFont.systemFont(ofSize: CGFloat(BUFFOON_CONSTANTS.TAG_TEXT_SIZE)),
+                                .foregroundColor: NSColor.init(red: 0.00, green: 0.49, blue: 0.47, alpha: 1.0)
+                            ]
 
                             // FROM 1.0.1
                             // Instantiate an NSTextField to display the NSAttributedString render of the YAML,
                             // and extend the size of its frame
-                            tagTextField = NSTextField.init(labelWithAttributedString: self.getTagString("YAML", request.maximumSize.width))
+                            tagTextField = NSTextField.init(labelWithAttributedString: NSAttributedString.init(string: "YAML", attributes: tagAtts))
                             tagTextField!.frame = tagFrame!
                         }
 
@@ -145,7 +160,7 @@ class ThumbnailProvider: QLThumbnailProvider {
         }, nil)
     }
 
-
+    /*
     // MARK:- Misc Functions
 
     /**
@@ -173,5 +188,5 @@ class ThumbnailProvider: QLThumbnailProvider {
         // Return the attributed string built from the tag
         return NSAttributedString.init(string: tag, attributes: tagAtts)
     }
-
+    */
 }
