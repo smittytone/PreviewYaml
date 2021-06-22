@@ -29,7 +29,7 @@ extension NSColor {
     }
     
     
-    class func hexToColour(_ hex: String) -> NSColor {
+    static func hexToColour(_ hex: String) -> NSColor {
         
         if hex.count != 8 {
             return NSColor.red
