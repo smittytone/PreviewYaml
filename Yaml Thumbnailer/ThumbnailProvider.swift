@@ -100,19 +100,21 @@ class ThumbnailProvider: QLThumbnailProvider {
                         // and extend the size of its frame
                         let yamlTextField: NSTextField = NSTextField.init(labelWithAttributedString: yamlAttString)
                         yamlTextField.frame = yamlFrame
+                        
+                        // Generate the bitmap from the rendered YAML text view
+                        guard let imageRep: NSBitmapImageRep = yamlTextField.bitmapImageRepForCachingDisplay(in: yamlFrame) else { return false }
+
+                        // Draw into the bitmap first the YAML view...
+                        yamlTextField.cacheDisplay(in: yamlFrame, to: imageRep)
 
                         // Also generate text for the bottom-of-thumbnail file type tag,
                         // if the user has this set as a preference
-                        // FROM 1.3.1 -- implement tag as NSTextField label
-                        var tagTextField: NSTextField? = nil
-                        var tagFrame: CGRect? = nil
-
                         if showTag {
                             // Define the frame of the tag area
-                            tagFrame = CGRect.init(x: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X,
-                                                   y: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_Y,
-                                                   width: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH,
-                                                   height: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.TAG_HEIGHT)
+                            let tagFrame: CGRect = CGRect.init(x: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X,
+                                                               y: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_Y,
+                                                               width: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH,
+                                                               height: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.TAG_HEIGHT)
                             
                             // Set the paragraph style we'll use -- just centred text
                             let style: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
@@ -128,19 +130,10 @@ class ThumbnailProvider: QLThumbnailProvider {
                             // FROM 1.0.1
                             // Instantiate an NSTextField to display the NSAttributedString render of the YAML,
                             // and extend the size of its frame
-                            tagTextField = NSTextField.init(labelWithAttributedString: NSAttributedString.init(string: "YAML", attributes: tagAtts))
-                            tagTextField!.frame = tagFrame!
-                        }
-
-                        // Generate the bitmap from the rendered YAML text view
-                        guard let imageRep: NSBitmapImageRep = yamlTextField.bitmapImageRepForCachingDisplay(in: yamlFrame) else { return false }
-
-                        // Draw into the bitmap first the YAML view...
-                        yamlTextField.cacheDisplay(in: yamlFrame, to: imageRep)
-
-                        // ...then the tag view
-                        if tagFrame != nil && tagTextField != nil {
-                            tagTextField!.cacheDisplay(in: tagFrame!, to: imageRep)
+                            let attrTag: NSAttributedString = NSAttributedString.init(string: "YAML", attributes: tagAtts)
+                            let tagTextField: NSTextField = NSTextField.init(labelWithAttributedString: attrTag)
+                            tagTextField.frame = tagFrame
+                            tagTextField.cacheDisplay(in: tagFrame, to: imageRep)
                         }
 
                         return imageRep.draw(in: thumbnailFrame)

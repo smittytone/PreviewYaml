@@ -350,7 +350,7 @@ final class AppDelegate: NSObject,
             }
         }
         
-        // Select the current font
+        // Select the current font outside of the menu build loop
         if selectedItem != nil  {
             self.codeFontPopup.select(selectedItem!)
         }
