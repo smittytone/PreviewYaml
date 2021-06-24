@@ -107,11 +107,7 @@ final class AppDelegate: NSObject,
         self.window.makeKeyAndOrderFront(self)
 
         // Show the 'What's New' panel if we need to
-        // (and set up the WKWebBiew: no elasticity, horizontal scroller)
         // NOTE Has to take place at the end of the function
-        self.whatsNewWebView.enclosingScrollView?.hasHorizontalScroller = false
-        self.whatsNewWebView.enclosingScrollView?.horizontalScrollElasticity = .none
-        self.whatsNewWebView.enclosingScrollView?.verticalScrollElasticity = .none
         doShowWhatsNew(self)
     }
 
@@ -520,7 +516,12 @@ final class AppDelegate: NSObject,
         // Configure and show the sheet: first, get the folder path
         if doShowSheet {
             let htmlFolderPath = Bundle.main.resourcePath! + "/new"
-
+            
+            // Set up the WKWebBiew: no elasticity, horizontal scroller
+            self.whatsNewWebView.enclosingScrollView?.hasHorizontalScroller = false
+            self.whatsNewWebView.enclosingScrollView?.horizontalScrollElasticity = .none
+            self.whatsNewWebView.enclosingScrollView?.verticalScrollElasticity = .none
+            
             // Just in case, make sure we can load the file
             if FileManager.default.fileExists(atPath: htmlFolderPath) {
                 let htmlFileURL = URL.init(fileURLWithPath: htmlFolderPath + "/new.html")
