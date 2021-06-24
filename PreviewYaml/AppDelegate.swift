@@ -10,7 +10,6 @@
 import Cocoa
 import CoreServices
 import WebKit
-import UniformTypeIdentifiers
 
 
 @main
@@ -91,7 +90,7 @@ final class AppDelegate: NSObject,
         registerPreferences()
         
         // Get the local UTI for Yaml files
-        self.localYamlUTI = getLocalYamlUTI()
+        self.localYamlUTI = getLocalFileUTI(BUFFOON_CONSTANTS.SAMPLE_UTI_FILE)
 
         // Add the app's version number to the UI
         let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
@@ -743,46 +742,6 @@ final class AppDelegate: NSObject,
         }
 
         return nil
-    }
-
-
-    /**
-     Determine the UTI of a sample YAML file stored in the Bundle.
-
-     Used for debugging and relayed via the feedback sheet, if used.
-
-     - Returns: The YAML file UTI.
-     */
-    private func getLocalYamlUTI() -> String {
-        
-        // This is not PII. It used solely for debugging purposes
-        
-        var localYamlUTI: String = "NONE"
-        let samplePath = Bundle.main.resourcePath! + "/sample.yml"
-        
-        if FileManager.default.fileExists(atPath: samplePath) {
-            // Create a URL reference to the sample file
-            let sampleURL = URL.init(fileURLWithPath: samplePath)
-            
-            do {
-                // Read back the UTI from the URL
-                // FROM 1.0.1
-                // Use Big Sur's UTType API if available
-                if #available(macOS 11, *) {
-                    if let uti: UTType = try sampleURL.resourceValues(forKeys: [.contentTypeKey]).contentType {
-                        localYamlUTI = uti.identifier
-                    }
-                } else {
-                    if let uti: String = try sampleURL.resourceValues(forKeys: [.typeIdentifierKey]).typeIdentifier {
-                        localYamlUTI = uti
-                    }
-                }
-            } catch {
-                // NOP
-            }
-        }
-        
-        return localYamlUTI
     }
 
 }
