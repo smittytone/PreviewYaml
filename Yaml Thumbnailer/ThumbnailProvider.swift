@@ -130,12 +130,14 @@ class ThumbnailProvider: QLThumbnailProvider {
                             // FROM 1.0.1
                             // Instantiate an NSTextField to display the NSAttributedString render of the YAML,
                             // and extend the size of its frame
-                            let attrTag: NSAttributedString = NSAttributedString.init(string: "YAML", attributes: tagAtts)
-                            let tagTextField: NSTextField = NSTextField.init(labelWithAttributedString: attrTag)
+                            let tag: NSAttributedString = NSAttributedString.init(string: "YAML", attributes: tagAtts)
+                            let tagTextField: NSTextField = NSTextField.init(labelWithAttributedString: tag)
                             tagTextField.frame = tagFrame
                             tagTextField.cacheDisplay(in: tagFrame, to: imageRep)
                         }
 
+                        // This is the drawing block. It returns true (thumbnail drawn into current context)
+                        // or false (thumbnail not drawn)
                         return imageRep.draw(in: thumbnailFrame)
                     } catch {
                         // NOP: fall through to error
