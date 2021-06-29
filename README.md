@@ -43,6 +43,7 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 * 1.1.0 *Unreleased*
     * Allow any installed monospace font to be selected.
     * Allow any colour to be chosen using macOS’ colour picker.
+    * Indent multi-line text.
     * Tighten thumbnail rendering code.
     * Link to [PreviewCode](https://smittytone.net/previewcode/index.html).
 * 1.0.1 *18 June 2021*
