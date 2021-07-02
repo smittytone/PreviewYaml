@@ -54,6 +54,7 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var codeIndentPopup: NSPopUpButton!
     // FROM 1.1.0
     @IBOutlet weak var codeColorWell: NSColorWell!
+    @IBOutlet weak var codeStylePopup: NSPopUpButton!
 
     // What's New Sheet
     @IBOutlet weak var whatsNewWindow: NSWindow!
@@ -77,7 +78,7 @@ final class AppDelegate: NSObject,
     private var feedbackPath: String = MNU_SECRETS.ADDRESS.A
 
     // FROM 1.1.0
-    internal var codeFonts: [String] = []
+    internal var codeFonts: [PMFont] = []
     private  var codeFontName: String = BUFFOON_CONSTANTS.CODE_FONT_NAME
     private  var codeColourHex: String = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
     private  var codeFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
@@ -321,61 +322,15 @@ final class AppDelegate: NSObject,
         // FROM 1.1.0
         // Set the font name popup
         // List the current system's monospace fonts
-        var selectedItem: NSMenuItem? = nil
-
-        /*
-        //self.codeFontPopup.selectItem(at: fontIndex)
-        let fm: NSFontManager = NSFontManager.shared
-
         self.codeFontPopup.removeAllItems()
-        if let fonts: [String] = fm.availableFontNames(with: .fixedPitchFontMask) {
-            for font in fonts {
-                if font.hasPrefix(".") || font == "AppleColorEmoji" || (font as NSString).hasPrefix("AppleBraille") {
-                    continue
-                }
-                
-                // Set the font's display name...
-                var fontDisplayName: String? = nil
-                if let namedFont: NSFont = NSFont.init(name: font, size: self.codeFontSize) {
-                    fontDisplayName = namedFont.displayName
-                } else {
-                    fontDisplayName = font.replacingOccurrences(of: "-", with: " ")
-                }
-                
-                // ...and add it to the popup
-                self.codeFontPopup.addItem(withTitle: fontDisplayName!)
-                
-                // Retain the font's PostScript name for use later
-                if let addedMenuItem: NSMenuItem = self.codeFontPopup.lastItem {
-                    addedMenuItem.representedObject = font
-                    
-                    if self.codeFontName == font {
-                        selectedItem = addedMenuItem
-                    }
-                }
-            }
-        }
-        */
-
-        for i: Int in stride(from: 0, through: self.codeFonts.count - 1, by: 2) {
-            self.codeFontPopup.addItem(withTitle: self.codeFonts[i + 1])
-
-            // Retain the font's PostScript name for use later
-            if let addedMenuItem: NSMenuItem = self.codeFontPopup.lastItem {
-                addedMenuItem.representedObject = self.codeFonts[i]
-
-                if self.codeFonts[i] == self.codeFontName {
-                    selectedItem = addedMenuItem
-                }
-            }
+        for i: Int in 0..<self.codeFonts.count {
+            let font: PMFont = self.codeFonts[i]
+            self.codeFontPopup.addItem(withTitle: font.displayName)
         }
 
-        
-        // Select the current font outside of the menu build loop
-        if selectedItem != nil  {
-            self.codeFontPopup.select(selectedItem!)
-        }
-        
+        self.codeStylePopup.isEnabled = false
+        selectFontByPostScriptName(self.codeFontName)
+
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
     }
@@ -394,6 +349,21 @@ final class AppDelegate: NSObject,
     }
 
 
+    /**
+     Called when the user selects a font from either list.
+
+     FROM 1.1.0
+
+     - Parameters:
+        - sender: The source of the action.
+     */
+    @IBAction private func doUpdateFonts(sender: Any) {
+        
+        // Update the menu of available styles
+        setStylePopup()
+    }
+
+    
     /**
         Close the **Preferences** sheet without saving.
 
@@ -435,6 +405,9 @@ final class AppDelegate: NSObject,
                 defaults.setValue(fontIndex,
                                   forKey: "com-bps-previewyaml-code-font-index")
             }
+             
+            // Set this here for now
+            defaults.setValue(CGFloat(32.0), forKey: "com-bps-previewyaml-thumb-font-size")
             */
             
             let newColour: String = self.codeColorWell.color.hexString
@@ -450,10 +423,6 @@ final class AppDelegate: NSObject,
                                   forKey: "com-bps-previewyaml-base-font-size")
             }
             
-            // FROM 1.1.0 -- don't keep setting this
-            // Set this here for now
-            // defaults.setValue(CGFloat(32.0), forKey: "com-bps-previewyaml-thumb-font-size")
-
             var state: Bool = self.useLightCheckbox.state == .on
             if self.doShowLightBackground != state {
                 defaults.setValue(state,
@@ -481,16 +450,17 @@ final class AppDelegate: NSObject,
             let indents: [Int] = [1, 2, 4, 8]
             let indent: Int = indents[self.codeIndentPopup.indexOfSelectedItem]
             if self.indentDepth != indent {
-                defaults.setValue(indent, forKey: "com-bps-previewyaml-yaml-indent")
+                defaults.setValue(indent,
+                                  forKey: "com-bps-previewyaml-yaml-indent")
             }
             
             // FROM 1.1.0
             // Set the chosen font if it has changed
-            if let selectedMenuItem: NSMenuItem = self.codeFontPopup.selectedItem {
-                let selectedName: String = selectedMenuItem.representedObject as! String
-                if selectedName != self.codeFontName {
-                    self.codeFontName = selectedName
-                    defaults.setValue(selectedName, forKey: "com-bps-previewyaml-base-font-name")
+            if let fontName: String = getPostScriptName() {
+                if fontName != self.codeFontName {
+                    self.codeFontName = fontName
+                    defaults.setValue(fontName,
+                                      forKey: "com-bps-previewyaml-base-font-name")
                 }
             }
 
