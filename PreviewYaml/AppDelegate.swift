@@ -64,28 +64,36 @@ final class AppDelegate: NSObject,
     // private var previewCodeColour: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
     // private var previewCodeFont: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
     internal var whatsNewNav: WKNavigation? = nil
-    private var feedbackTask: URLSessionTask? = nil
-    private var indentDepth: Int = BUFFOON_CONSTANTS.YAML_INDENT
-    private var localYamlUTI: String = "N/A"
-    private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
-    private var doShowLightBackground: Bool = false
-    private var doShowTag: Bool = false
-    private var doShowRawYaml: Bool = false
-    private var doIndentScalars: Bool = false
+    private  var feedbackTask: URLSessionTask? = nil
+    private  var indentDepth: Int = BUFFOON_CONSTANTS.YAML_INDENT
+    private  var localYamlUTI: String = "N/A"
+    private  var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
+    private  var doShowLightBackground: Bool = false
+    private  var doShowTag: Bool = false
+    private  var doShowRawYaml: Bool = false
+    private  var doIndentScalars: Bool = false
     
     // FROM 1.0.1
     private var feedbackPath: String = MNU_SECRETS.ADDRESS.A
 
     // FROM 1.1.0
-    private var codeFontName: String = BUFFOON_CONSTANTS.CODE_FONT_NAME
-    private var codeColourHex: String = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
-    private var codeFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+    internal var codeFonts: [String] = []
+    private  var codeFontName: String = BUFFOON_CONSTANTS.CODE_FONT_NAME
+    private  var codeColourHex: String = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+    private  var codeFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+
     
 
     // MARK:- Class Lifecycle Functions
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         
+        // FROM 1.1.0
+        // Asynchronously get the list of code fonts
+        DispatchQueue.init(label: "com.bps.previewyaml.async-queue").async {
+            self.asyncGetFonts()
+        }
+
         // Set application group-level defaults
         registerPreferences()
         
@@ -313,9 +321,12 @@ final class AppDelegate: NSObject,
         // FROM 1.1.0
         // Set the font name popup
         // List the current system's monospace fonts
+        var selectedItem: NSMenuItem? = nil
+
+        /*
         //self.codeFontPopup.selectItem(at: fontIndex)
         let fm: NSFontManager = NSFontManager.shared
-        var selectedItem: NSMenuItem? = nil
+
         self.codeFontPopup.removeAllItems()
         if let fonts: [String] = fm.availableFontNames(with: .fixedPitchFontMask) {
             for font in fonts {
@@ -344,6 +355,21 @@ final class AppDelegate: NSObject,
                 }
             }
         }
+        */
+
+        for i: Int in stride(from: 0, through: self.codeFonts.count - 1, by: 2) {
+            self.codeFontPopup.addItem(withTitle: self.codeFonts[i + 1])
+
+            // Retain the font's PostScript name for use later
+            if let addedMenuItem: NSMenuItem = self.codeFontPopup.lastItem {
+                addedMenuItem.representedObject = self.codeFonts[i]
+
+                if self.codeFonts[i] == self.codeFontName {
+                    selectedItem = addedMenuItem
+                }
+            }
+        }
+
         
         // Select the current font outside of the menu build loop
         if selectedItem != nil  {
