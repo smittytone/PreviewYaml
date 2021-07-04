@@ -16,6 +16,7 @@ You can alter some of the key elements of the preview by using the **Preferences
 
 - The colour of keys, selected using the macOS colour picker.
 - The preview’s font, which you can now choose from all the monospace fonts installed on your system.
+- The preview’s font style, eg. regular, bold, italic etc.
 - The preview’s text size, from 10pt to 28pt.
 - Level of indentation: 1, 2, 4 or 8 spaces.
 - Whether preview should be display white-on-black even in macOS’ Dark Mode.
@@ -42,7 +43,8 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 * 1.1.0 *Unreleased*
     * Allow any installed monospace font to be selected.
-    * Allow any colour to be chosen using macOS’ colour picker.
+    * Allow any font style to be applied.
+    * Allow any key colour to be chosen using macOS’ colour picker.
     * Indent multi-line text.
     * Tighten thumbnail rendering code.
     * Link to [PreviewCode](https://smittytone.net/previewcode/index.html).
