@@ -307,8 +307,11 @@ extension AppDelegate {
     
     /**
      Build and enable the font style popup.
+
+     - Parameters:
+        - styleName: The name of currently selected style, or nil to select the first one
      */
-    internal func setStylePopup() {
+    internal func setStylePopup(_ styleName: String? = nil) {
         
         if let selectedFamily: String = self.codeFontPopup.titleOfSelectedItem {
             self.codeStylePopup.removeAllItems()
@@ -318,6 +321,10 @@ extension AppDelegate {
                         self.codeStylePopup.isEnabled = true
                         for style: PMFont in styles {
                             self.codeStylePopup.addItem(withTitle: style.styleName)
+                        }
+
+                        if styleName != nil {
+                            self.codeStylePopup.selectItem(withTitle: styleName!)
                         }
                     }
                 }
@@ -340,7 +347,7 @@ extension AppDelegate {
                 for style: PMFont in styles {
                     if style.postScriptName == postScriptName {
                         self.codeFontPopup.selectItem(withTitle: family.displayName)
-                        setStylePopup()
+                        setStylePopup(style.styleName)
                     }
                 }
             }
