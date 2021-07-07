@@ -22,7 +22,17 @@ class ThumbnailProvider: QLThumbnailProvider {
     // MARK:- Private Properties
 
     // FROM 1.0.1
-    private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
+    private let appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
+    
+    // FROM 1.1.0
+    // Add Errors the may be returned by autoreleasepool closure
+    private enum ThumbnailerError: Error {
+        case badFileLoad(String)
+        case badFileUnreadable(String)
+        case badGfxBitmap
+        case badGfxDraw
+    }
+
 
 
     // MARK:- Lifecycle Required Functions
@@ -75,7 +85,7 @@ class ThumbnailProvider: QLThumbnailProvider {
 
         handler(QLThumbnailReply.init(contextSize: thumbnailFrame.size) { () -> Bool in
             // Place all the remaining code within the closure passed to 'handler()'
-            //let success = autoreleasepool { () -> Bool in
+            let result: Result<Bool, ThumbnailerError> = autoreleasepool { () -> Result<Bool, ThumbnailerError> in
                 // Load the source file using a co-ordinator as we don't know what thread this function
                 // will be executed in when it's called by macOS' QuickLook code
                 if FileManager.default.isReadableFile(atPath: request.fileURL.path) {
@@ -84,7 +94,9 @@ class ThumbnailProvider: QLThumbnailProvider {
                         // Get the file contents as a string, making sure it's not cached
                         // as we're not going to read it again any time soon
                         let data: Data = try Data.init(contentsOf: request.fileURL, options: [.uncached])
-                        guard let yamlFileString: String = String.init(data: data, encoding: .utf8) else { return false }
+                        guard let yamlFileString: String = String.init(data: data, encoding: .utf8) else {
+                            return .failure(ThumbnailerError.badFileLoad(request.fileURL.path))
+                        }
 
                         // Get the Attributed String
                         let yamlAttString: NSAttributedString = getAttributedString(yamlFileString, true)
@@ -102,7 +114,9 @@ class ThumbnailProvider: QLThumbnailProvider {
                         yamlTextField.frame = yamlFrame
                         
                         // Generate the bitmap from the rendered YAML text view
-                        guard let imageRep: NSBitmapImageRep = yamlTextField.bitmapImageRepForCachingDisplay(in: yamlFrame) else { return false }
+                        guard let imageRep: NSBitmapImageRep = yamlTextField.bitmapImageRepForCachingDisplay(in: yamlFrame) else {
+                            return .failure(ThumbnailerError.badGfxBitmap)
+                        }
 
                         // Draw into the bitmap first the YAML view...
                         yamlTextField.cacheDisplay(in: yamlFrame, to: imageRep)
@@ -136,52 +150,42 @@ class ThumbnailProvider: QLThumbnailProvider {
                             tagTextField.cacheDisplay(in: tagFrame, to: imageRep)
                         }
 
-                        // This is the drawing block. It returns true (thumbnail drawn into current context)
-                        // or false (thumbnail not drawn)
-                        return imageRep.draw(in: thumbnailFrame)
+                        // Draw the bitmap into the current context
+                        let drawResult = imageRep.draw(in: thumbnailFrame)
+                        if drawResult {
+                            return .success(true)
+                        } else {
+                            return .failure(ThumbnailerError.badGfxDraw)
+                        }
                     } catch {
                         // NOP: fall through to error
                     }
                 }
 
-                // We didn't draw anything because of an error
+                // We didn't draw anything because of 'can't find file' error
                 // NOTE Technically we should call 'handler(nil, error)'
-                return false
-            //}
+                return .failure(ThumbnailerError.badFileUnreadable(request.fileURL.path))
+            }
 
-            // Pass the outcome up from out of the autorelease
-            // pool code to the handler
-            //return success
+            // FROM 1.1.0
+            // Pass the outcome up from out of the autorelease pool code
+            // to the handler as a bool, logging an error if appropriate
+            switch result {
+                case .success(_):
+                    return true
+                case .failure(let error):
+                    switch error {
+                        case .badFileUnreadable(let filePath):
+                            NSLog("Could not access file \(filePath)")
+                        case .badFileLoad(let filePath):
+                            NSLog("Could not render file \(filePath)")
+                        default:
+                            NSLog("Could not render thumbnail")
+                    }
+            }
+
+            return false
         }, nil)
     }
 
-    /*
-    // MARK:- Misc Functions
-
-    /**
-     Create an attributed string for a file icon tag.
-
-     - Parameters:
-        - tag:   The text of the tag.
-        - width: The fractional pixel width we need to tag to fit into.
-
-     - Returns: The tag as an NSAttributedString.
-     */
-    func getTagString(_ tag: String, _ width: CGFloat) -> NSAttributedString {
-
-        // Set the paragraph style we'll use -- just centred text
-        let style: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
-        style.alignment = .center
-
-        // Build the tag's string attributes
-        let tagAtts: [NSAttributedString.Key: Any] = [
-            .paragraphStyle: style as NSParagraphStyle,
-            .font: NSFont.systemFont(ofSize: CGFloat(BUFFOON_CONSTANTS.TAG_TEXT_SIZE)),
-            .foregroundColor: NSColor.init(red: 0.00, green: 0.49, blue: 0.47, alpha: 1.0)
-        ]
-
-        // Return the attributed string built from the tag
-        return NSAttributedString.init(string: tag, attributes: tagAtts)
-    }
-    */
 }
