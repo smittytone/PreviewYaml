@@ -21,9 +21,6 @@ class ThumbnailProvider: QLThumbnailProvider {
 
     // MARK:- Private Properties
 
-    // FROM 1.0.1
-    private let appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
-    
     // FROM 1.1.0
     // Add Errors the may be returned by autoreleasepool closure
     private enum ThumbnailerError: Error {
@@ -54,9 +51,9 @@ class ThumbnailProvider: QLThumbnailProvider {
 
         // Get the preference for showing a tag and do it once so it
         // only ever needs to be read from the property from this point on
-        if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            defaults.synchronize()
-            self.doShowTag = defaults.bool(forKey: "com-bps-previewyaml-do-show-tag")
+        if let prefs = UserDefaults(suiteName: MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME) {
+            prefs.synchronize()
+            self.doShowTag = prefs.bool(forKey: "com-bps-previewyaml-do-show-tag")
         }
     }
 
