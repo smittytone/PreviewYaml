@@ -278,7 +278,6 @@ final class AppDelegate: NSObject,
         // The suite name is the app group name, set in each the entitlements file of
         // the host app and of each extension
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            //self.previewCodeFont = defaults.integer(forKey: "com-bps-previewyaml-code-font-index")
             self.codeFontSize = CGFloat(defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
             self.indentDepth = defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
             
@@ -313,11 +312,6 @@ final class AppDelegate: NSObject,
         // self.codeColourPopup.selectItem(at: self.previewCodeColour)
         NSColorPanel.setPickerMode(.RGB)
         self.codeColorWell.color = NSColor.hexToColour(self.codeColourHex)
-        
-        /* REMOVE IN 1.1.0
-        var fontIndex: Int = self.previewCodeFont + 1
-        if fontIndex > 7 { fontIndex += 2 }
-        */
         
         // FROM 1.1.0
         // Set the font name popup
@@ -392,24 +386,6 @@ final class AppDelegate: NSObject,
     @IBAction private func doSavePreferences(sender: Any) {
 
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            /* REMOVE IN 1.1.0
-            if self.codeColourPopup.indexOfSelectedItem != self.previewCodeColour {
-                defaults.setValue(self.codeColourPopup.indexOfSelectedItem,
-                                  forKey: "com-bps-previewyaml-code-colour-index")
-            }
-            
-            // Decode the font menu index value into a font list index
-            var fontIndex: Int = self.codeFontPopup.indexOfSelectedItem - 1
-            if fontIndex > 6 { fontIndex -= 2 }
-            if fontIndex != self.previewCodeFont {
-                defaults.setValue(fontIndex,
-                                  forKey: "com-bps-previewyaml-code-font-index")
-            }
-             
-            // Set this here for now
-            defaults.setValue(CGFloat(32.0), forKey: "com-bps-previewyaml-thumb-font-size")
-            */
-            
             let newColour: String = self.codeColorWell.color.hexString
             if newColour != self.codeColourHex {
                 self.codeColourHex = newColour
@@ -585,15 +561,6 @@ final class AppDelegate: NSObject,
                                   forKey: "com-bps-previewyaml-thumb-font-size")
             }
             
-            /* REMOVE IN 1.1.0
-            // Default: 0 (purple)
-            let codeColourDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-code-colour-index")
-            if codeColourDefault == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR_INDEX,
-                                  forKey: "com-bps-previewyaml-code-colour-index")
-            }
-            */
-            
             // FROM 1.1.0
             // Colour of code blocks in the preview, stored as in integer array index
             // Default: #007D78FF
@@ -602,16 +569,6 @@ final class AppDelegate: NSObject,
                 defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR_HEX,
                                   forKey: "com-bps-previewyaml-code-colour-hex")
             }
-            
-            /* REMOVE IN 1.1.0
-            // Font for code blocks in the preview, stored as in integer array index
-            // Default: 0 (Andale Mono)
-            let codeFontDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-code-font-index")
-            if codeFontDefault == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.CODE_FONT_INDEX,
-                                  forKey: "com-bps-previewyaml-code-font-index")
-            }
-            */
             
             // FROM 1.1.0
             // Font for previews and thumbnails
