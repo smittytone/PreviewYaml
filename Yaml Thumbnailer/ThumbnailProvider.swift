@@ -13,14 +13,11 @@ import Cocoa
 
 class ThumbnailProvider: QLThumbnailProvider {
 
-    // MARK:- Public Properties
-
-    // Add key required values to self
-    var doShowTag: Bool = true
-
-
     // MARK:- Private Properties
-
+    
+    // Add key required values to self
+    private var doShowTag: Bool = true
+    
     // FROM 1.1.0
     // Add Errors the may be returned by autoreleasepool closure
     private enum ThumbnailerError: Error {
@@ -45,14 +42,9 @@ class ThumbnailProvider: QLThumbnailProvider {
         // what operations it performs
         super.init()
 
-        // Set the base values once per instantiation, not every
-        // time a string is rendered (which risks a race condition)
-        setBaseValues(true)
-
         // Get the preference for showing a tag and do it once so it
         // only ever needs to be read from the property from this point on
         if let prefs = UserDefaults(suiteName: MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME) {
-            prefs.synchronize()
             self.doShowTag = prefs.bool(forKey: "com-bps-previewyaml-do-show-tag")
         }
     }
@@ -94,9 +86,12 @@ class ThumbnailProvider: QLThumbnailProvider {
                         guard let yamlFileString: String = String.init(data: data, encoding: .utf8) else {
                             return .failure(ThumbnailerError.badFileLoad(request.fileURL.path))
                         }
+                        
+                        // Instatiate the common code
+                        let common: Common = Common.init(true)
 
                         // Get the Attributed String
-                        let yamlAttString: NSAttributedString = getAttributedString(yamlFileString, true)
+                        let yamlAttString: NSAttributedString = common.getAttributedString(yamlFileString)
 
                         // Set the primary drawing frame and a base font size
                         let yamlFrame: CGRect = CGRect.init(x: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X,

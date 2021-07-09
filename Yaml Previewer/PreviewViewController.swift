@@ -26,9 +26,6 @@ class PreviewViewController: NSViewController,
         return NSNib.Name("PreviewViewController")
     }
 
-    // FROM 1.3.1
-    private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
-
     
     // MARK:- QLPreviewingController Required Functions
 
@@ -42,14 +39,7 @@ class PreviewViewController: NSViewController,
         var reportError: NSError? = nil
         
         // Set the base values
-        setBaseValues(false)
-        
-        // Does the user want a light background in dark mode?
-        var doShowLightBackground: Bool = false
-        if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            defaults.synchronize()
-            doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
-        }
+        let common: Common = Common.init(false)
         
         // Load the source file using a co-ordinator as we don't know what thread this function
         // will be executed in when it's called by macOS' QuickLook code
@@ -60,7 +50,7 @@ class PreviewViewController: NSViewController,
                 let data: Data = try Data.init(contentsOf: url, options: [.uncached])
                 if let yamlFileString: String = String.init(data: data, encoding: .utf8) {
                     // Get the key string first
-                    let yamlAttString: NSAttributedString = getAttributedString(yamlFileString, false)
+                    let yamlAttString: NSAttributedString = common.getAttributedString(yamlFileString)
                     
                     // Knock back the light background to make the scroll bars visible in dark mode
                     // NOTE If !doShowLightBackground,
@@ -68,8 +58,8 @@ class PreviewViewController: NSViewController,
                     //      If doShowLightBackground,
                     //              in light mode, the scrollers show up light-on-light, in dark mode light-on-dark
                     // NOTE Changing the scrollview scroller knob style has no effect
-                    self.renderTextView.backgroundColor = doShowLightBackground ? NSColor.init(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
-                    self.renderTextScrollView.scrollerKnobStyle = doShowLightBackground ? .dark : .light
+                    self.renderTextView.backgroundColor = common.doShowLightBackground ? NSColor.init(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
+                    self.renderTextScrollView.scrollerKnobStyle = common.doShowLightBackground ? .dark : .light
 
                     if let renderTextStorage: NSTextStorage = self.renderTextView.textStorage {
                         /*
@@ -119,6 +109,42 @@ class PreviewViewController: NSViewController,
         
         // Hand control back to QuickLook
         handler(nil)
+    }
+    
+    
+    // MARK:- Misc Functions
+
+    /**
+     Generate an NSError for an internal error, specified by its code.
+
+     Codes are listed in `Constants.swift`
+
+     - Parameters:
+        - code: The internal error code.
+
+     - Returns: The described error as an NSError.
+     */
+    func setError(_ code: Int) -> NSError {
+        
+        var errDesc: String
+        
+        switch(code) {
+        case BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE:
+            errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_INACCESSIBLE
+        case BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN:
+            errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_WONT_OPEN
+        case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING:
+            errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING
+        case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING:
+            errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_MD_STRING
+        default:
+            errDesc = "UNKNOWN ERROR"
+        }
+
+        let bundleID = Bundle.main.object(forInfoDictionaryKey: "CFBundleID") as! String
+        return NSError(domain: bundleID,
+                       code: code,
+                       userInfo: [NSLocalizedDescriptionKey: errDesc])
     }
 
 }
