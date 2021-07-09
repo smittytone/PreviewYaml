@@ -20,6 +20,7 @@ final class Common: NSObject {
     // MARK: - Public Properties
     
     var doShowLightBackground: Bool   = false
+    var doShowTag: Bool               = true
     
     
     // MARK: - Private Properties
@@ -52,6 +53,7 @@ final class Common: NSObject {
             self.doIndentScalars       = prefs.bool(forKey: "com-bps-previewyaml-do-indent-scalars")
             self.doShowRawYaml         = prefs.bool(forKey: "com-bps-previewyaml-show-bad-yaml")
             self.doShowLightBackground = prefs.bool(forKey: "com-bps-previewyaml-do-use-light")
+            self.doShowTag             = prefs.bool(forKey: "com-bps-previewyaml-do-show-tag")
             self.yamlIndent            = isThumbnail ? 2 : prefs.integer(forKey: "com-bps-previewyaml-yaml-indent")
             
             fontBaseSize = CGFloat(isThumbnail

@@ -15,9 +15,6 @@ class ThumbnailProvider: QLThumbnailProvider {
 
     // MARK:- Private Properties
     
-    // Add key required values to self
-    private var doShowTag: Bool = true
-    
     // FROM 1.1.0
     // Add Errors the may be returned by autoreleasepool closure
     private enum ThumbnailerError: Error {
@@ -28,28 +25,6 @@ class ThumbnailProvider: QLThumbnailProvider {
     }
 
 
-
-    // MARK:- Lifecycle Required Functions
-
-    override init() {
-
-        /*
-         * Override the init() function so that we can do crucial
-         * setup in a thread-friendly way and avoid race conditions
-         */
-
-        // Must call the super class because we don't know
-        // what operations it performs
-        super.init()
-
-        // Get the preference for showing a tag and do it once so it
-        // only ever needs to be read from the property from this point on
-        if let prefs = UserDefaults(suiteName: MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME) {
-            self.doShowTag = prefs.bool(forKey: "com-bps-previewyaml-do-show-tag")
-        }
-    }
-
-
     // MARK:- QLThumbnailProvider Required Functions
 
     override func provideThumbnail(for request: QLFileThumbnailRequest, _ handler: @escaping (QLThumbnailReply?, Error?) -> Void) {
@@ -57,10 +32,6 @@ class ThumbnailProvider: QLThumbnailProvider {
         /*
          * This is the main entry point for the macOS thumbnailing system
          */
-        
-        // FROM 1.1.0
-        // Pull in 'self' values to save including them in closures
-        let showTag = self.doShowTag
         
         // Set the thumbnail frame
         // NOTE This is always square, with height matched to width, so adjust
@@ -115,7 +86,7 @@ class ThumbnailProvider: QLThumbnailProvider {
 
                         // Also generate text for the bottom-of-thumbnail file type tag,
                         // if the user has this set as a preference
-                        if showTag {
+                        if common.doShowTag {
                             // Define the frame of the tag area
                             let tagFrame: CGRect = CGRect.init(x: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X,
                                                                y: BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_Y,
