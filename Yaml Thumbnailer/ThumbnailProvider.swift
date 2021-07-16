@@ -45,7 +45,9 @@ class ThumbnailProvider: QLThumbnailProvider {
 
         handler(QLThumbnailReply.init(contextSize: thumbnailFrame.size) { () -> Bool in
             // Place all the remaining code within the closure passed to 'handler()'
-            let result: Result<Bool, ThumbnailerError> = autoreleasepool { () -> Result<Bool, ThumbnailerError> in
+            
+            // let result: Result<Bool, ThumbnailerError> = autoreleasepool { () -> Result<Bool, ThumbnailerError> in
+                
                 // Load the source file using a co-ordinator as we don't know what thread this function
                 // will be executed in when it's called by macOS' QuickLook code
                 if FileManager.default.isReadableFile(atPath: request.fileURL.path) {
@@ -55,7 +57,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                         // as we're not going to read it again any time soon
                         let data: Data = try Data.init(contentsOf: request.fileURL, options: [.uncached])
                         guard let yamlFileString: String = String.init(data: data, encoding: .utf8) else {
-                            return .failure(ThumbnailerError.badFileLoad(request.fileURL.path))
+                            return false //.failure(ThumbnailerError.badFileLoad(request.fileURL.path))
                         }
                         
                         // Instatiate the common code
@@ -75,10 +77,11 @@ class ThumbnailProvider: QLThumbnailProvider {
                         // and extend the size of its frame
                         let yamlTextField: NSTextField = NSTextField.init(labelWithAttributedString: yamlAttString)
                         yamlTextField.frame = yamlFrame
+                        yamlTextField.needsDisplay = true
                         
                         // Generate the bitmap from the rendered YAML text view
                         guard let imageRep: NSBitmapImageRep = yamlTextField.bitmapImageRepForCachingDisplay(in: yamlFrame) else {
-                            return .failure(ThumbnailerError.badGfxBitmap)
+                            return false //.failure(ThumbnailerError.badGfxBitmap)
                         }
 
                         // Draw into the bitmap first the YAML view...
@@ -111,15 +114,20 @@ class ThumbnailProvider: QLThumbnailProvider {
                             let tagTextField: NSTextField = NSTextField.init(labelWithAttributedString: tag)
                             tagTextField.frame = tagFrame
                             tagTextField.cacheDisplay(in: tagFrame, to: imageRep)
+                            tagTextField.needsDisplay = true
                         }
 
                         // Draw the bitmap into the current context
-                        let drawResult = imageRep.draw(in: thumbnailFrame)
+                        let drawResult: Bool = imageRep.draw(in: thumbnailFrame)
+                        CATransaction.commit()
+                        return drawResult
+                        /*
                         if drawResult {
                             return .success(true)
                         } else {
                             return .failure(ThumbnailerError.badGfxDraw)
                         }
+                        */
                     } catch {
                         // NOP: fall through to error
                     }
@@ -127,12 +135,13 @@ class ThumbnailProvider: QLThumbnailProvider {
 
                 // We didn't draw anything because of 'can't find file' error
                 // NOTE Technically we should call 'handler(nil, error)'
-                return .failure(ThumbnailerError.badFileUnreadable(request.fileURL.path))
-            }
+                // return .failure(ThumbnailerError.badFileUnreadable(request.fileURL.path))
+            //}
 
             // FROM 1.1.0
             // Pass the outcome up from out of the autorelease pool code
             // to the handler as a bool, logging an error if appropriate
+            /*
             switch result {
                 case .success(_):
                     return true
@@ -146,7 +155,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                             NSLog("Could not render thumbnail")
                     }
             }
-
+            */
             return false
         }, nil)
     }
