@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="17701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="18122" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="18122"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PreviewViewController" customModule="Yaml_Previewer" customModuleProvider="target">
             <connections>
+                <outlet property="errorReportField" destination="h1A-xI-wQ7" id="enk-hZ-Bzd"/>
                 <outlet property="renderTextScrollView" destination="ey1-91-qWo" id="phF-sv-VJy"/>
                 <outlet property="renderTextView" destination="rZ2-iI-Mjq" id="gcP-BH-Qb2"/>
                 <outlet property="view" destination="c22-O7-iKe" id="NRM-P4-wb6"/>
@@ -18,6 +20,18 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="272"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
+                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="h1A-xI-wQ7">
+                    <rect key="frame" x="-2" y="86" width="484" height="100"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="100" id="O6g-Zt-Gjr"/>
+                        <constraint firstAttribute="width" constant="480" id="jgP-Ak-Ktj"/>
+                    </constraints>
+                    <textFieldCell key="cell" selectable="YES" alignment="center" id="sqS-bx-eCw">
+                        <font key="font" usesAppearanceFont="YES"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
                 <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ey1-91-qWo">
                     <rect key="frame" x="0.0" y="0.0" width="480" height="272"/>
                     <clipView key="contentView" drawsBackground="NO" id="ult-w2-juG">
@@ -48,10 +62,12 @@
             <constraints>
                 <constraint firstItem="ey1-91-qWo" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" id="8Ab-S4-Orb"/>
                 <constraint firstItem="ey1-91-qWo" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" id="OaD-p1-Jh9"/>
+                <constraint firstItem="h1A-xI-wQ7" firstAttribute="centerY" secondItem="c22-O7-iKe" secondAttribute="centerY" id="o8A-ib-hTd"/>
+                <constraint firstItem="h1A-xI-wQ7" firstAttribute="centerX" secondItem="c22-O7-iKe" secondAttribute="centerX" id="rcS-kz-RTD"/>
                 <constraint firstAttribute="trailing" secondItem="ey1-91-qWo" secondAttribute="trailing" id="saj-WR-Frn"/>
                 <constraint firstAttribute="bottom" secondItem="ey1-91-qWo" secondAttribute="bottom" id="tUz-ri-Y4d"/>
             </constraints>
-            <point key="canvasLocation" x="-27" y="154"/>
+            <point key="canvasLocation" x="-27" y="172"/>
         </customView>
     </objects>
 </document>

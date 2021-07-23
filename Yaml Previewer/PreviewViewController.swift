@@ -18,6 +18,8 @@ class PreviewViewController: NSViewController,
 
     @IBOutlet var renderTextView: NSTextView!
     @IBOutlet var renderTextScrollView: NSScrollView!
+    // FROM 1.1.0
+    @IBOutlet var errorReportField: NSTextField!
     
     
     // MARK:- Public Properties
@@ -37,6 +39,12 @@ class PreviewViewController: NSViewController,
         
         // Get an error message ready for use
         var reportError: NSError? = nil
+        
+        // FROM 1.1.0
+        // Hide the error message field
+        self.errorReportField.stringValue = ""
+        self.errorReportField.isHidden = true
+        self.renderTextScrollView.isHidden = false
         
         // Set the base values
         let common: Common = Common.init(false)
@@ -70,18 +78,18 @@ class PreviewViewController: NSViewController,
                         renderTextStorage.beginEditing()
                         renderTextStorage.setAttributedString(yamlAttString)
                         renderTextStorage.endEditing()
-                    } else {
-                        handler(setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING))
+                        
+                        // Add the subview to the instance's own view and draw
+                        self.view.display()
+
+                        // Call the QLPreviewingController indicating no error
+                        // (argument is nil)
+                        handler(nil)
                         return
                     }
                     
-                    // Add the subview to the instance's own view and draw
-                    self.view.display()
-
-                    // Call the QLPreviewingController indicating no error
-                    // (argument is nil)
-                    handler(nil)
-                    return
+                    // We can't access the preview NSTextView's NSTextStorage
+                    reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
                 } else {
                     // We couldn't get the YAML string so set an appropriate error to report back
                     reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING)
@@ -94,6 +102,9 @@ class PreviewViewController: NSViewController,
             // We couldn't access the file so set an appropriate error to report back
             reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE)
         }
+
+        // Display the error locally in the window
+        showError(reportError!.userInfo[NSLocalizedDescriptionKey] as! String)
 
         // Call the QLPreviewingController indicating an error
         // (argumnet is not nil)
@@ -112,8 +123,24 @@ class PreviewViewController: NSViewController,
     }
     
     
-    // MARK:- Misc Functions
+    // MARK:- Utility Functions
+    
+    /**
+     Place an error message in its various outlets.
+     
+     - parameters:
+        - errString: The error message.
+     */
+    func showError(_ errString: String) {
 
+        NSLog("BUFFOON \(errString)")
+        self.errorReportField.stringValue = errString
+        self.errorReportField.isHidden = false
+        self.renderTextScrollView.isHidden = true
+        self.view.display()
+    }
+    
+    
     /**
      Generate an NSError for an internal error, specified by its code.
 
@@ -141,8 +168,7 @@ class PreviewViewController: NSViewController,
             errDesc = "UNKNOWN ERROR"
         }
 
-        let bundleID = Bundle.main.object(forInfoDictionaryKey: "CFBundleID") as! String
-        return NSError(domain: bundleID,
+        return NSError(domain: "com.bps.PreviewYaml.Yaml-Thumbnailer",
                        code: code,
                        userInfo: [NSLocalizedDescriptionKey: errDesc])
     }
