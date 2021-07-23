@@ -47,6 +47,7 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
     * Allow any key colour to be chosen using macOS’ colour picker.
     * Indent multi-line text.
     * Tighten thumbnail rendering code.
+    * Fixed a rare bug in the previewer error reporting code.
     * Link to [PreviewCode](https://smittytone.net/previewcode/index.html).
 * 1.0.1 *18 June 2021*
     * Add links to other PreviewApps.
