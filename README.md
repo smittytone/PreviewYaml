@@ -41,7 +41,7 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 ## Release Notes
 
-* 1.1.0 *Unreleased*
+* 1.1.0 *28 July 2021*
     * Allow any installed monospace font to be selected.
     * Allow any font style to be applied.
     * Allow any key colour to be chosen using macOS’ colour picker.
