@@ -1,4 +1,4 @@
-# PreviewYaml 1.1.0
+# PreviewYaml 1.1.1
 
 App Extension-based macOS QuickLook previews and Finder thumbnails for [YAML](https://yaml.org) files.
 
@@ -41,6 +41,8 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 ## Release Notes
 
+* 1.1.1 *Unreleased*
+    * Disable selection of thumbnail tags under macOS 12 Monterey to avoid clash with system-added tags.
 * 1.1.0 *28 July 2021*
     * Allow any installed monospace font to be selected.
     * Allow any font style to be applied.
