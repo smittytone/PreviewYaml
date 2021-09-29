@@ -715,7 +715,7 @@ final class AppDelegate: NSObject,
     /**
      Get system and state information and record it for use during run.
      
-     FROM 1.4.1
+     FROM 1.1.1
      */
     private func recordSystemState() {
         
