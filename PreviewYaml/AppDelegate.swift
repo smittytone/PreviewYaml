@@ -55,6 +55,8 @@ final class AppDelegate: NSObject,
     // FROM 1.1.0
     @IBOutlet weak var codeColorWell: NSColorWell!
     @IBOutlet weak var codeStylePopup: NSPopUpButton!
+    // FROM 1.1.1
+    @IBOutlet weak var tagInfoTextField: NSTextField!
 
     // What's New Sheet
     @IBOutlet weak var whatsNewWindow: NSWindow!
@@ -82,7 +84,9 @@ final class AppDelegate: NSObject,
     private  var codeFontName: String = BUFFOON_CONSTANTS.CODE_FONT_NAME
     private  var codeColourHex: String = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
     private  var codeFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
-
+    
+    // FROM 1.1.1
+    private var isMontereyPlus: Bool = false
     
 
     // MARK:- Class Lifecycle Functions
@@ -97,6 +101,9 @@ final class AppDelegate: NSObject,
 
         // Set application group-level defaults
         registerPreferences()
+        
+        // FROM 1.1.1
+        recordSystemState()
         
         // Get the local UTI for Yaml files
         self.localYamlUTI = getLocalFileUTI(BUFFOON_CONSTANTS.SAMPLE_UTI_FILE)
@@ -324,6 +331,12 @@ final class AppDelegate: NSObject,
 
         self.codeStylePopup.isEnabled = false
         selectFontByPostScriptName(self.codeFontName)
+        
+        // FROM 1.1.1
+        // Hide tag selection on Monterey
+        self.doShowTagCheckbox.isEnabled = !self.isMontereyPlus
+        self.tagInfoTextField.isEnabled = !self.isMontereyPlus
+        self.tagInfoTextField.toolTip = "Not available in macOS 12.0 and up"
 
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
@@ -696,6 +709,19 @@ final class AppDelegate: NSObject,
         }
 
         return nil
+    }
+    
+    
+    /**
+     Get system and state information and record it for use during run.
+     
+     FROM 1.4.1
+     */
+    private func recordSystemState() {
+        
+        // First ensure we are running on Mojave or above - Dark Mode is not supported by earlier versons
+        let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
+        self.isMontereyPlus = (sysVer.majorVersion >= 12)
     }
 
 }

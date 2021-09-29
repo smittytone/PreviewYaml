@@ -41,6 +41,10 @@ class ThumbnailProvider: QLThumbnailProvider {
                                                 0.0,
                                                 CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ASPECT) * request.maximumSize.height,
                                                 request.maximumSize.height)
+        
+        // FROM 1.1.1
+        let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
+        let isMontereyPlus: Bool = (sysVer.majorVersion >= 12)
 
         handler(QLThumbnailReply.init(contextSize: thumbnailFrame.size) { (context) -> Bool in
             // Place all the remaining code within the closure passed to 'handler()'
@@ -88,7 +92,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                         // Also generate text for the bottom-of-thumbnail file type tag,
                         // if the user has this set as a preference
                         var tagImageRep: NSBitmapImageRep? = nil
-                        if common.doShowTag {
+                        if common.doShowTag && !isMontereyPlus {
                             // Define the frame of the tag area
                             let tagFrame: CGRect = NSMakeRect(CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X),
                                                               CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_Y),
@@ -134,11 +138,11 @@ class ThumbnailProvider: QLThumbnailProvider {
                         }
                         
                         // Add the tag
-                        scaleFrame = NSMakeRect(0.0,
-                                                0.0,
-                                                thumbnailFrame.width * iconScale,
-                                                thumbnailFrame.height * iconScale * 0.2)
                         if let image: CGImage = tagImageRep?.cgImage {
+                            scaleFrame = NSMakeRect(0.0,
+                                                    0.0,
+                                                    thumbnailFrame.width * iconScale,
+                                                    thumbnailFrame.height * iconScale * 0.2)
                             context.draw(image, in: scaleFrame, byTiling: false)
                         }
 
