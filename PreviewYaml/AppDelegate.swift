@@ -604,7 +604,7 @@ final class AppDelegate: NSObject,
             // Default: true
             let showTagDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-do-show-tag")
             if showTagDefault == nil {
-                defaults.setValue(true,
+                defaults.setValue(false,
                                   forKey: "com-bps-previewyaml-do-show-tag")
             }
 
