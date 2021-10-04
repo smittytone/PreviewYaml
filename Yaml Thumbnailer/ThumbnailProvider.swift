@@ -79,6 +79,8 @@ class ThumbnailProvider: QLThumbnailProvider {
                         // Instantiate an NSTextField to display the NSAttributedString render of the YAML,
                         // and extend the size of its frame
                         let yamlTextField: NSTextField = NSTextField.init(labelWithAttributedString: yamlAtts)
+                        yamlTextField.isEditable = false
+                        yamlTextField.isSelectable = false
                         yamlTextField.frame = yamlFrame
                         
                         // Generate the bitmap from the rendered YAML text view
@@ -115,6 +117,8 @@ class ThumbnailProvider: QLThumbnailProvider {
                             // and extend the size of its frame
                             let tag: NSAttributedString = NSAttributedString.init(string: "YAML", attributes: tagAtts)
                             let tagTextField: NSTextField = NSTextField.init(labelWithAttributedString: tag)
+                            tagTextField.isEditable = false
+                            tagTextField.isSelectable = false
                             tagTextField.frame = tagFrame
                             
                             // Draw the view into the bitmap
