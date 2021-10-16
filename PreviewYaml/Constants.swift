@@ -42,8 +42,8 @@ struct BUFFOON_CONSTANTS {
         static let FONT_SIZE                = 130.0
     }
 
-    static let BASE_PREVIEW_FONT_SIZE       = 16.0
-    static let BASE_THUMB_FONT_SIZE         = 28.0
+    static let BASE_PREVIEW_FONT_SIZE: Float    = 16.0
+    static let BASE_THUMB_FONT_SIZE: Float      = 22.0
 
     static let CODE_COLOUR_INDEX            = 0
     static let CODE_FONT_INDEX              = 2     // Helvetica
@@ -67,5 +67,5 @@ struct BUFFOON_CONSTANTS {
     static let SAMPLE_UTI_FILE              = "sample.yml"
 
     // FROM 1.1.1
-    static let THUMBNAIL_LINE_COUNT         = 36
+    static let THUMBNAIL_LINE_COUNT         = 38
 }

@@ -57,8 +57,8 @@ final class Common: NSObject {
             self.yamlIndent            = isThumbnail ? 2 : prefs.integer(forKey: "com-bps-previewyaml-yaml-indent")
             
             fontBaseSize = CGFloat(isThumbnail
-                                            ? prefs.float(forKey: "com-bps-previewyaml-thumb-font-size")
-                                            : prefs.float(forKey: "com-bps-previewyaml-base-font-size"))
+                                   ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE
+                                   : prefs.float(forKey: "com-bps-previewyaml-base-font-size"))
             
             // FROM 1.1.0
             fontBaseName          = prefs.string(forKey: "com-bps-previewyaml-base-font-name") ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
