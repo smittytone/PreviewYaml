@@ -66,6 +66,16 @@ class ThumbnailProvider: QLThumbnailProvider {
                         // Instatiate the common code
                         let common: Common = Common.init(true)
 
+                        // FROM 1.1.1
+                        // Only render the lines likely to appear in the thumbnail
+                        let lines: [String] = (yamlFileString as NSString).components(separatedBy: "\n")
+                        var shortString: String = ""
+                        for i in 0..<lines.count {
+                            // Break at first empty line after line THUMBNAIL_LINE_COUNT
+                            if i >= BUFFOON_CONSTANTS.THUMBNAIL_LINE_COUNT && lines[i].count == 0 { break }
+                            shortString += (lines[i] + "\n")
+                        }
+
                         // Get the Attributed String
                         let yamlAtts: NSAttributedString = common.getAttributedString(yamlFileString)
 

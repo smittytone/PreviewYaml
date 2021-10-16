@@ -65,4 +65,7 @@ struct BUFFOON_CONSTANTS {
     static let CODE_COLOUR_HEX              = "007D78FF"
     
     static let SAMPLE_UTI_FILE              = "sample.yml"
+
+    // FROM 1.1.1
+    static let THUMBNAIL_LINE_COUNT         = 36
 }
