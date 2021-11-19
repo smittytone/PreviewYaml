@@ -41,7 +41,7 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 ## Release Notes
 
-* 1.1.1 *Unreleased*
+* 1.1.1 *19 November 2021*
     * Disable selection of thumbnail tags under macOS 12 Monterey to avoid clash with system-added tags.
 * 1.1.0 *28 July 2021*
     * Allow any installed monospace font to be selected.
