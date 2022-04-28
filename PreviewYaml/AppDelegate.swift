@@ -3,7 +3,7 @@
  *  PreviewYaml
  *
  *  Created by Tony Smith on 22/04/2021.
- *  Copyright © 2021 Tony Smith. All rights reserved.
+ *  Copyright © 2022 Tony Smith. All rights reserved.
  */
 
 
@@ -334,12 +334,15 @@ final class AppDelegate: NSObject,
         
         // FROM 1.1.1
         // Hide tag selection on Monterey
-        self.doShowTagCheckbox.isEnabled = !self.isMontereyPlus
         if self.isMontereyPlus {
             self.doShowTagCheckbox.toolTip = "Not available in macOS 12.0 and up"
             self.tagInfoTextField.stringValue = "macOS 12.0 Monterey adds its own thumbnail file extension tags, so this option is no longer available."
         }
-
+        
+        // FROM 1.1.2 -- hide this option, don't just disable it
+        self.doShowTagCheckbox.isHidden = self.isMontereyPlus
+        self.tagInfoTextField.isHidden = self.isMontereyPlus
+        
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
     }
@@ -421,6 +424,7 @@ final class AppDelegate: NSObject,
             }
 
             state = self.doShowTagCheckbox.state == .on
+            if self.isMontereyPlus { state = false }
             if self.doShowTag != state {
                 defaults.setValue(state,
                                   forKey: "com-bps-previewyaml-do-show-tag")

@@ -3,7 +3,7 @@
  *  PreviewYaml
  *
  *  Created by Tony Smith on 22/04/2021.
- *  Copyright © 2021 Tony Smith. All rights reserved.
+ *  Copyright © 2022 Tony Smith. All rights reserved.
  */
 
 
@@ -42,10 +42,6 @@ class ThumbnailProvider: QLThumbnailProvider {
                                                 CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ASPECT) * request.maximumSize.height,
                                                 request.maximumSize.height)
         
-        // FROM 1.1.1
-        let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
-        let isMontereyPlus: Bool = (sysVer.majorVersion >= 12)
-
         handler(QLThumbnailReply.init(contextSize: thumbnailFrame.size) { (context) -> Bool in
             // Place all the remaining code within the closure passed to 'handler()'
             
@@ -106,7 +102,11 @@ class ThumbnailProvider: QLThumbnailProvider {
                         // Also generate text for the bottom-of-thumbnail file type tag,
                         // if the user has this set as a preference
                         var tagImageRep: NSBitmapImageRep? = nil
-                        if common.doShowTag && !isMontereyPlus {
+                        
+                        // FROM 1.1.2
+                        let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
+
+                        if sysVer.majorVersion < 12 && common.doShowTag {
                             // Define the frame of the tag area
                             let tagFrame: CGRect = NSMakeRect(CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X),
                                                               CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_Y),
