@@ -68,4 +68,7 @@ struct BUFFOON_CONSTANTS {
 
     // FROM 1.1.1
     static let THUMBNAIL_LINE_COUNT             = 38
+    
+    // FROM 1.1.2
+    static let APP_CODE_PREVIEWER               = "com.bps.PreviewYaml.Yaml-Previewer"
 }

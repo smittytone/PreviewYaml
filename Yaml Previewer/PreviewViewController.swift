@@ -56,7 +56,12 @@ class PreviewViewController: NSViewController,
             do {
                 // Get the file contents as a string
                 let data: Data = try Data.init(contentsOf: url, options: [.uncached])
-                if let yamlFileString: String = String.init(data: data, encoding: .utf8) {
+                
+                // FROM 1.1.2
+                // Get the string's encoding, or fail back to .utf8
+                let encoding: String.Encoding = data.stringEncoding ?? .utf8
+                
+                if let yamlFileString: String = String.init(data: data, encoding: encoding) {
                     // Get the key string first
                     let yamlAttString: NSAttributedString = common.getAttributedString(yamlFileString)
                     
@@ -91,8 +96,12 @@ class PreviewViewController: NSViewController,
                     // We can't access the preview NSTextView's NSTextStorage
                     reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
                 } else {
-                    // We couldn't get the YAML string so set an appropriate error to report back
-                    reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING)
+                    // FROM 1.1.2
+                    // We couldn't convert to data to a valid encoding
+                    let errDesc: String = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) \(encoding)"
+                    reportError = NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,
+                                          code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING,
+                                          userInfo: [NSLocalizedDescriptionKey: errDesc])
                 }
             } catch {
                 // We couldn't read the file so set an appropriate error to report back
@@ -168,7 +177,7 @@ class PreviewViewController: NSViewController,
             errDesc = "UNKNOWN ERROR"
         }
 
-        return NSError(domain: "com.bps.PreviewYaml.Yaml-Thumbnailer",
+        return NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,
                        code: code,
                        userInfo: [NSLocalizedDescriptionKey: errDesc])
     }

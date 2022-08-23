@@ -55,7 +55,12 @@ class ThumbnailProvider: QLThumbnailProvider {
                         // Get the file contents as a string, making sure it's not cached
                         // as we're not going to read it again any time soon
                         let data: Data = try Data.init(contentsOf: request.fileURL, options: [.uncached])
-                        guard let yamlFileString: String = String.init(data: data, encoding: .utf8) else {
+                        
+                        // FROM 1.1.2
+                        // Get the string's encoding, or fail back to .utf8
+                        let encoding: String.Encoding = data.stringEncoding ?? .utf8
+                        
+                        guard let yamlFileString: String = String.init(data: data, encoding: encoding) else {
                             return .failure(ThumbnailerError.badFileLoad(request.fileURL.path))
                         }
                         
