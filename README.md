@@ -1,4 +1,4 @@
-# PreviewYaml 1.1.1
+# PreviewYaml 1.1.2
 
 App Extension-based macOS QuickLook previews and Finder thumbnails for [YAML](https://yaml.org) files.
 
@@ -41,6 +41,8 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 ## Release Notes
 
+* 1.1.2 *Unreleased*
+    * Initial support for non-utf8 source code file encodings.
 * 1.1.1 *19 November 2021*
     * Disable selection of thumbnail tags under macOS 12 Monterey to avoid clash with system-added tags.
 * 1.1.0 *28 July 2021*
@@ -60,6 +62,6 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 ## Copyright and Licensing
 
-PreviewYaml © 2021, Tony Smith (@smittytone). Contains YamlSwift © 2021 Behrang Noruzi Niya.
+PreviewYaml © 2022, Tony Smith (@smittytone). Contains YamlSwift © 2019 Behrang Noruzi Niya.
 
 Source code only licensed under the [MIT Licence](LICENSE).
