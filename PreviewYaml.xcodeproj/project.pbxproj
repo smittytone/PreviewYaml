@@ -7,14 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3B07D226267CA77500BAEF6B /* NSColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B07D225267CA77500BAEF6B /* NSColorExtension.swift */; };
-		3B07D227267CA77500BAEF6B /* NSColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B07D225267CA77500BAEF6B /* NSColorExtension.swift */; };
-		3B07D228267CA77500BAEF6B /* NSColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B07D225267CA77500BAEF6B /* NSColorExtension.swift */; };
+		3B07D226267CA77500BAEF6B /* GenericColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B07D225267CA77500BAEF6B /* GenericColorExtensions.swift */; };
+		3B07D227267CA77500BAEF6B /* GenericColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B07D225267CA77500BAEF6B /* GenericColorExtensions.swift */; };
+		3B07D228267CA77500BAEF6B /* GenericColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B07D225267CA77500BAEF6B /* GenericColorExtensions.swift */; };
 		3B21717D26344C81000C5AF6 /* sample.yml in Resources */ = {isa = PBXBuildFile; fileRef = 3B21717C26344C81000C5AF6 /* sample.yml */; };
 		3B21718926344E88000C5AF6 /* new in Resources */ = {isa = PBXBuildFile; fileRef = 3B21718826344E88000C5AF6 /* new */; };
 		3B218DDB2637F41F0024446B /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3B218DDA2637F41F0024446B /* Yaml */; };
 		3B218DE22637F4290024446B /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3B218DE12637F4290024446B /* Yaml */; };
 		3B6C9177268FAA5000745DF4 /* PMFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6C9176268FAA5000745DF4 /* PMFont.swift */; };
+		3BAE671D28D4D481001532BD /* GenericFontExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAE671C28D4D481001532BD /* GenericFontExtensions.swift */; };
 		3BB64D8926320064003CD14D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64D8826320064003CD14D /* AppDelegate.swift */; };
 		3BB64D8B26320065003CD14D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8A26320065003CD14D /* Assets.xcassets */; };
 		3BB64D8E26320065003CD14D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8C26320065003CD14D /* MainMenu.xib */; };
@@ -90,10 +91,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3B07D225267CA77500BAEF6B /* NSColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSColorExtension.swift; sourceTree = "<group>"; };
+		3B07D225267CA77500BAEF6B /* GenericColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericColorExtensions.swift; sourceTree = "<group>"; };
 		3B21717C26344C81000C5AF6 /* sample.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = sample.yml; sourceTree = "<group>"; };
 		3B21718826344E88000C5AF6 /* new */ = {isa = PBXFileReference; lastKnownFileType = folder; name = new; path = "../../../Library/CloudStorage/OneDrive-Personal/Programming/PreviewYaml/new"; sourceTree = "<group>"; };
 		3B6C9176268FAA5000745DF4 /* PMFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PMFont.swift; sourceTree = "<group>"; };
+		3BAE671C28D4D481001532BD /* GenericFontExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericFontExtensions.swift; sourceTree = "<group>"; };
 		3BB64D8526320064003CD14D /* PreviewYaml.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PreviewYaml.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BB64D8826320064003CD14D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3BB64D8A26320065003CD14D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/PreviewYaml/Assets.xcassets"; sourceTree = "<absolute>"; };
@@ -200,7 +202,8 @@
 				3BB64E112632023C003CD14D /* Constants.swift */,
 				3BB64D8826320064003CD14D /* AppDelegate.swift */,
 				3BDE3EF3267CE6C10037351C /* GenericExtensions.swift */,
-				3B07D225267CA77500BAEF6B /* NSColorExtension.swift */,
+				3B07D225267CA77500BAEF6B /* GenericColorExtensions.swift */,
+				3BAE671C28D4D481001532BD /* GenericFontExtensions.swift */,
 				3B6C9176268FAA5000745DF4 /* PMFont.swift */,
 				3BB64D8A26320065003CD14D /* Assets.xcassets */,
 				3B21718826344E88000C5AF6 /* new */,
@@ -467,10 +470,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BB64D8926320064003CD14D /* AppDelegate.swift in Sources */,
+				3BAE671D28D4D481001532BD /* GenericFontExtensions.swift in Sources */,
 				3BDE3EF4267CE6C10037351C /* GenericExtensions.swift in Sources */,
 				3BB64E1B2632033F003CD14D /* Secrets.swift in Sources */,
 				3B6C9177268FAA5000745DF4 /* PMFont.swift in Sources */,
-				3B07D226267CA77500BAEF6B /* NSColorExtension.swift in Sources */,
+				3B07D226267CA77500BAEF6B /* GenericColorExtensions.swift in Sources */,
 				3BB64E122632023C003CD14D /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -497,7 +501,7 @@
 			files = (
 				3BB64DEE2632013A003CD14D /* Common.swift in Sources */,
 				3BB64E1C2632033F003CD14D /* Secrets.swift in Sources */,
-				3B07D227267CA77500BAEF6B /* NSColorExtension.swift in Sources */,
+				3B07D227267CA77500BAEF6B /* GenericColorExtensions.swift in Sources */,
 				3BB64DBF263200A8003CD14D /* PreviewViewController.swift in Sources */,
 				3BB64E132632023C003CD14D /* Constants.swift in Sources */,
 			);
@@ -509,7 +513,7 @@
 			files = (
 				3BB64E05263201A6003CD14D /* Common.swift in Sources */,
 				3BB64E1D2632033F003CD14D /* Secrets.swift in Sources */,
-				3B07D228267CA77500BAEF6B /* NSColorExtension.swift in Sources */,
+				3B07D228267CA77500BAEF6B /* GenericColorExtensions.swift in Sources */,
 				3BB64DDA263200BA003CD14D /* ThumbnailProvider.swift in Sources */,
 				3BB64E142632023C003CD14D /* Constants.swift in Sources */,
 			);
