@@ -17,7 +17,7 @@ import UniformTypeIdentifiers
 
 extension AppDelegate {
 
-    // MARK:- Process Handling Functions
+    // MARK: - Process Handling Functions
 
     /**
      Generic macOS process creation and run function.
@@ -26,10 +26,10 @@ extension AppDelegate {
      the sheet is not displayed next time the app is run (unless the version changes)
 
      - Parameters:
-        - app: The location of the app.
-        - with: Array of arguments to pass to the app
+        - app:  The location of the app.
+        - with: Array of arguments to pass to the app.
 
-     - Returns: `true` if the operation was successful, otherwise `false`
+     - Returns: `true` if the operation was successful, otherwise `false`.
      */
     internal func runProcess(app path: String, with args: [String]) -> Bool {
 
@@ -79,7 +79,7 @@ extension AppDelegate {
      Present an error message specific to sending feedback.
 
      This is called from multiple locations: if the initial request can't be created,
-     there was a send failure, or a server error
+     there was a send failure, or a server error.
      */
     internal func sendFeedbackError() {
 
@@ -98,7 +98,7 @@ extension AppDelegate {
         - head:    The alert's title.
         - message: The alert's message.
 
-     - Returns: The NSAlert
+     - Returns:     The NSAlert.
      */
     internal func showAlert(_ head: String, _ message: String) -> NSAlert {
 
@@ -113,7 +113,7 @@ extension AppDelegate {
     /**
      Build a basic 'major.manor' version string for prefs usage.
 
-     - Returns: The version string
+     - Returns: The version string.
      */
     internal func getVersion() -> String {
 
@@ -126,7 +126,7 @@ extension AppDelegate {
     /**
      Build a date string string for feedback usage.
 
-     - Returns: The date string
+     - Returns: The date string.
      */
     internal func getDateForFeedback() -> String {
 
@@ -142,7 +142,7 @@ extension AppDelegate {
     /**
      Build a user-agent string string for feedback usage.
 
-     - Returns: The user-agent string
+     - Returns: The user-agent string.
      */
     internal func getUserAgentForFeedback() -> String {
 
@@ -153,7 +153,7 @@ extension AppDelegate {
         let app: String = bundle.object(forInfoDictionaryKey: "CFBundleExecutable") as! String
         let version: String = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         let build: String = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as! String
-        return "\(app)/\(version)-\(build) (Mac macOS \(sysVer.majorVersion).\(sysVer.minorVersion).\(sysVer.patchVersion))"
+        return "\(app)/\(version)-\(build) (macOS/\(sysVer.majorVersion).\(sysVer.minorVersion).\(sysVer.patchVersion))"
     }
 
 
@@ -163,9 +163,9 @@ extension AppDelegate {
      This is not PII. It used solely for debugging purposes
      
      - Parameters:
-        - filename: The file we'll use to get the UTI
+        - filename: The file we'll use to get the UTI.
      
-     - Returns: The file's UTI
+     - Returns: The file's UTI.
      */
     internal func getLocalFileUTI(_ filename: String) -> String {
         
@@ -309,7 +309,7 @@ extension AppDelegate {
      Build and enable the font style popup.
 
      - Parameters:
-        - styleName: The name of currently selected style, or nil to select the first one
+        - styleName: The name of currently selected style, or nil to select the first one.
      */
     internal func setStylePopup(_ styleName: String? = nil) {
         
