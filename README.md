@@ -1,4 +1,4 @@
-# PreviewYaml 1.1.2
+# PreviewYaml 1.1.3
 
 App Extension-based macOS QuickLook previews and Finder thumbnails for [YAML](https://yaml.org) files.
 
@@ -41,7 +41,9 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 ## Release Notes
 
-* 1.1.2 *Unreleased*
+* 1.1.3 *Unreleased*
+    * Add link to PreviewJson.
+* 1.1.2 *26 August 2022*
     * Initial support for non-utf8 source code file encodings.
 * 1.1.1 *19 November 2021*
     * Disable selection of thumbnail tags under macOS 12 Monterey to avoid clash with system-added tags.

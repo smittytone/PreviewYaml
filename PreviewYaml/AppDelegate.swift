@@ -29,6 +29,8 @@ final class AppDelegate: NSObject,
     @IBOutlet var helpMenuOthersPreviewMarkdown: NSMenuItem!
     // FROM 1.0.2
     @IBOutlet var helpMenuOthersPreviewCode: NSMenuItem!
+    // FROM 1.1.3
+    @IBOutlet var helpMenuOthersPreviewjson: NSMenuItem!
     
     // Panel Items
     @IBOutlet var versionLabel: NSTextField!
@@ -178,6 +180,8 @@ final class AppDelegate: NSObject,
             path = "https://apps.apple.com/us/app/previewmarkdown/id1492280469?ls=1"
         } else if item == self.helpMenuOthersPreviewCode {
             path = "https://apps.apple.com/us/app/previewcode/id1571797683?ls=1"
+        } else if item == self.helpMenuOthersPreviewjson {
+            path = "https://apps.apple.com/us/app/previewjson/id6443584377?ls=1"
         }
         
         // Open the selected website
