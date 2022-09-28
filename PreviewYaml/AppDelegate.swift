@@ -79,7 +79,7 @@ final class AppDelegate: NSObject,
     private  var doIndentScalars: Bool = false
     
     // FROM 1.0.1
-    private var feedbackPath: String = MNU_SECRETS.ADDRESS.A
+    private var feedbackPath: String = MNU_SECRETS.ADDRESS.B
 
     // FROM 1.1.0
     internal var codeFonts: [PMFont] = []
@@ -675,7 +675,7 @@ final class AppDelegate: NSObject,
 
         // First get the data we need to build the user agent string
         let userAgent: String = getUserAgentForFeedback()
-        let endPoint: String = MNU_SECRETS.ADDRESS.B
+        let endPoint: String = MNU_SECRETS.ADDRESS.A
 
         // Get the date as a string
         let dateString: String = getDateForFeedback()
