@@ -41,8 +41,8 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 ## Release Notes
 
-* 1.1.3 *Unreleased*
-    * Add link to PreviewJson.
+* 1.1.3 *2 October 2022*
+    * Add link to [PreviewJson](https://smittytone.net/previewjson/index.html).
 * 1.1.2 *26 August 2022*
     * Initial support for non-utf8 source code file encodings.
 * 1.1.1 *19 November 2021*
