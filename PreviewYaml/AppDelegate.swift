@@ -21,16 +21,21 @@ final class AppDelegate: NSObject,
 
     // MARK:- Class UI Properies
     // Menu Items
-    @IBOutlet var helpMenuPreviewYaml: NSMenuItem!
+    @IBOutlet var helpMenuOnlineHelp: NSMenuItem!
     @IBOutlet var helpMenuAcknowledgments: NSMenuItem!
-    @IBOutlet var helpAppStoreRating: NSMenuItem!
-    @IBOutlet var helpMenuYaml: NSMenuItem!
+    @IBOutlet var helpMenuAppStoreRating: NSMenuItem!
+    @IBOutlet var helpMenuAckYamlSwift: NSMenuItem!
     // FROM 1.0.1
     @IBOutlet var helpMenuOthersPreviewMarkdown: NSMenuItem!
     // FROM 1.0.2
     @IBOutlet var helpMenuOthersPreviewCode: NSMenuItem!
     // FROM 1.1.3
     @IBOutlet var helpMenuOthersPreviewjson: NSMenuItem!
+    // FROM 1.1.4
+    @IBOutlet var helpMenuOthersPreviewText: NSMenuItem!
+    @IBOutlet var helpMenuWhatsNew: NSMenuItem!
+    @IBOutlet var helpMenuReportBug: NSMenuItem!
+    @IBOutlet var mainMenuSettings: NSMenuItem!
     
     // Panel Items
     @IBOutlet var versionLabel: NSTextField!
@@ -170,18 +175,20 @@ final class AppDelegate: NSObject,
         // Depending on the menu selected, set the load path
         if item == self.helpMenuAcknowledgments {
             path += "#acknowledgements"
-        } else if item == self.helpAppStoreRating {
+        } else if item == self.helpMenuAppStoreRating {
             path = BUFFOON_CONSTANTS.APP_STORE + "?action=write-review"
-        } else if item == self.helpMenuYaml {
+        } else if item == self.helpMenuAckYamlSwift {
             path = "https://github.com/behrang/YamlSwift"
-        } else if item == self.helpMenuPreviewYaml {
+        } else if item == self.helpMenuOnlineHelp {
             path += "#how-to-use-previewyaml"
         } else if item == self.helpMenuOthersPreviewMarkdown {
-            path = "https://apps.apple.com/us/app/previewmarkdown/id1492280469?ls=1"
+            path = BUFFOON_CONSTANTS.APP_URLS.PM
         } else if item == self.helpMenuOthersPreviewCode {
-            path = "https://apps.apple.com/us/app/previewcode/id1571797683?ls=1"
+            path = BUFFOON_CONSTANTS.APP_URLS.PC
         } else if item == self.helpMenuOthersPreviewjson {
-            path = "https://apps.apple.com/us/app/previewjson/id6443584377?ls=1"
+            path = BUFFOON_CONSTANTS.APP_URLS.PJ
+        } else if item == self.helpMenuOthersPreviewText {
+            path = BUFFOON_CONSTANTS.APP_URLS.PT
         }
         
         // Open the selected website
@@ -210,7 +217,10 @@ final class AppDelegate: NSObject,
         - sender: The source of the action.
      */
     @IBAction @objc private func doShowReportWindow(sender: Any?) {
-
+        
+        // Manage menus
+        hidePanelGenerators()
+        
         // Reset the UI
         self.connectionProgress.stopAnimation(self)
         self.feedbackText.stringValue = ""
@@ -233,6 +243,9 @@ final class AppDelegate: NSObject,
 
         self.connectionProgress.stopAnimation(self)
         self.window.endSheet(self.reportWindow)
+        
+        // Manage menus
+        showPanelGenerators()
     }
 
     /**
@@ -269,6 +282,9 @@ final class AppDelegate: NSObject,
         // No feedback, so close the sheet
         self.window.endSheet(self.reportWindow)
         
+        // Manage menus
+        showPanelGenerators()
+        
         // NOTE sheet closes asynchronously unless there was no feedback to send,
         //      or an error occured with setting up the feedback session
     }
@@ -284,7 +300,8 @@ final class AppDelegate: NSObject,
      */
     @IBAction private func doShowPreferences(sender: Any) {
 
-        // Display the 'Preferences' sheet
+        // Manage menus
+        hidePanelGenerators()
 
         // The suite name is the app group name, set in each the entitlements file of
         // the host app and of each extension
@@ -396,6 +413,9 @@ final class AppDelegate: NSObject,
         }
         
         self.window.endSheet(self.preferencesWindow)
+        
+        // Manage menus
+        showPanelGenerators()
     }
 
 
@@ -476,6 +496,9 @@ final class AppDelegate: NSObject,
 
         // Remove the sheet now we have the data
         self.window.endSheet(self.preferencesWindow)
+        
+        // Manage menus
+        showPanelGenerators()
     }
 
 
@@ -493,7 +516,10 @@ final class AppDelegate: NSObject,
             - sender: The source of the action.
      */
     @IBAction private func doShowWhatsNew(_ sender: Any) {
-
+        
+        // Manage menus
+        hidePanelGenerators()
+        
         // See if we're coming from a menu click (sender != self) or
         // directly in code from 'appDidFinishLoading()' (sender == self)
         var doShowSheet: Bool = type(of: self) != type(of: sender)
@@ -556,6 +582,9 @@ final class AppDelegate: NSObject,
 
             defaults.synchronize()
         }
+        
+        // Manage menus
+        showPanelGenerators()
     }
 
 
@@ -733,5 +762,30 @@ final class AppDelegate: NSObject,
         let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
         self.isMontereyPlus = (sysVer.majorVersion >= 12)
     }
-
+    
+    
+    /**
+     Disable all panel-opening menu items.
+     
+     FROM 1.1.4
+     */
+    private func hidePanelGenerators() {
+        
+        self.helpMenuReportBug.isEnabled = false
+        self.helpMenuWhatsNew.isEnabled = false
+        self.mainMenuSettings.isEnabled = false
+    }
+    
+    
+    /**
+     Enable all panel-opening menu items.
+     
+     FROM 1.1.4
+     */
+    func showPanelGenerators() {
+        
+        self.helpMenuReportBug.isEnabled = true
+        self.helpMenuWhatsNew.isEnabled = true
+        self.mainMenuSettings.isEnabled = true
+    }
 }

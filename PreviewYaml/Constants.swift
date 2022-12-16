@@ -71,4 +71,14 @@ struct BUFFOON_CONSTANTS {
     
     // FROM 1.1.2
     static let APP_CODE_PREVIEWER               = "com.bps.PreviewYaml.Yaml-Previewer"
+    
+    // FROM 1.1.4
+    struct APP_URLS {
+        
+        static let PM                           = "https://apps.apple.com/us/app/previewmarkdown/id1492280469?ls=1"
+        static let PC                           = "https://apps.apple.com/us/app/previewcode/id1571797683?ls=1"
+        static let PY                           = "https://apps.apple.com/us/app/previewyaml/id1564574724?ls=1"
+        static let PJ                           = "https://apps.apple.com/us/app/previewjson/id6443584377?ls=1"
+        static let PT                           = "https://apps.apple.com/us/app/previewtext/id1660037028?ls=1"
+    }
 }

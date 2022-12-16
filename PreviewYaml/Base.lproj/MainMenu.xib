@@ -27,13 +27,17 @@
                 <outlet property="feedbackText" destination="rME-5J-5yH" id="yEn-3B-e4A"/>
                 <outlet property="fontSizeLabel" destination="2HA-Yj-cyf" id="psJ-3Z-WQI"/>
                 <outlet property="fontSizeSlider" destination="OfZ-N6-qKG" id="oDv-Or-Fni"/>
-                <outlet property="helpAppStoreRating" destination="jLd-Pw-5jM" id="P5Q-5y-ShE"/>
+                <outlet property="helpMenuAckYamlSwift" destination="HJD-GL-x7D" id="Lky-LO-5bG"/>
                 <outlet property="helpMenuAcknowledgments" destination="F5z-Fy-aVo" id="BcI-3U-6rw"/>
+                <outlet property="helpMenuAppStoreRating" destination="jLd-Pw-5jM" id="S9m-7v-Cul"/>
+                <outlet property="helpMenuOnlineHelp" destination="Tys-ee-tfE" id="hUd-vj-Fjv"/>
                 <outlet property="helpMenuOthersPreviewCode" destination="wRu-mF-ECh" id="FUk-g8-FN8"/>
                 <outlet property="helpMenuOthersPreviewMarkdown" destination="a5a-JN-xae" id="efo-wb-Yel"/>
+                <outlet property="helpMenuOthersPreviewText" destination="jqR-0d-YOP" id="bUe-4a-pPY"/>
                 <outlet property="helpMenuOthersPreviewjson" destination="ZtL-au-MiV" id="rku-n7-8Zu"/>
-                <outlet property="helpMenuPreviewYaml" destination="Tys-ee-tfE" id="tIC-su-fGU"/>
-                <outlet property="helpMenuYaml" destination="HJD-GL-x7D" id="iqf-E5-c8s"/>
+                <outlet property="helpMenuReportBug" destination="9jb-nj-WtE" id="CUp-Ps-UBt"/>
+                <outlet property="helpMenuWhatsNew" destination="8ow-rc-CzH" id="vxZ-pV-ClW"/>
+                <outlet property="mainMenuSettings" destination="BOF-NM-1cW" id="Lde-gj-jvW"/>
                 <outlet property="preferencesWindow" destination="jjd-uj-Puq" id="1ud-bv-mbH"/>
                 <outlet property="reportWindow" destination="nk4-l2-g5W" id="SNf-z1-JQ2"/>
                 <outlet property="tagInfoTextField" destination="6d7-zI-kTO" id="HwW-to-ivj"/>
@@ -49,7 +53,7 @@
             <items>
                 <menuItem title="PreviewYaml" id="1Xt-HY-uBw">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="PreviewYaml" systemMenu="apple" id="uQy-DD-JDr">
+                    <menu key="submenu" title="PreviewYaml" systemMenu="apple" autoenablesItems="NO" id="uQy-DD-JDr">
                         <items>
                             <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW">
                                 <connections>
@@ -163,6 +167,12 @@
                                                 <action selector="doShowSitesWithSender:" target="Voe-Tx-rLC" id="vM0-zn-dMr"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="PreviewText" id="jqR-0d-YOP">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="doShowSitesWithSender:" target="Voe-Tx-rLC" id="Wag-0c-TjQ"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -182,7 +192,7 @@
                             <menuItem isSeparatorItem="YES" id="kdt-Ei-a18"/>
                             <menuItem title="Acknowledgements" id="F5z-Fy-aVo">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" id="wXY-AB-12u">
+                                <menu key="submenu" title="Acknowledgements" id="wXY-AB-12u">
                                     <items>
                                         <menuItem title="YamlSwift" id="HJD-GL-x7D">
                                             <modifierMask key="keyEquivalentModifierMask"/>

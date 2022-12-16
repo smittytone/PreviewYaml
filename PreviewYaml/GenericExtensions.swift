@@ -85,9 +85,10 @@ extension AppDelegate {
 
         let alert: NSAlert = showAlert("Feedback Could Not Be Sent",
                                        "Unfortunately, your comments could not be send at this time. Please try again later.")
-        alert.beginSheetModal(for: self.reportWindow,
-                              completionHandler: nil)
-
+        alert.beginSheetModal(for: self.reportWindow) { (resp) in
+            // Handle menus
+            self.showPanelGenerators()
+        }
     }
 
 
@@ -223,6 +224,7 @@ extension AppDelegate {
                 // Close the feedback window when the modal alert returns
                 let _: Timer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false) { timer in
                     self.window.endSheet(self.reportWindow)
+                    self.showPanelGenerators()
                 }
             }
         }
