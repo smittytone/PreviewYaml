@@ -763,29 +763,4 @@ final class AppDelegate: NSObject,
         self.isMontereyPlus = (sysVer.majorVersion >= 12)
     }
     
-    
-    /**
-     Disable all panel-opening menu items.
-     
-     FROM 1.1.4
-     */
-    private func hidePanelGenerators() {
-        
-        self.helpMenuReportBug.isEnabled = false
-        self.helpMenuWhatsNew.isEnabled = false
-        self.mainMenuSettings.isEnabled = false
-    }
-    
-    
-    /**
-     Enable all panel-opening menu items.
-     
-     FROM 1.1.4
-     */
-    func showPanelGenerators() {
-        
-        self.helpMenuReportBug.isEnabled = true
-        self.helpMenuWhatsNew.isEnabled = true
-        self.mainMenuSettings.isEnabled = true
-    }
 }
