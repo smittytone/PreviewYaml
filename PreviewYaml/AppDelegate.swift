@@ -119,12 +119,19 @@ final class AppDelegate: NSObject,
         let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
         versionLabel.stringValue = "Version \(version) (\(build))"
-
+        
         // Disable the Help menu Spotlight features
         let dummyHelpMenu: NSMenu = NSMenu.init(title: "Dummy")
         let theApp = NSApplication.shared
         theApp.helpMenu = dummyHelpMenu
         
+        // FROM 1.1.4
+        // Watch for macOS UI mode changes
+        DistributedNotificationCenter.default.addObserver(self,
+                                                          selector: #selector(interfaceModeChanged),
+                                                          name: NSNotification.Name(rawValue: "AppleInterfaceThemeChangedNotification"),
+                                                          object: nil)
+
         // Centre the main window and display
         self.window.center()
         self.window.makeKeyAndOrderFront(self)
@@ -360,9 +367,19 @@ final class AppDelegate: NSObject,
             self.tagInfoTextField.stringValue = "macOS 12.0 Monterey adds its own thumbnail file extension tags, so this option is no longer available."
         }
         
-        // FROM 1.1.2 -- hide this option, don't just disable it
+        // FROM 1.1.2
+        // Hide this option, don't just disable it
         self.doShowTagCheckbox.isHidden = self.isMontereyPlus
         self.tagInfoTextField.isHidden = self.isMontereyPlus
+        
+        // FROM 1.1.4
+        // Check for the OS mode
+        let appearance: NSAppearance = NSApp.effectiveAppearance
+        if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
+            self.useLightCheckbox.isHidden = (appearName == .aqua)
+        }
+        
+        
         
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
@@ -761,6 +778,28 @@ final class AppDelegate: NSObject,
         // First ensure we are running on Mojave or above - Dark Mode is not supported by earlier versons
         let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
         self.isMontereyPlus = (sysVer.majorVersion >= 12)
+    }
+    
+    
+    /**
+     Handler for macOS UI mode change notifications.
+     
+     FROM 1.1.4
+     */
+    @objc private func interfaceModeChanged() {
+        
+        if self.preferencesWindow.isVisible {
+            // Prefs window is up, so switch the use light background checkbox
+            // on or off according to whether the current mode is light
+            // NOTE For light mode, this checkbox is irrelevant, so the
+            //      checkbox should be disabled
+            let appearance: NSAppearance = NSApp.effectiveAppearance
+            if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
+                // NOTE Appearance it this point seems to reflect the mode
+                //      we're coming FROM, not what it has changed to
+                self.useLightCheckbox.isHidden = (appearName != .aqua)
+            }
+        }
     }
     
 }
