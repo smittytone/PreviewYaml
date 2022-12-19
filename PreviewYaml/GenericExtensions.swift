@@ -96,17 +96,18 @@ extension AppDelegate {
      Generic alert generator.
 
      - Parameters:
-        - head:    The alert's title.
-        - message: The alert's message.
+        - head:        The alert's title.
+        - message:     The alert's message.
+        - addOkButton: Should we add an OK button?
 
      - Returns:     The NSAlert.
      */
-    internal func showAlert(_ head: String, _ message: String) -> NSAlert {
+    internal func showAlert(_ head: String, _ message: String, _ addOkButton: Bool = true) -> NSAlert {
 
         let alert: NSAlert = NSAlert()
         alert.messageText = head
         alert.informativeText = message
-        alert.addButton(withTitle: "OK")
+        if addOkButton { alert.addButton(withTitle: "OK") }
         return alert
     }
 
