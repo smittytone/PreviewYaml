@@ -379,8 +379,6 @@ final class AppDelegate: NSObject,
             self.useLightCheckbox.isHidden = (appearName == .aqua)
         }
         
-        
-        
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
     }
