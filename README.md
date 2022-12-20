@@ -41,6 +41,11 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 ## Release Notes
 
+* 1.1.4 *Unreleased*
+    - Add link to [PreviewText](https://smittytone.net/previewtext/index.html).
+    * Better menu handling when panels are visible.
+    * Better app exit management.
+    * Bug fixes.
 * 1.1.3 *2 October 2022*
     * Add link to [PreviewJson](https://smittytone.net/previewjson/index.html).
 * 1.1.2 *26 August 2022*
@@ -64,6 +69,6 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 ## Copyright and Licensing
 
-PreviewYaml © 2022, Tony Smith (@smittytone). Contains YamlSwift © 2019 Behrang Noruzi Niya.
+PreviewYaml © 2023, Tony Smith (@smittytone). Contains YamlSwift © 2019 Behrang Noruzi Niya.
 
 Source code only licensed under the [MIT Licence](LICENSE).
