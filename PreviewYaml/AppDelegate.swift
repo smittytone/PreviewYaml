@@ -787,8 +787,6 @@ final class AppDelegate: NSObject,
      */
     private func submitFeedback(_ feedback: String) -> URLSessionTask? {
 
-        // Send the feedback string etc.
-
         // First get the data we need to build the user agent string
         let userAgent: String = getUserAgentForFeedback()
         let endPoint: String = MNU_SECRETS.ADDRESS.A
