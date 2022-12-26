@@ -90,12 +90,12 @@ final class AppDelegate: NSObject,
     private  var codeColourHex: String = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
     private  var codeFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
     // FROM 1.1.1
-    private var isMontereyPlus: Bool = false
+    internal var isMontereyPlus: Bool = false
     // FROM 1.1.4
-    private var havePrefsChanged: Bool = false
+    private  var havePrefsChanged: Bool = false
     
 
-    // MARK:- Class Lifecycle Functions
+    // MARK: - Class Lifecycle Functions
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         
@@ -209,7 +209,6 @@ final class AppDelegate: NSObject,
             self.reportWindow.close()
         }
                 
-        
         // Close the window... which will trigger an app closure
         self.window.close()
     }
@@ -263,7 +262,7 @@ final class AppDelegate: NSObject,
     }
 
 
-    // MARK: Report Functions
+    // MARK: - Report Functions
 
     /**
      Display a window in which the user can submit feedback, or report a bug.
@@ -273,6 +272,7 @@ final class AppDelegate: NSObject,
      */
     @IBAction @objc private func doShowReportWindow(sender: Any?) {
         
+        // FROM 1.1.4
         // Hide manus we don't want used
         hidePanelGenerators()
         
@@ -299,6 +299,7 @@ final class AppDelegate: NSObject,
         self.connectionProgress.stopAnimation(self)
         self.window.endSheet(self.reportWindow)
         
+        // FROM 1.1.4
         // Restore menus
         showPanelGenerators()
     }
@@ -337,7 +338,8 @@ final class AppDelegate: NSObject,
         // No feedback, so close the sheet
         self.window.endSheet(self.reportWindow)
         
-        // Manage menus
+        // FROM 1.1.4
+        // Restore menus
         showPanelGenerators()
         
         // NOTE sheet closes asynchronously unless there was no feedback to send,
@@ -345,7 +347,7 @@ final class AppDelegate: NSObject,
     }
     
 
-    // MARK: Preferences Functions
+    // MARK: - Preferences Functions
 
     /**
      Initialise and display the **Preferences** sheet.
@@ -462,7 +464,6 @@ final class AppDelegate: NSObject,
     @IBAction private func doUpdateFonts(sender: Any) {
         
         self.havePrefsChanged = true
-        
         setStylePopup()
     }
 
@@ -484,6 +485,7 @@ final class AppDelegate: NSObject,
         
         self.window.endSheet(self.preferencesWindow)
         
+        // FROM 1.1.4
         // Restore menus
         showPanelGenerators()
     }
@@ -584,7 +586,7 @@ final class AppDelegate: NSObject,
     }
 
 
-    // MARK: What's New Sheet Functions
+    // MARK: - What's New Sheet Functions
 
     /**
         Show the **What's New** sheet.
@@ -599,9 +601,6 @@ final class AppDelegate: NSObject,
      */
     @IBAction private func doShowWhatsNew(_ sender: Any) {
         
-        // Hide manus we don't want used
-        hidePanelGenerators()
-        
         // See if we're coming from a menu click (sender != self) or
         // directly in code from 'appDidFinishLoading()' (sender == self)
         var doShowSheet: Bool = type(of: self) != type(of: sender)
@@ -611,13 +610,18 @@ final class AppDelegate: NSObject,
             // if we need to show the sheet by the checking the prefs
             if let defaults = UserDefaults(suiteName: self.appSuiteName) {
                 // Get the version-specific preference key
-                let key: String = "com-bps-previewyaml-do-show-whats-new-" + getVersion()
+                let key: String = BUFFOON_CONSTANTS.WHATS_NEW_PREF + getVersion()
                 doShowSheet = defaults.bool(forKey: key)
             }
         }
       
-        // Configure and show the sheet: first, get the folder path
+        // Configure and show the sheet
         if doShowSheet {
+            // FROM 1.1.4
+            // Hide manus we don't want used
+            hidePanelGenerators()
+            
+            // First, get the folder path
             let htmlFolderPath = Bundle.main.resourcePath! + "/new"
             
             // Set up the WKWebBiew: no elasticity, horizontal scroller
@@ -665,6 +669,7 @@ final class AppDelegate: NSObject,
             defaults.synchronize()
         }
         
+        // FROM 1.1.4
         // Restore menus
         showPanelGenerators()
     }
@@ -830,19 +835,6 @@ final class AppDelegate: NSObject,
         }
 
         return nil
-    }
-    
-    
-    /**
-     Get system and state information and record it for use during run.
-     
-     FROM 1.1.1
-     */
-    private func recordSystemState() {
-        
-        // First ensure we are running on Mojave or above - Dark Mode is not supported by earlier versons
-        let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
-        self.isMontereyPlus = (sysVer.majorVersion >= 12)
     }
     
     

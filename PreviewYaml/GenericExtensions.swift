@@ -86,7 +86,7 @@ extension AppDelegate {
         let alert: NSAlert = showAlert("Feedback Could Not Be Sent",
                                        "Unfortunately, your comments could not be send at this time. Please try again later.")
         alert.beginSheetModal(for: self.reportWindow) { (resp) in
-            // Handle menus
+            // Restore menus
             self.showPanelGenerators()
         }
     }
@@ -218,6 +218,29 @@ extension AppDelegate {
         self.helpMenuReportBug.isEnabled = true
         self.helpMenuWhatsNew.isEnabled = true
         self.mainMenuSettings.isEnabled = true
+    }
+    
+    
+    /**
+     Get system and state information and record it for use during run.
+     */
+    func recordSystemState() {
+        
+        // First ensure we are running on Mojave or above - Dark Mode is not supported by earlier versons
+        let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
+        self.isMontereyPlus = (sysVer.majorVersion >= 12)
+    }
+    
+    
+    /**
+     Determine whether the host Mac is in light mode.
+     
+     - Returns: `true` if the Mac is in light mode, otherwise `false`.
+     */
+    func isMacInLightMode() -> Bool {
+        
+        let appearNameString: String = NSApp.effectiveAppearance.name.rawValue
+        return (appearNameString == "NSAppearanceNameAqua")
     }
     
     
