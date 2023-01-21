@@ -5,7 +5,7 @@
  *  These functions can be used by all PreviewApps
  *
  *  Created by Tony Smith on 18/06/2021.
- *  Copyright © 2022 Tony Smith. All rights reserved.
+ *  Copyright © 2023 Tony Smith. All rights reserved.
  */
 
 
@@ -85,9 +85,10 @@ extension AppDelegate {
 
         let alert: NSAlert = showAlert("Feedback Could Not Be Sent",
                                        "Unfortunately, your comments could not be send at this time. Please try again later.")
-        alert.beginSheetModal(for: self.reportWindow,
-                              completionHandler: nil)
-
+        alert.beginSheetModal(for: self.reportWindow) { (resp) in
+            // Restore menus
+            self.showPanelGenerators()
+        }
     }
 
 
@@ -95,17 +96,18 @@ extension AppDelegate {
      Generic alert generator.
 
      - Parameters:
-        - head:    The alert's title.
-        - message: The alert's message.
+        - head:        The alert's title.
+        - message:     The alert's message.
+        - addOkButton: Should we add an OK button?
 
      - Returns:     The NSAlert.
      */
-    internal func showAlert(_ head: String, _ message: String) -> NSAlert {
+    internal func showAlert(_ head: String, _ message: String, _ addOkButton: Bool = true) -> NSAlert {
 
         let alert: NSAlert = NSAlert()
         alert.messageText = head
         alert.informativeText = message
-        alert.addButton(withTitle: "OK")
+        if addOkButton { alert.addButton(withTitle: "OK") }
         return alert
     }
 
@@ -198,6 +200,51 @@ extension AppDelegate {
     }
     
     
+    /**
+     Disable all panel-opening menu items.
+     */
+    internal func hidePanelGenerators() {
+        
+        self.helpMenuReportBug.isEnabled = false
+        self.helpMenuWhatsNew.isEnabled = false
+        self.mainMenuSettings.isEnabled = false
+    }
+    
+    
+    /**
+     Enable all panel-opening menu items.
+     */
+    internal func showPanelGenerators() {
+        
+        self.helpMenuReportBug.isEnabled = true
+        self.helpMenuWhatsNew.isEnabled = true
+        self.mainMenuSettings.isEnabled = true
+    }
+    
+    
+    /**
+     Get system and state information and record it for use during run.
+     */
+    internal func recordSystemState() {
+        
+        // First ensure we are running on Mojave or above - Dark Mode is not supported by earlier versons
+        let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
+        self.isMontereyPlus = (sysVer.majorVersion >= 12)
+    }
+    
+    
+    /**
+     Determine whether the host Mac is in light mode.
+     
+     - Returns: `true` if the Mac is in light mode, otherwise `false`.
+     */
+    internal func isMacInLightMode() -> Bool {
+        
+        let appearNameString: String = NSApp.effectiveAppearance.name.rawValue
+        return (appearNameString == "NSAppearanceNameAqua")
+    }
+    
+    
     // MARK: - URLSession Delegate Functions
 
     func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
@@ -223,6 +270,7 @@ extension AppDelegate {
                 // Close the feedback window when the modal alert returns
                 let _: Timer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false) { timer in
                     self.window.endSheet(self.reportWindow)
+                    self.showPanelGenerators()
                 }
             }
         }
@@ -242,5 +290,14 @@ extension AppDelegate {
                 self.window.beginSheet(self.whatsNewWindow, completionHandler: nil)
             }
         }
+    }
+}
+
+
+extension NSApplication {
+    
+    func isMacInLightMode() -> Bool {
+        
+        return (self.effectiveAppearance.name.rawValue == "NSAppearanceNameAqua")
     }
 }

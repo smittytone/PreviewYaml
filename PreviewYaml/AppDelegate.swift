@@ -3,7 +3,7 @@
  *  PreviewYaml
  *
  *  Created by Tony Smith on 22/04/2021.
- *  Copyright © 2022 Tony Smith. All rights reserved.
+ *  Copyright © 2023 Tony Smith. All rights reserved.
  */
 
 
@@ -21,16 +21,21 @@ final class AppDelegate: NSObject,
 
     // MARK:- Class UI Properies
     // Menu Items
-    @IBOutlet var helpMenuPreviewYaml: NSMenuItem!
+    @IBOutlet var helpMenuOnlineHelp: NSMenuItem!
     @IBOutlet var helpMenuAcknowledgments: NSMenuItem!
-    @IBOutlet var helpAppStoreRating: NSMenuItem!
-    @IBOutlet var helpMenuYaml: NSMenuItem!
+    @IBOutlet var helpMenuAppStoreRating: NSMenuItem!
+    @IBOutlet var helpMenuAckYamlSwift: NSMenuItem!
     // FROM 1.0.1
     @IBOutlet var helpMenuOthersPreviewMarkdown: NSMenuItem!
     // FROM 1.0.2
     @IBOutlet var helpMenuOthersPreviewCode: NSMenuItem!
     // FROM 1.1.3
     @IBOutlet var helpMenuOthersPreviewjson: NSMenuItem!
+    // FROM 1.1.4
+    @IBOutlet var helpMenuOthersPreviewText: NSMenuItem!
+    @IBOutlet var helpMenuWhatsNew: NSMenuItem!
+    @IBOutlet var helpMenuReportBug: NSMenuItem!
+    @IBOutlet var mainMenuSettings: NSMenuItem!
     
     // Panel Items
     @IBOutlet var versionLabel: NSTextField!
@@ -77,21 +82,20 @@ final class AppDelegate: NSObject,
     private  var doShowTag: Bool = false
     private  var doShowRawYaml: Bool = false
     private  var doIndentScalars: Bool = false
-    
     // FROM 1.0.1
     private var feedbackPath: String = MNU_SECRETS.ADDRESS.B
-
     // FROM 1.1.0
     internal var codeFonts: [PMFont] = []
     private  var codeFontName: String = BUFFOON_CONSTANTS.CODE_FONT_NAME
     private  var codeColourHex: String = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
     private  var codeFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
-    
     // FROM 1.1.1
-    private var isMontereyPlus: Bool = false
+    internal var isMontereyPlus: Bool = false
+    // FROM 1.1.4
+    private  var havePrefsChanged: Bool = false
     
 
-    // MARK:- Class Lifecycle Functions
+    // MARK: - Class Lifecycle Functions
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         
@@ -114,12 +118,19 @@ final class AppDelegate: NSObject,
         let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
         versionLabel.stringValue = "Version \(version) (\(build))"
-
+        
         // Disable the Help menu Spotlight features
         let dummyHelpMenu: NSMenu = NSMenu.init(title: "Dummy")
         let theApp = NSApplication.shared
         theApp.helpMenu = dummyHelpMenu
         
+        // FROM 1.1.4
+        // Watch for macOS UI mode changes
+        DistributedNotificationCenter.default.addObserver(self,
+                                                          selector: #selector(interfaceModeChanged),
+                                                          name: NSNotification.Name(rawValue: "AppleInterfaceThemeChangedNotification"),
+                                                          object: nil)
+
         // Centre the main window and display
         self.window.center()
         self.window.makeKeyAndOrderFront(self)
@@ -150,6 +161,54 @@ final class AppDelegate: NSObject,
         // Reset the QL thumbnail cache... just in case it helps
         _ = runProcess(app: "/usr/bin/qlmanage", with: ["-r", "cache"])
         
+        // FROM 1.1.4
+        // Check for open panels
+        if self.preferencesWindow.isVisible {
+            if self.havePrefsChanged {
+                let alert: NSAlert = showAlert("You have unsaved settings",
+                                               "Do you wish to cancel and save them, or quit the app anyway?",
+                                               false)
+                alert.addButton(withTitle: "Quit")
+                alert.addButton(withTitle: "Cancel")
+                alert.beginSheetModal(for: self.preferencesWindow) { (response: NSApplication.ModalResponse) in
+                    if response == NSApplication.ModalResponse.alertFirstButtonReturn {
+                        // The user clicked 'Quit'
+                        self.preferencesWindow.close()
+                        self.window.close()
+                    }
+                }
+                
+                return
+            }
+            
+            self.preferencesWindow.close()
+        }
+        
+        if self.whatsNewWindow.isVisible {
+            self.whatsNewWindow.close()
+        }
+        
+        if self.reportWindow.isVisible {
+            if self.feedbackText.stringValue.count > 0 {
+                let alert: NSAlert = showAlert("You have unsent feedback",
+                                               "Do you wish to cancel and send it, or quit the app anyway?",
+                                               false)
+                alert.addButton(withTitle: "Quit")
+                alert.addButton(withTitle: "Cancel")
+                alert.beginSheetModal(for: self.reportWindow) { (response: NSApplication.ModalResponse) in
+                    if response == NSApplication.ModalResponse.alertFirstButtonReturn {
+                        // The user clicked 'Quit'
+                        self.reportWindow.close()
+                        self.window.close()
+                    }
+                }
+                
+                return
+            }
+            
+            self.reportWindow.close()
+        }
+                
         // Close the window... which will trigger an app closure
         self.window.close()
     }
@@ -170,18 +229,20 @@ final class AppDelegate: NSObject,
         // Depending on the menu selected, set the load path
         if item == self.helpMenuAcknowledgments {
             path += "#acknowledgements"
-        } else if item == self.helpAppStoreRating {
+        } else if item == self.helpMenuAppStoreRating {
             path = BUFFOON_CONSTANTS.APP_STORE + "?action=write-review"
-        } else if item == self.helpMenuYaml {
+        } else if item == self.helpMenuAckYamlSwift {
             path = "https://github.com/behrang/YamlSwift"
-        } else if item == self.helpMenuPreviewYaml {
+        } else if item == self.helpMenuOnlineHelp {
             path += "#how-to-use-previewyaml"
         } else if item == self.helpMenuOthersPreviewMarkdown {
-            path = "https://apps.apple.com/us/app/previewmarkdown/id1492280469?ls=1"
+            path = BUFFOON_CONSTANTS.APP_URLS.PM
         } else if item == self.helpMenuOthersPreviewCode {
-            path = "https://apps.apple.com/us/app/previewcode/id1571797683?ls=1"
+            path = BUFFOON_CONSTANTS.APP_URLS.PC
         } else if item == self.helpMenuOthersPreviewjson {
-            path = "https://apps.apple.com/us/app/previewjson/id6443584377?ls=1"
+            path = BUFFOON_CONSTANTS.APP_URLS.PJ
+        } else if item == self.helpMenuOthersPreviewText {
+            path = BUFFOON_CONSTANTS.APP_URLS.PT
         }
         
         // Open the selected website
@@ -201,7 +262,7 @@ final class AppDelegate: NSObject,
     }
 
 
-    // MARK: Report Functions
+    // MARK: - Report Functions
 
     /**
      Display a window in which the user can submit feedback, or report a bug.
@@ -210,7 +271,11 @@ final class AppDelegate: NSObject,
         - sender: The source of the action.
      */
     @IBAction @objc private func doShowReportWindow(sender: Any?) {
-
+        
+        // FROM 1.1.4
+        // Hide manus we don't want used
+        hidePanelGenerators()
+        
         // Reset the UI
         self.connectionProgress.stopAnimation(self)
         self.feedbackText.stringValue = ""
@@ -233,6 +298,10 @@ final class AppDelegate: NSObject,
 
         self.connectionProgress.stopAnimation(self)
         self.window.endSheet(self.reportWindow)
+        
+        // FROM 1.1.4
+        // Restore menus
+        showPanelGenerators()
     }
 
     /**
@@ -269,12 +338,16 @@ final class AppDelegate: NSObject,
         // No feedback, so close the sheet
         self.window.endSheet(self.reportWindow)
         
+        // FROM 1.1.4
+        // Restore menus
+        showPanelGenerators()
+        
         // NOTE sheet closes asynchronously unless there was no feedback to send,
         //      or an error occured with setting up the feedback session
     }
     
 
-    // MARK: Preferences Functions
+    // MARK: - Preferences Functions
 
     /**
      Initialise and display the **Preferences** sheet.
@@ -284,7 +357,13 @@ final class AppDelegate: NSObject,
      */
     @IBAction private func doShowPreferences(sender: Any) {
 
-        // Display the 'Preferences' sheet
+        // FROM 1.1.4
+        // Hide menus we don't want used when the panel is open
+        hidePanelGenerators()
+        
+        // FROM 1.1.4
+        // Reset the changed prefs flag
+        self.havePrefsChanged = false
 
         // The suite name is the app group name, set in each the entitlements file of
         // the host app and of each extension
@@ -343,9 +422,17 @@ final class AppDelegate: NSObject,
             self.tagInfoTextField.stringValue = "macOS 12.0 Monterey adds its own thumbnail file extension tags, so this option is no longer available."
         }
         
-        // FROM 1.1.2 -- hide this option, don't just disable it
+        // FROM 1.1.2
+        // Hide this option, don't just disable it
         self.doShowTagCheckbox.isHidden = self.isMontereyPlus
         self.tagInfoTextField.isHidden = self.isMontereyPlus
+        
+        // FROM 1.1.4
+        // Check for the OS mode
+        let appearance: NSAppearance = NSApp.effectiveAppearance
+        if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
+            self.useLightCheckbox.isHidden = (appearName == .aqua)
+        }
         
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
@@ -362,6 +449,7 @@ final class AppDelegate: NSObject,
         
         let index: Int = Int(self.fontSizeSlider.floatValue)
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
+        self.havePrefsChanged = true
     }
 
 
@@ -375,7 +463,7 @@ final class AppDelegate: NSObject,
      */
     @IBAction private func doUpdateFonts(sender: Any) {
         
-        // Update the menu of available styles
+        self.havePrefsChanged = true
         setStylePopup()
     }
 
@@ -396,6 +484,10 @@ final class AppDelegate: NSObject,
         }
         
         self.window.endSheet(self.preferencesWindow)
+        
+        // FROM 1.1.4
+        // Restore menus
+        showPanelGenerators()
     }
 
 
@@ -476,10 +568,25 @@ final class AppDelegate: NSObject,
 
         // Remove the sheet now we have the data
         self.window.endSheet(self.preferencesWindow)
+        
+        // Restore menus
+        showPanelGenerators()
+    }
+    
+    
+    /**
+        Generic IBAction for any Prefs control to register it has been used.
+     
+        - Parameters:
+            - sender: The source of the action.
+     */
+    @IBAction private func checkboxClicked(sender: Any) {
+        
+        self.havePrefsChanged = true
     }
 
 
-    // MARK: What's New Sheet Functions
+    // MARK: - What's New Sheet Functions
 
     /**
         Show the **What's New** sheet.
@@ -493,7 +600,7 @@ final class AppDelegate: NSObject,
             - sender: The source of the action.
      */
     @IBAction private func doShowWhatsNew(_ sender: Any) {
-
+        
         // See if we're coming from a menu click (sender != self) or
         // directly in code from 'appDidFinishLoading()' (sender == self)
         var doShowSheet: Bool = type(of: self) != type(of: sender)
@@ -503,13 +610,18 @@ final class AppDelegate: NSObject,
             // if we need to show the sheet by the checking the prefs
             if let defaults = UserDefaults(suiteName: self.appSuiteName) {
                 // Get the version-specific preference key
-                let key: String = "com-bps-previewyaml-do-show-whats-new-" + getVersion()
+                let key: String = BUFFOON_CONSTANTS.WHATS_NEW_PREF + getVersion()
                 doShowSheet = defaults.bool(forKey: key)
             }
         }
       
-        // Configure and show the sheet: first, get the folder path
+        // Configure and show the sheet
         if doShowSheet {
+            // FROM 1.1.4
+            // Hide manus we don't want used
+            hidePanelGenerators()
+            
+            // First, get the folder path
             let htmlFolderPath = Bundle.main.resourcePath! + "/new"
             
             // Set up the WKWebBiew: no elasticity, horizontal scroller
@@ -556,6 +668,10 @@ final class AppDelegate: NSObject,
 
             defaults.synchronize()
         }
+        
+        // FROM 1.1.4
+        // Restore menus
+        showPanelGenerators()
     }
 
 
@@ -671,8 +787,6 @@ final class AppDelegate: NSObject,
      */
     private func submitFeedback(_ feedback: String) -> URLSessionTask? {
 
-        // Send the feedback string etc.
-
         // First get the data we need to build the user agent string
         let userAgent: String = getUserAgentForFeedback()
         let endPoint: String = MNU_SECRETS.ADDRESS.A
@@ -723,15 +837,24 @@ final class AppDelegate: NSObject,
     
     
     /**
-     Get system and state information and record it for use during run.
+     Handler for macOS UI mode change notifications.
      
-     FROM 1.1.1
+     FROM 1.1.4
      */
-    private func recordSystemState() {
+    @objc private func interfaceModeChanged() {
         
-        // First ensure we are running on Mojave or above - Dark Mode is not supported by earlier versons
-        let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
-        self.isMontereyPlus = (sysVer.majorVersion >= 12)
+        if self.preferencesWindow.isVisible {
+            // Prefs window is up, so switch the use light background checkbox
+            // on or off according to whether the current mode is light
+            // NOTE For light mode, this checkbox is irrelevant, so the
+            //      checkbox should be disabled
+            let appearance: NSAppearance = NSApp.effectiveAppearance
+            if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
+                // NOTE Appearance it this point seems to reflect the mode
+                //      we're coming FROM, not what it has changed to
+                self.useLightCheckbox.isHidden = (appearName != .aqua)
+            }
+        }
     }
-
+    
 }
