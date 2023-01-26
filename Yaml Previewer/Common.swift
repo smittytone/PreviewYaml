@@ -15,12 +15,14 @@ import AppKit
 
 // FROM 1.1.0
 // Implement as a class
-final class Common: NSObject {
+final class Common: NSObject, NSOutlineViewDataSource, NSOutlineViewDelegate {
     
     // MARK: - Public Properties
     
     var doShowLightBackground: Bool   = false
     var doShowTag: Bool               = true
+    
+    
     
     
     // MARK: - Private Properties
@@ -122,6 +124,13 @@ final class Common: NSObject {
             // let processed = fixNan(yamlFileString)
             let yaml = try Yaml.loadMultiple(yamlFileString)
             
+            /*
+             
+             Reload NSOutlineViewData
+             Item at index yield yaml[index] ; root if index == nil
+             
+             */
+            
             // Render the YAML to NSAttributedString
             for i in 0..<yaml.count {
                 if let yamlString = renderYaml(yaml[i], 0, false) {
@@ -187,6 +196,7 @@ final class Common: NSObject {
         
         switch (part) {
         case .array:
+            // Each element is a child
             if let value = part.array {
                 // Iterate through array elements
                 // NOTE A given element can be of any YAML type
@@ -206,6 +216,30 @@ final class Common: NSObject {
                 return returnString
             }
         case .dictionary:
+            // New item; each key is a child; each value is a sub-child
+            /*
+             
+             * remote_theme: Homebrew/brew.sh ->
+            
+             remote_theme [item]
+                homebrew/brew.sh [child of item]
+            
+             * plugins:
+               - jekyll-feed
+               - jekyll-redirect-from
+               - jekyll-remote-theme
+               - jekyll-seo-tag
+               - jekyll-sitemap ->
+             
+             plugins [item]
+               jekyll-feed
+               jekyll-redirect-from
+               jekyll-remote-theme
+               jekyll-seo-tag
+               jekyll-sitemap
+             
+            
+             */
             if let dict = part.dictionary {
                 // Iterate through the dictionary's keys and their values
                 // NOTE A given value can be of any YAML type
@@ -399,6 +433,92 @@ final class Common: NSObject {
         
         // Send the updated string back
         return fixedString
+    }
+    
+    
+    func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
+        
+        let yamlPart: Yaml = item as! Yaml
+        
+        switch (yamlPart) {
+            case .array:
+                if let value = yamlPart.array {
+                    return value.count
+                }
+            case .dictionary:
+                if let value = yamlPart.dictionary {
+                    var keys: [Yaml] = Array(value.keys)
+                    return keys.count
+                }
+            case .string:
+                if let value = yamlPart.string {
+                    let parts: [String] = value.components(separatedBy: "\n")
+                    return parts.count
+                }
+            default:
+                return 0
+        }
+        
+        return 0
+    }
+    
+    
+    func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
+        
+        let yamlParent: Yaml = item as! Yaml
+        var yamlChild: Any = ""
+        
+        switch (yamlParent) {
+            case .array:
+                if let values = yamlParent.array {
+                    yamlChild = values[index]
+                }
+            case .dictionary:
+                if let value = yamlParent.dictionary {
+                    let values: [Yaml] = Array(value.values)
+                    yamlChild = values[index]
+                }
+            case .string:
+                if let value = yamlParent.string {
+                    yamlChild = value
+                }
+            default:
+                var valString: String = ""
+                
+                if let val = yamlParent.int {
+                    valString = "\(val)\n"
+                } else if let val = yamlParent.double {
+                    valString = "\(val)\n"
+                } else if let val = yamlParent.bool {
+                    valString = val ? "TRUE\n" : "FALSE\n"
+                } else {
+                    valString = "UNKNOWN\n"
+                }
+                
+                return valString
+        }
+        
+        return yamlChild
+    }
+    
+    
+    func outlineView(_ outlineView: NSOutlineView, objectValueFor tableColumn: NSTableColumn?, byItem item: Any?) -> Any? {
+        
+        if let yamlParent: Yaml = item as? Yaml {
+            return yamlParent.string
+        } else if let valueString: String = item as? String {
+            return valueString
+        }
+        
+        return nil
+    }
+    
+    
+    func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
+        
+        
+        
+        return nil
     }
 
 }

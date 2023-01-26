@@ -21,6 +21,7 @@ class PreviewViewController: NSViewController,
     // FROM 1.1.0
     @IBOutlet var errorReportField: NSTextField!
     
+    @IBOutlet weak var outlineView: NSOutlineView!
     
     // MARK:- Public Properties
     
@@ -48,6 +49,8 @@ class PreviewViewController: NSViewController,
         
         // Set the base values
         let common: Common = Common.init(false)
+        self.outlineView.dataSource = common
+        self.outlineView.delegate = common
         
         // Load the source file using a co-ordinator as we don't know what thread this function
         // will be executed in when it's called by macOS' QuickLook code
