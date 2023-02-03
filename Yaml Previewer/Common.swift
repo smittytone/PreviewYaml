@@ -21,13 +21,17 @@ final class Common: NSObject {
     
     var doShowLightBackground: Bool   = false
     var doShowTag: Bool               = true
-    
+
     
     // MARK: - Private Properties
     
     private var doShowRawYaml: Bool   = false
     private var doIndentScalars: Bool = false
     private var yamlIndent: Int       = BUFFOON_CONSTANTS.YAML_INDENT
+    // FROM 1.1.5
+    private var renderThumbnail: Bool = false
+    private var renderLineCount: Int  = 0
+    private var renderDone: Bool      = false
     
     // YAML string attributes...
     private var keyAtts: [NSAttributedString.Key: Any] = [:]
@@ -36,6 +40,7 @@ final class Common: NSObject {
     // String artifacts...
     private var hr: NSAttributedString      = NSAttributedString.init(string: "")
     private var newLine: NSAttributedString = NSAttributedString.init(string: "")
+    private var newLine2: NSAttributedString = NSAttributedString.init(string: "")
 
 
     // MARK:- Lifecycle Functions
@@ -43,6 +48,9 @@ final class Common: NSObject {
     init(_ isThumbnail: Bool) {
         
         super.init()
+        
+        // FROM 1.1.5
+        self.renderThumbnail = isThumbnail
         
         var fontBaseSize: CGFloat       = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
         var fontBaseName: String        = BUFFOON_CONSTANTS.CODE_FONT_NAME
@@ -97,6 +105,9 @@ final class Common: NSObject {
         
         self.newLine = NSAttributedString.init(string: "\n",
                                                attributes: valAtts)
+        
+        self.newLine2 = NSAttributedString.init(string: "*\n",
+                                               attributes: valAtts)
     }
     
     
@@ -115,21 +126,29 @@ final class Common: NSObject {
         // Set up the base string
         var renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "",
                                                                                        attributes: self.valAtts)
+        // FROM 1.1.5
+        self.renderLineCount = 0
+        self.renderDone = false
         
+        // Parse the YAML data
         do {
-            // Parse the YAML data,
-            // first fixing any .NAN, +/-.INF in the file
+            // First fix any .NAN, +/-.INF in the file
             // let processed = fixNan(yamlFileString)
+            // NOTE The following call takes time on large files
+            // TODO Optimise it
             let yaml = try Yaml.loadMultiple(yamlFileString)
             
             // Render the YAML to NSAttributedString
+            // NOTE `yaml` is an array of YAML units
             for i in 0..<yaml.count {
                 if let yamlString = renderYaml(yaml[i], 0, false) {
-                    if i > 0 {
-                        renderedString.append(hr)
-                    }
+                    if i > 0 { renderedString.append(hr) }
                     renderedString.append(yamlString)
                 }
+                
+                // FROM 1.1.5
+                // Break out of loop if we're done rendering a thumbnail
+                if self.renderDone { break }
             }
             
             // Just in case...
@@ -137,6 +156,14 @@ final class Common: NSObject {
                 renderedString = NSMutableAttributedString.init(string: "Could not render the YAML.\n",
                                                                 attributes: self.keyAtts)
             }
+            
+#if DEBUG
+            // FROM 1.1.5
+            let countString: String = "Lines: \(self.renderLineCount)\n"
+            renderedString.insert(NSMutableAttributedString.init(string: countString,
+                                                                 attributes: self.keyAtts), at: 0)
+#endif
+            
         } catch {
             // No YAML to render, or the YAML was mis-formatted
             // Get the error as reported by YamlSwift
@@ -182,6 +209,15 @@ final class Common: NSObject {
      */
     func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedString? {
         
+        // FROM 1.1.5
+        // If we're rendering a thumbnail and we've reached the limit, bail
+        if self.renderThumbnail {
+            if self.renderLineCount >= BUFFOON_CONSTANTS.THUMBNAIL_LINE_COUNT {
+                if !self.renderDone { self.renderDone = true }
+                return nil
+            }
+        }
+        
         // Set up the base string
         let returnString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: valAtts)
         
@@ -196,14 +232,13 @@ final class Common: NSObject {
                         // previous one -- so apply to all but the first item
                         if i > 0 && (value[i].array != nil || value[i].dictionary != nil) {
                             returnString.append(self.newLine)
+                            self.renderLineCount += 1
                         }
                         
                         // Add the element itself
                         returnString.append(yamlString)
                     }
                 }
-                
-                return returnString
             }
         case .dictionary:
             if let dict = part.dictionary {
@@ -254,7 +289,7 @@ final class Common: NSObject {
                     
                     // Get the key:value pairs
                     let key: Yaml = keys[i]
-                    let value: Yaml = dict[key] ?? ""
+                    let value: Yaml = dict[key] ?? .null
                     
                     // Render the key
                     if let yamlString = renderYaml(key, indent, true) {
@@ -263,9 +298,10 @@ final class Common: NSObject {
                     
                     // If the value is a collection, we drop to the next line and indent
                     var valueIndent: Int = 0
-                    if value.array != nil || value.dictionary != nil || self.doIndentScalars {
+                    if (value.array != nil || value.dictionary != nil || self.doIndentScalars) {
                         valueIndent = indent + self.yamlIndent
                         returnString.append(self.newLine)
+                        self.renderLineCount += 1
                     }
                     
                     // Render the key's value
@@ -273,16 +309,23 @@ final class Common: NSObject {
                         returnString.append(yamlString)
                     }
                 }
-                
-                return returnString
             }
         case .string:
             if let keyOrValue = part.string {
                 let parts: [String] = keyOrValue.components(separatedBy: "\n")
                 if parts.count > 2 {
-                    for i in 0..<parts.count {
-                        let part: String = parts[i]
-                        returnString.append(getIndentedString(part + (i < parts.count - 2 ? "\n" : ""), indent))
+                    if self.renderThumbnail {
+                        var joined: String = ""
+                        for i in 0..<parts.count {
+                            joined += parts[i].trimmingCharacters(in: .whitespaces)
+                        }
+                        returnString.append(getIndentedString(joined + "\n", indent))
+                    } else {
+                        for i in 0..<parts.count {
+                            let part: String = parts[i]
+                            returnString.append(getIndentedString(part + (i < parts.count - 2 ? "\n" : " "),
+                                                                  indent))
+                        }
                     }
                 } else {
                     returnString.append(getIndentedString(keyOrValue, indent))
@@ -291,7 +334,7 @@ final class Common: NSObject {
                 returnString.setAttributes((isKey ? self.keyAtts : self.valAtts),
                                            range: NSMakeRange(0, returnString.length))
                 returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.newLine)
-                return returnString
+                if !isKey { self.renderLineCount += 1 }
             }
         case .null:
             let valString: String = isKey ? "NULL KEY" : "NULL VALUE"
@@ -299,7 +342,7 @@ final class Common: NSObject {
             returnString.setAttributes(self.valAtts,
                                        range: NSMakeRange(0, returnString.length))
             returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.newLine)
-            return returnString
+            if !isKey { self.renderLineCount += 1 }
         default:
             // Place all the scalar values here
             // TODO These *may* be keys too, so we need to check that
@@ -318,11 +361,10 @@ final class Common: NSObject {
             returnString.append(getIndentedString(valString, indent))
             returnString.setAttributes((isKey ? self.keyAtts : self.valAtts),
                                        range: NSMakeRange(0, returnString.length))
-            return returnString
+            self.renderLineCount += 1
         }
         
-        // Error condition
-        return nil
+        return returnString.string.count > 0 ? returnString : nil
     }
 
 
