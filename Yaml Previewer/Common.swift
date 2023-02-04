@@ -349,14 +349,17 @@ final class Common: NSObject {
             var valString: String = ""
             
             if let val = part.int {
-                valString = "\(val)\n"
+                valString = "\(val)"
             } else if let val = part.double {
-                valString = "\(val)\n"
+                valString = "\(val)"
             } else if let val = part.bool {
-                valString = val ? "TRUE\n" : "FALSE\n"
+                valString = val ? "TRUE" : "FALSE"
             } else {
-                valString = "UNKNOWN\n"
+                valString = "UNKNOWN"
             }
+                
+            // FROM 1.1.5
+            valString += (isKey ? " " : "\n")
             
             returnString.append(getIndentedString(valString, indent))
             returnString.setAttributes((isKey ? self.keyAtts : self.valAtts),
