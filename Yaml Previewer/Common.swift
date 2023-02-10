@@ -105,9 +105,6 @@ final class Common: NSObject {
         
         self.newLine = NSAttributedString.init(string: "\n",
                                                attributes: valAtts)
-        
-        self.newLine2 = NSAttributedString.init(string: "*\n",
-                                               attributes: valAtts)
     }
     
     
@@ -211,15 +208,13 @@ final class Common: NSObject {
         
         // FROM 1.1.5
         // If we're rendering a thumbnail and we've reached the limit, bail
-        if self.renderThumbnail {
-            if self.renderLineCount >= BUFFOON_CONSTANTS.THUMBNAIL_LINE_COUNT {
-                if !self.renderDone { self.renderDone = true }
-                return nil
-            }
+        if self.renderThumbnail && self.renderLineCount >= BUFFOON_CONSTANTS.THUMBNAIL_LINE_COUNT {
+            if !self.renderDone { self.renderDone = true }
+            return nil
         }
         
         // Set up the base string
-        let returnString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: valAtts)
+        let returnString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: self.valAtts)
         
         switch (part) {
         case .array:
@@ -232,6 +227,8 @@ final class Common: NSObject {
                         // previous one -- so apply to all but the first item
                         if i > 0 && (value[i].array != nil || value[i].dictionary != nil) {
                             returnString.append(self.newLine)
+                            
+                            // FROM 1.1.5
                             self.renderLineCount += 1
                         }
                         
@@ -301,6 +298,8 @@ final class Common: NSObject {
                     if (value.array != nil || value.dictionary != nil || self.doIndentScalars) {
                         valueIndent = indent + self.yamlIndent
                         returnString.append(self.newLine)
+                        
+                        // FROM 1.1.5
                         self.renderLineCount += 1
                     }
                     
@@ -334,6 +333,8 @@ final class Common: NSObject {
                 returnString.setAttributes((isKey ? self.keyAtts : self.valAtts),
                                            range: NSMakeRange(0, returnString.length))
                 returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.newLine)
+                
+                // FROM 1.1.5
                 if !isKey { self.renderLineCount += 1 }
             }
         case .null:
@@ -342,6 +343,8 @@ final class Common: NSObject {
             returnString.setAttributes(self.valAtts,
                                        range: NSMakeRange(0, returnString.length))
             returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.newLine)
+            
+            // FROM 1.1.5
             if !isKey { self.renderLineCount += 1 }
         default:
             // Place all the scalar values here
@@ -364,6 +367,8 @@ final class Common: NSObject {
             returnString.append(getIndentedString(valString, indent))
             returnString.setAttributes((isKey ? self.keyAtts : self.valAtts),
                                        range: NSMakeRange(0, returnString.length))
+            
+            // FROM 1.1.5
             self.renderLineCount += 1
         }
         
