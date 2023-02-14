@@ -41,7 +41,7 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 ## Release Notes
 
-- 1.1.5 *Unreleased*
+- 1.1.5 *14 February 2023*
     - Fix regression affecting thumbnails of large documents.
 - 1.1.4 *21 January 2023*
     - Add link to [PreviewText](https://smittytone.net/previewtext/index.html).
