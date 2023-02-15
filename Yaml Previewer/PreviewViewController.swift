@@ -9,10 +9,13 @@
 
 import Cocoa
 import Quartz
+import Yaml
 
 
 class PreviewViewController: NSViewController,
-                             QLPreviewingController {
+                             QLPreviewingController,
+                             NSOutlineViewDelegate,
+                             NSOutlineViewDataSource {
     
     // MARK:- Class UI Properties
 
@@ -20,6 +23,8 @@ class PreviewViewController: NSViewController,
     @IBOutlet var renderTextScrollView: NSScrollView!
     // FROM 1.1.0
     @IBOutlet var errorReportField: NSTextField!
+                                 
+    @IBOutlet var yamlList: NSOutlineView!
     
     
     // MARK:- Public Properties
@@ -27,7 +32,9 @@ class PreviewViewController: NSViewController,
     override var nibName: NSNib.Name? {
         return NSNib.Name("PreviewViewController")
     }
-
+    
+    private var common: Common? = nil
+    
     
     // MARK:- QLPreviewingController Required Functions
 
@@ -47,7 +54,7 @@ class PreviewViewController: NSViewController,
         self.renderTextScrollView.isHidden = false
         
         // Set the base values
-        let common: Common = Common.init(false)
+        common = Common.init(false)
         
         // Load the source file using a co-ordinator as we don't know what thread this function
         // will be executed in when it's called by macOS' QuickLook code
@@ -63,7 +70,7 @@ class PreviewViewController: NSViewController,
                 
                 if let yamlFileString: String = String.init(data: data, encoding: encoding) {
                     // Get the key string first
-                    let yamlAttString: NSAttributedString = common.getAttributedString(yamlFileString)
+                    let yamlAttString: NSAttributedString = common!.getAttributedString(yamlFileString)
                     
                     // Knock back the light background to make the scroll bars visible in dark mode
                     // NOTE If !doShowLightBackground,
@@ -71,8 +78,8 @@ class PreviewViewController: NSViewController,
                     //      If doShowLightBackground,
                     //              in light mode, the scrollers show up light-on-light, in dark mode light-on-dark
                     // NOTE Changing the scrollview scroller knob style has no effect
-                    self.renderTextView.backgroundColor = common.doShowLightBackground ? NSColor.init(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
-                    self.renderTextScrollView.scrollerKnobStyle = common.doShowLightBackground ? .dark : .light
+                    self.renderTextView.backgroundColor = common!.doShowLightBackground ? NSColor.init(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
+                    self.renderTextScrollView.scrollerKnobStyle = common!.doShowLightBackground ? .dark : .light
 
                     if let renderTextStorage: NSTextStorage = self.renderTextView.textStorage {
                         /*
@@ -85,10 +92,17 @@ class PreviewViewController: NSViewController,
                         renderTextStorage.endEditing()
                         
                         // Add the subview to the instance's own view and draw
-                        self.view.display()
+                        //self.view.display()
 
                         // Call the QLPreviewingController indicating no error
                         // (argument is nil)
+                        
+                        if common!.yamlSource != nil {
+                            self.yamlList.reloadData();
+                        }
+                        
+                        self.view.display()
+                        
                         handler(nil)
                         return
                     }
@@ -181,5 +195,127 @@ class PreviewViewController: NSViewController,
                        code: code,
                        userInfo: [NSLocalizedDescriptionKey: errDesc])
     }
-
+    
+    
+    
+    func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
+        
+        if item == nil {
+            if self.common != nil {
+                if self.common!.yamlSource != nil {
+                    return self.common!.yamlSource!.count
+                }
+            }
+        } else {
+            if let yamlItem: Yaml = item as? Yaml {
+                switch(yamlItem) {
+                    case .array:
+                        if let value = yamlItem.array {
+                            return value.count
+                        }
+                    case .dictionary:
+                        if let value = yamlItem.dictionary {
+                            let keys: [Yaml] = Array(value.keys)
+                            return keys.count
+                        }
+                    default:
+                        return 0
+                }
+            }
+        }
+        
+        return 0
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
+        
+        var returnItem: Any = "NONE"
+        
+        // Item is NIL for root
+        if (item == nil) {
+            if self.common != nil {
+                return self.common!.yamlSource![index]
+            }
+        } else {
+            if let yamlItem: Yaml = item as? Yaml {
+                switch(yamlItem) {
+                    case .array:
+                        if let value = yamlItem.array {
+                            if index < value.count {
+                                return value[index]
+                            }
+                        }
+                    case .dictionary:
+                        if let value = yamlItem.dictionary {
+                            let keys: [Yaml] = Array(value.keys)
+                            if index < keys.count {
+                                let key: Yaml = keys[index]
+                                let val: Yaml = value[key] ?? .null
+                                return val
+                            }
+                        }
+                    default:
+                        return returnItem
+                }
+            }
+        }
+        
+        return returnItem
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
+        
+        if let _: [Yaml] = item as? [Yaml] {
+            return true
+        }
+        
+        if let yamlItem: Yaml = item as? Yaml {
+            switch(yamlItem) {
+                case .array:
+                    fallthrough
+                case .dictionary:
+                    return true
+                default:
+                    return false
+            }
+        }
+        
+        return false
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
+        
+        if let stringItem: String = item as? String {
+            let result: NSTableCellView = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "DataCell"), owner: self) as! NSTableCellView
+            result.textField?.stringValue = stringItem
+            return result
+        }
+        
+        if let yamlItem: Yaml = item as? Yaml {
+            switch(yamlItem) {
+                case .array:
+                    let result: NSTableCellView = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "HeaderCell"), owner: self) as! NSTableCellView
+                    result.textField?.stringValue = "ARRAY"
+                    return result
+                case .dictionary:
+                    let result: NSTableCellView = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "HeaderCell"), owner: self) as! NSTableCellView
+                    result.textField?.stringValue = "DICTIONARY"
+                    return result
+                default:
+                    let result: NSTableCellView = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "DataCell"), owner: self) as! NSTableCellView
+                    result.textField?.stringValue = "VALUE"
+                    return result
+            }
+        }
+        
+        return nil
+    }
+    
+    /*
+    func yamlFinder(_ yaml: Yaml) -> Yaml {
+        
+    }
+    */
 }
+
+

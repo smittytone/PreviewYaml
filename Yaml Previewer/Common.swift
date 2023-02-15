@@ -21,6 +21,7 @@ final class Common: NSObject {
     
     var doShowLightBackground: Bool   = false
     var doShowTag: Bool               = true
+    var yamlSource: [Yaml]?           = nil
 
     
     // MARK: - Private Properties
@@ -134,6 +135,7 @@ final class Common: NSObject {
             // NOTE The following call takes time on large files
             // TODO Optimise it
             let yaml = try Yaml.loadMultiple(yamlFileString)
+            self.yamlSource = yaml
             
             // Render the YAML to NSAttributedString
             // NOTE `yaml` is an array of YAML units
