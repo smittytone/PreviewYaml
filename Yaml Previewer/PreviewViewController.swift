@@ -34,6 +34,7 @@ class PreviewViewController: NSViewController,
     }
     
     private var common: Common? = nil
+    private var currentValue: Int = 0
     
     
     // MARK:- QLPreviewingController Required Functions
@@ -247,7 +248,7 @@ class PreviewViewController: NSViewController,
                         }
                     case .dictionary:
                         if let value = yamlItem.dictionary {
-                            let keys: [Yaml] = Array(value.keys)
+                            let keys: [Yaml] = Array(value.keys).
                             if index < keys.count {
                                 let key: Yaml = keys[index]
                                 let val: Yaml = value[key] ?? .null
