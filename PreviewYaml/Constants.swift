@@ -67,7 +67,7 @@ struct BUFFOON_CONSTANTS {
     static let SAMPLE_UTI_FILE                  = "sample.yml"
 
     // FROM 1.1.1
-    static let THUMBNAIL_LINE_COUNT             = 38
+    static let THUMBNAIL_LINE_COUNT             = 30
     
     // FROM 1.1.2
     static let APP_CODE_PREVIEWER               = "com.bps.PreviewYaml.Yaml-Previewer"
