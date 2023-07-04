@@ -385,6 +385,10 @@ final class AppDelegate: NSObject,
             // FROM 1.1.0
             self.codeFontName = defaults.string(forKey: "com-bps-previewyaml-base-font-name") ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
             self.codeColourHex = defaults.string(forKey: "com-bps-previewyaml-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+
+            // FROM 1.1.6
+            self.doSortKeys = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SORT)
+            self.doShowColons = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
         }
 
         // Get the menu item index from the stored value

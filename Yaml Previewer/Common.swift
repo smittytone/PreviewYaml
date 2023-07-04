@@ -32,6 +32,9 @@ final class Common: NSObject {
     private var renderThumbnail: Bool = false
     private var renderLineCount: Int  = 0
     private var renderDone: Bool      = false
+    // FROM 1.1.6
+    private var renderColons: Bool    = false
+    private var sortKeys: Bool        = true
     
     // YAML string attributes...
     private var keyAtts: [NSAttributedString.Key: Any] = [:]
@@ -63,7 +66,10 @@ final class Common: NSObject {
             self.doShowLightBackground = prefs.bool(forKey: "com-bps-previewyaml-do-use-light")
             self.doShowTag             = prefs.bool(forKey: "com-bps-previewyaml-do-show-tag")
             self.yamlIndent            = isThumbnail ? 2 : prefs.integer(forKey: "com-bps-previewyaml-yaml-indent")
-            
+            // FROM 1.1.6
+            self.sortKeys              = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SORT)
+            self.renderColons          = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
+
             fontBaseSize = CGFloat(isThumbnail
                                    ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE
                                    : prefs.float(forKey: "com-bps-previewyaml-base-font-size"))
@@ -156,7 +162,7 @@ final class Common: NSObject {
             
 #if DEBUG
             // FROM 1.1.5
-            let countString: String = "Lines: \(self.renderLineCount)\n"
+            let countString: String = "Lines: \(self.renderLineCount), sorted: \(self.sortKeys ? "true" : "false") \n"
             renderedString.insert(NSMutableAttributedString.init(string: countString,
                                                                  attributes: self.keyAtts), at: 0)
 #endif
@@ -242,40 +248,43 @@ final class Common: NSObject {
                 // Iterate through the dictionary's keys and their values
                 // NOTE A given value can be of any YAML type
                 
+                // FROM 1.1.6 -- sort is optional, but true by default
                 // Sort the dictionary's keys (ascending)
                 // We assume all keys will be strings, ints, doubles or bools
                 var keys: [Yaml] = Array(dict.keys)
-                keys = keys.sorted(by: { (a, b) -> Bool in
-                    // Strings?
-                    if let a_s: String = a.string {
-                        if let b_s: String = b.string {
-                            return (a_s.lowercased() < b_s.lowercased())
+                if self.sortKeys {
+                    keys = keys.sorted(by: { (a, b) -> Bool in
+                        // Strings?
+                        if let a_s: String = a.string {
+                            if let b_s: String = b.string {
+                                return (a_s.lowercased() < b_s.lowercased())
+                            }
                         }
-                    }
-                    
-                    // Ints?
-                    if let a_i: Int = a.int {
-                        if let b_i: Int = b.int {
-                            return (a_i < b_i)
+
+                        // Ints?
+                        if let a_i: Int = a.int {
+                            if let b_i: Int = b.int {
+                                return (a_i < b_i)
+                            }
                         }
-                    }
-                    
-                    // Doubles?
-                    if let a_d: Double = a.double {
-                        if let b_d: Double = b.double {
-                            return (a_d < b_d)
+
+                        // Doubles?
+                        if let a_d: Double = a.double {
+                            if let b_d: Double = b.double {
+                                return (a_d < b_d)
+                            }
                         }
-                    }
-                    
-                    // Bools
-                    if let a_b: Bool = a.bool {
-                        if let b_b: Bool = b.bool {
-                            return (a_b && !b_b)
+
+                        // Bools
+                        if let a_b: Bool = a.bool {
+                            if let b_b: Bool = b.bool {
+                                return (a_b && !b_b)
+                            }
                         }
-                    }
-                    
-                    return false
-                })
+
+                        return false
+                    })
+                }
                 
                 // Iterate through the sorted keys array
                 for i in 0..<keys.count {
@@ -332,7 +341,13 @@ final class Common: NSObject {
 
                 returnString.setAttributes((isKey ? self.keyAtts : self.valAtts),
                                            range: NSMakeRange(0, returnString.length))
-                returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.newLine)
+
+                // FROM 1.1.6
+                if self.renderColons {
+                    returnString.append(isKey ? NSAttributedString.init(string: ": ", attributes: self.valAtts) : self.newLine)
+                } else {
+                    returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.newLine)
+                }
                 
                 // FROM 1.1.5
                 if !isKey { self.renderLineCount += 1 }
