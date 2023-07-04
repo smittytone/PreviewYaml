@@ -63,7 +63,10 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var codeColorWell: NSColorWell!
     @IBOutlet weak var codeStylePopup: NSPopUpButton!
     // FROM 1.1.1
-    @IBOutlet weak var tagInfoTextField: NSTextField!
+    //@IBOutlet weak var tagInfoTextField: NSTextField!
+    // FROM 1.1.6
+    @IBOutlet weak var doSortKeysCheckbox: NSButton!
+    @IBOutlet weak var doShowColonCheckbox: NSButton!
 
     // What's New Sheet
     @IBOutlet weak var whatsNewWindow: NSWindow!
@@ -93,6 +96,9 @@ final class AppDelegate: NSObject,
     internal var isMontereyPlus: Bool = false
     // FROM 1.1.4
     private  var havePrefsChanged: Bool = false
+    // FROM 1.1.6
+    private var doSortKeys: Bool = true
+    private var doShowColons: Bool = false
     
 
     // MARK: - Class Lifecycle Functions
@@ -419,13 +425,13 @@ final class AppDelegate: NSObject,
         // Hide tag selection on Monterey
         if self.isMontereyPlus {
             self.doShowTagCheckbox.toolTip = "Not available in macOS 12.0 and up"
-            self.tagInfoTextField.stringValue = "macOS 12.0 Monterey adds its own thumbnail file extension tags, so this option is no longer available."
+            // self.tagInfoTextField.stringValue = "macOS 12.0 Monterey adds its own thumbnail file extension tags, so this option is no longer available."
         }
         
         // FROM 1.1.2
         // Hide this option, don't just disable it
         self.doShowTagCheckbox.isHidden = self.isMontereyPlus
-        self.tagInfoTextField.isHidden = self.isMontereyPlus
+        // self.tagInfoTextField.isHidden = self.isMontereyPlus
         
         // FROM 1.1.4
         // Check for the OS mode
@@ -433,7 +439,11 @@ final class AppDelegate: NSObject,
         if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
             self.useLightCheckbox.isHidden = (appearName == .aqua)
         }
-        
+
+        // FROM 1.1.6
+        self.doSortKeysCheckbox.state = self.doSortKeys ? .on : .off
+        self.doShowColonCheckbox.state = self.doShowColons ? .on : .off
+
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
     }
@@ -553,6 +563,17 @@ final class AppDelegate: NSObject,
                     defaults.setValue(fontName,
                                       forKey: "com-bps-previewyaml-base-font-name")
                 }
+            }
+
+            // FROM 1.1.6
+            state = self.doSortKeysCheckbox.state == .on
+            if self.doSortKeys != state {
+                defaults.setValue(state, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SORT)
+            }
+
+            state = self.doShowColonCheckbox.state == .on
+            if self.doShowColons != state {
+                defaults.setValue(state, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
             }
 
             // Sync any changes
@@ -768,6 +789,21 @@ final class AppDelegate: NSObject,
             if presentBadYamlDefault == nil {
                 defaults.setValue(false,
                                   forKey: "com-bps-previewyaml-show-bad-yaml")
+            }
+
+            // FROM 1.1.6
+            // Sort dictionary keys
+            // Default: true
+            let sortKeysDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SORT)
+            if sortKeysDefault == nil {
+                defaults.setValue(true, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SORT)
+            }
+
+            // Render colon after keys
+            // Default: false
+            let showColonDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
+            if showColonDefault == nil {
+                defaults.setValue(false, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
             }
 
             // Sync any additions

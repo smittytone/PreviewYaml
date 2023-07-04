@@ -83,4 +83,11 @@ struct BUFFOON_CONSTANTS {
     }
     
     static let WHATS_NEW_PREF                   = "com-bps-previewyaml-do-show-whats-new-"
+
+    // FROM 1.1.6
+    struct PREFS_KEYS {
+
+        static let SORT                         = "com-bps-previewyaml-sort-keys"
+        static let COLON                        = "com-bps-previewyaml-show-key-colon"
+    }
 }
