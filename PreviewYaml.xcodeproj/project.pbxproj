@@ -41,6 +41,8 @@
 		3BB64E1D2632033F003CD14D /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E1A2632033F003CD14D /* Secrets.swift */; };
 		3BB64E3426320C5B003CD14D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8A26320065003CD14D /* Assets.xcassets */; };
 		3BB64E3A26320C6F003CD14D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8A26320065003CD14D /* Assets.xcassets */; };
+		3BB9205A2A562E9E006C088E /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = 3BB920582A562E9E006C088E /* LICENSE.md */; };
+		3BB9205B2A562E9E006C088E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 3BB920592A562E9E006C088E /* README.md */; };
 		3BDE3EF4267CE6C10037351C /* GenericExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDE3EF3267CE6C10037351C /* GenericExtensions.swift */; };
 /* End PBXBuildFile section */
 
@@ -123,6 +125,8 @@
 		3BB64DF42632014D003CD14D /* licences.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = licences.txt; sourceTree = "<group>"; };
 		3BB64E112632023C003CD14D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3BB64E1A2632033F003CD14D /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Secrets.swift; path = "../../../Library/CloudStorage/OneDrive-Personal/Programming/mnu/Secrets.swift"; sourceTree = "<group>"; };
+		3BB920582A562E9E006C088E /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
+		3BB920592A562E9E006C088E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3BDE3EF3267CE6C10037351C /* GenericExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -179,6 +183,7 @@
 				3BB64D9826320065003CD14D /* PreviewYamlTests */,
 				3BB64DA326320065003CD14D /* PreviewYamlUITests */,
 				3BB64DBA263200A8003CD14D /* Frameworks */,
+				3BB920572A562E80006C088E /* Misc */,
 				3BB64D8626320064003CD14D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -263,6 +268,15 @@
 				3BB64DDC263200BA003CD14D /* Yaml_Thumbnailer.entitlements */,
 			);
 			path = "Yaml Thumbnailer";
+			sourceTree = "<group>";
+		};
+		3BB920572A562E80006C088E /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				3BB920582A562E9E006C088E /* LICENSE.md */,
+				3BB920592A562E9E006C088E /* README.md */,
+			);
+			name = Misc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -422,6 +436,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3BB9205B2A562E9E006C088E /* README.md in Resources */,
+				3BB9205A2A562E9E006C088E /* LICENSE.md in Resources */,
 				3B21717D26344C81000C5AF6 /* sample.yml in Resources */,
 				3B21718926344E88000C5AF6 /* new in Resources */,
 				3BB64D8B26320065003CD14D /* Assets.xcassets in Resources */,
@@ -702,7 +718,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.1.6;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewYaml;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -731,7 +747,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.1.6;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewYaml;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -844,7 +860,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.1.6;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Previewer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -870,7 +886,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.1.6;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Previewer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -897,7 +913,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.1.6;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Thumbnailer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -923,7 +939,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.1.6;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Thumbnailer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

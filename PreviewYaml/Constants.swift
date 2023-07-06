@@ -84,9 +84,19 @@ struct BUFFOON_CONSTANTS {
     
     static let WHATS_NEW_PREF                   = "com-bps-previewyaml-do-show-whats-new-"
 
-    // FROM 1.1.6
+    // FROM 1.2.0
     struct PREFS_KEYS {
 
+        static let BODY_SIZE                    = "com-bps-previewyaml-base-font-size"
+        static let THUMB_SIZE                   = "com-bps-previewyaml-thumb-font-size"
+        static let CODE_COLOUR                  = "com-bps-previewyaml-code-colour-hex"
+        static let CODE_FONT                    = "com-bps-previewyaml-base-font-name"
+        static let USE_LIGHT                    = "com-bps-previewyaml-do-use-light"
+        static let TAG                          = "com-bps-previewyaml-do-show-tag"
+        static let WHATS_NEW                    = "com-bps-previewyaml-do-show-whats-new-"
+        static let INDENT                       = "com-bps-previewyaml-yaml-indent"
+        static let SCALARS                      = "com-bps-previewyaml-do-indent-scalars"
+        static let BAD                          = "com-bps-previewyaml-show-bad-yaml"
         static let SORT                         = "com-bps-previewyaml-sort-keys"
         static let COLON                        = "com-bps-previewyaml-show-key-colon"
     }

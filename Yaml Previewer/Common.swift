@@ -32,7 +32,7 @@ final class Common: NSObject {
     private var renderThumbnail: Bool = false
     private var renderLineCount: Int  = 0
     private var renderDone: Bool      = false
-    // FROM 1.1.6
+    // FROM 1.2.0
     private var renderColons: Bool    = false
     private var sortKeys: Bool        = true
     
@@ -41,9 +41,8 @@ final class Common: NSObject {
     private var valAtts: [NSAttributedString.Key: Any] = [:]
     
     // String artifacts...
-    private var hr: NSAttributedString      = NSAttributedString.init(string: "")
-    private var newLine: NSAttributedString = NSAttributedString.init(string: "")
-    private var newLine2: NSAttributedString = NSAttributedString.init(string: "")
+    private var hr: NSAttributedString = NSAttributedString.init(string: "")
+    private var cr: NSAttributedString = NSAttributedString.init(string: "")
 
 
     // MARK:- Lifecycle Functions
@@ -61,22 +60,22 @@ final class Common: NSObject {
         
         // The suite name is the app group name, set in each extension's entitlements, and the host app's
         if let prefs = UserDefaults(suiteName: MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME) {
-            self.doIndentScalars       = prefs.bool(forKey: "com-bps-previewyaml-do-indent-scalars")
-            self.doShowRawYaml         = prefs.bool(forKey: "com-bps-previewyaml-show-bad-yaml")
-            self.doShowLightBackground = prefs.bool(forKey: "com-bps-previewyaml-do-use-light")
-            self.doShowTag             = prefs.bool(forKey: "com-bps-previewyaml-do-show-tag")
-            self.yamlIndent            = isThumbnail ? 2 : prefs.integer(forKey: "com-bps-previewyaml-yaml-indent")
-            // FROM 1.1.6
+            self.doIndentScalars       = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SCALARS)
+            self.doShowRawYaml         = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BAD)
+            self.doShowLightBackground = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.USE_LIGHT)
+            self.doShowTag             = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.TAG)
+            self.yamlIndent            = isThumbnail ? 2 : prefs.integer(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.INDENT)
+            // FROM 1.2.0
             self.sortKeys              = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SORT)
             self.renderColons          = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
 
             fontBaseSize = CGFloat(isThumbnail
                                    ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE
-                                   : prefs.float(forKey: "com-bps-previewyaml-base-font-size"))
+                                   : prefs.float(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE))
             
             // FROM 1.1.0
-            fontBaseName          = prefs.string(forKey: "com-bps-previewyaml-base-font-name") ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
-            codeColour            = prefs.string(forKey: "com-bps-previewyaml-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+            fontBaseName          = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_FONT) ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
+            codeColour            = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR) ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
         }
         
         // Just in case the above block reads in zero values
@@ -109,7 +108,7 @@ final class Common: NSObject {
                                      attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
                                                   .strikethroughColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.white)])
         
-        self.newLine = NSAttributedString.init(string: "\n",
+        self.cr = NSAttributedString.init(string: "\n",
                                                attributes: valAtts)
     }
     
@@ -232,7 +231,7 @@ final class Common: NSObject {
                         // Apply a prefix to separate array and dictionary elements from a
                         // previous one -- so apply to all but the first item
                         if i > 0 && (value[i].array != nil || value[i].dictionary != nil) {
-                            returnString.append(self.newLine)
+                            returnString.append(self.cr)
                             
                             // FROM 1.1.5
                             self.renderLineCount += 1
@@ -248,9 +247,9 @@ final class Common: NSObject {
                 // Iterate through the dictionary's keys and their values
                 // NOTE A given value can be of any YAML type
                 
-                // FROM 1.1.6 -- sort is optional, but true by default
                 // Sort the dictionary's keys (ascending)
                 // We assume all keys will be strings, ints, doubles or bools
+                // FROM 1.2.0 -- sort is optional, but true by default
                 var keys: [Yaml] = Array(dict.keys)
                 if self.sortKeys {
                     keys = keys.sorted(by: { (a, b) -> Bool in
@@ -290,7 +289,7 @@ final class Common: NSObject {
                 for i in 0..<keys.count {
                     // Prefix root-level key:value pairs after the first with a new line
                     if indent == 0 && i > 0 {
-                        returnString.append(self.newLine)
+                        returnString.append(self.cr)
                     }
                     
                     // Get the key:value pairs
@@ -306,7 +305,7 @@ final class Common: NSObject {
                     var valueIndent: Int = 0
                     if (value.array != nil || value.dictionary != nil || self.doIndentScalars) {
                         valueIndent = indent + self.yamlIndent
-                        returnString.append(self.newLine)
+                        returnString.append(self.cr)
                         
                         // FROM 1.1.5
                         self.renderLineCount += 1
@@ -342,11 +341,11 @@ final class Common: NSObject {
                 returnString.setAttributes((isKey ? self.keyAtts : self.valAtts),
                                            range: NSMakeRange(0, returnString.length))
 
-                // FROM 1.1.6
+                // FROM 1.2.0
                 if self.renderColons {
-                    returnString.append(isKey ? NSAttributedString.init(string: ": ", attributes: self.valAtts) : self.newLine)
+                    returnString.append(isKey ? NSAttributedString.init(string: ": ", attributes: self.valAtts) : self.cr)
                 } else {
-                    returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.newLine)
+                    returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.cr)
                 }
                 
                 // FROM 1.1.5
@@ -357,7 +356,7 @@ final class Common: NSObject {
             returnString.append(getIndentedString(valString, indent))
             returnString.setAttributes(self.valAtts,
                                        range: NSMakeRange(0, returnString.length))
-            returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.newLine)
+            returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.cr)
             
             // FROM 1.1.5
             if !isKey { self.renderLineCount += 1 }
