@@ -35,13 +35,12 @@ final class Common: NSObject {
     private var renderDone: Bool      = false
     
     // YAML string attributes...
-    private var keyAtts: [NSAttributedString.Key: Any] = [:]
-    private var valAtts: [NSAttributedString.Key: Any] = [:]
+    var keyAtts: [NSAttributedString.Key: Any] = [:]
+    var valAtts: [NSAttributedString.Key: Any] = [:]
     
     // String artifacts...
-    private var hr: NSAttributedString      = NSAttributedString.init(string: "")
-    private var newLine: NSAttributedString = NSAttributedString.init(string: "")
-    private var newLine2: NSAttributedString = NSAttributedString.init(string: "")
+    private var hr: NSAttributedString       = NSAttributedString.init(string: "")
+    private var cr: NSAttributedString  = NSAttributedString.init(string: "")
 
 
     // MARK:- Lifecycle Functions
@@ -104,7 +103,7 @@ final class Common: NSObject {
                                      attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
                                                   .strikethroughColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.white)])
         
-        self.newLine = NSAttributedString.init(string: "\n",
+        self.cr = NSAttributedString.init(string: "\n",
                                                attributes: valAtts)
     }
     
@@ -132,9 +131,11 @@ final class Common: NSObject {
         do {
             // First fix any .NAN, +/-.INF in the file
             // let processed = fixNan(yamlFileString)
+            
             // NOTE The following call takes time on large files
             // TODO Optimise it
-            let yaml = try Yaml.loadMultiple(yamlFileString)
+            // `yaml` is an array of docs
+            let yaml: [Yaml] = try Yaml.loadMultiple(yamlFileString)
             self.yamlSource = yaml
             
             // Render the YAML to NSAttributedString
@@ -158,9 +159,11 @@ final class Common: NSObject {
             
 #if DEBUG
             // FROM 1.1.5
-            let countString: String = "Lines: \(self.renderLineCount)\n"
+            let countString: String = "Lines: \(self.renderLineCount), \(self.yamlSource!.count)\n"
             renderedString.insert(NSMutableAttributedString.init(string: countString,
                                                                  attributes: self.keyAtts), at: 0)
+            
+            
 #endif
             
         } catch {
@@ -228,7 +231,7 @@ final class Common: NSObject {
                         // Apply a prefix to separate array and dictionary elements from a
                         // previous one -- so apply to all but the first item
                         if i > 0 && (value[i].array != nil || value[i].dictionary != nil) {
-                            returnString.append(self.newLine)
+                            returnString.append(self.cr)
                             
                             // FROM 1.1.5
                             self.renderLineCount += 1
@@ -283,7 +286,7 @@ final class Common: NSObject {
                 for i in 0..<keys.count {
                     // Prefix root-level key:value pairs after the first with a new line
                     if indent == 0 && i > 0 {
-                        returnString.append(self.newLine)
+                        returnString.append(self.cr)
                     }
                     
                     // Get the key:value pairs
@@ -299,7 +302,7 @@ final class Common: NSObject {
                     var valueIndent: Int = 0
                     if (value.array != nil || value.dictionary != nil || self.doIndentScalars) {
                         valueIndent = indent + self.yamlIndent
-                        returnString.append(self.newLine)
+                        returnString.append(self.cr)
                         
                         // FROM 1.1.5
                         self.renderLineCount += 1
@@ -334,7 +337,7 @@ final class Common: NSObject {
 
                 returnString.setAttributes((isKey ? self.keyAtts : self.valAtts),
                                            range: NSMakeRange(0, returnString.length))
-                returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.newLine)
+                returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.cr)
                 
                 // FROM 1.1.5
                 if !isKey { self.renderLineCount += 1 }
@@ -344,7 +347,7 @@ final class Common: NSObject {
             returnString.append(getIndentedString(valString, indent))
             returnString.setAttributes(self.valAtts,
                                        range: NSMakeRange(0, returnString.length))
-            returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.newLine)
+            returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.cr)
             
             // FROM 1.1.5
             if !isKey { self.renderLineCount += 1 }

@@ -92,18 +92,15 @@ class PreviewViewController: NSViewController,
                         renderTextStorage.setAttributedString(yamlAttString)
                         renderTextStorage.endEditing()
                         
+                        self.yamlList.reloadData()
+                        self.yamlList.expandItem(nil, expandChildren: true)
+                        
+                        
                         // Add the subview to the instance's own view and draw
-                        //self.view.display()
+                        self.view.display()
 
                         // Call the QLPreviewingController indicating no error
                         // (argument is nil)
-                        
-                        if common!.yamlSource != nil {
-                            self.yamlList.reloadData();
-                        }
-                        
-                        self.view.display()
-                        
                         handler(nil)
                         return
                     }
@@ -202,40 +199,64 @@ class PreviewViewController: NSViewController,
     func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
         
         if item == nil {
-            if self.common != nil {
-                if self.common!.yamlSource != nil {
-                    return self.common!.yamlSource!.count
-                }
+            // Root - pass the number of elements
+            if let ya: [Yaml] = self.common?.yamlSource {
+                return ya.count
+            }
+        } else if let yamlItem: Yaml = item as? Yaml {
+            switch(yamlItem) {
+                case .array:
+                    // Yaml array - pass the number of elements
+                    if let value = yamlItem.array {
+                        return value.count
+                    }
+                case .dictionary:
+                    // Yaml dictionary - pass the number of keys
+                    if let value = yamlItem.dictionary {
+                        let keys: [Yaml] = Array(value.keys)
+                        return keys.count
+                    }
+                default:
+                    // Yaml scalar -- no children
+                    return 0
             }
         } else {
-            if let yamlItem: Yaml = item as? Yaml {
-                switch(yamlItem) {
-                    case .array:
-                        if let value = yamlItem.array {
-                            return value.count
-                        }
-                    case .dictionary:
-                        if let value = yamlItem.dictionary {
-                            let keys: [Yaml] = Array(value.keys)
-                            return keys.count
-                        }
-                    default:
-                        return 0
-                }
+            if let yamlArray: [Yaml] = item as? [Yaml] {
+                return yamlArray.count
             }
         }
         
         return 0
     }
     
+    
+    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
+        
+        if let yamlItem: Yaml = item as? Yaml {
+            switch(yamlItem) {
+                case .array:
+                    return false
+                case .dictionary:
+                    return true
+                default:
+                    return false
+            }
+        }
+        
+        return false
+    }
+    
+    
     func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
         
-        var returnItem: Any = "NONE"
+        let returnItem: Any = "NONE"
         
-        // Item is NIL for root
         if (item == nil) {
-            if self.common != nil {
-                return self.common!.yamlSource![index]
+            // Item is root
+            if let ys: [Yaml] = self.common?.yamlSource {
+                if index < ys.count {
+                    return ys[index]
+                }
             }
         } else {
             if let yamlItem: Yaml = item as? Yaml {
@@ -248,12 +269,19 @@ class PreviewViewController: NSViewController,
                         }
                     case .dictionary:
                         if let value = yamlItem.dictionary {
-                            let keys: [Yaml] = Array(value.keys).
+                            let keys: [Yaml] = Array(value.keys)
                             if index < keys.count {
                                 let key: Yaml = keys[index]
                                 let val: Yaml = value[key] ?? .null
+                                
+                                if (keys.count > 1) {
+                                    return Yaml.init(dictionaryLiteral: (key, val))
+                                }
+                            
                                 return val
                             }
+                            
+                            return "ERROR"
                         }
                     default:
                         return returnItem
@@ -264,25 +292,7 @@ class PreviewViewController: NSViewController,
         return returnItem
     }
     
-    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
-        
-        if let _: [Yaml] = item as? [Yaml] {
-            return true
-        }
-        
-        if let yamlItem: Yaml = item as? Yaml {
-            switch(yamlItem) {
-                case .array:
-                    fallthrough
-                case .dictionary:
-                    return true
-                default:
-                    return false
-            }
-        }
-        
-        return false
-    }
+    
     
     func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
         
@@ -299,12 +309,43 @@ class PreviewViewController: NSViewController,
                     result.textField?.stringValue = "ARRAY"
                     return result
                 case .dictionary:
-                    let result: NSTableCellView = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "HeaderCell"), owner: self) as! NSTableCellView
-                    result.textField?.stringValue = "DICTIONARY"
+                    if let value = yamlItem.dictionary {
+                        let keys: [Yaml] = Array(value.keys)
+                        let result: NSTableCellView = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "HeaderCell"), owner: self) as! NSTableCellView
+                        if keys.count > 1 {
+                            //result.textField?.stringValue = "DICT (\(keys.count))"
+                            result.textField?.attributedStringValue = NSAttributedString.init(string: "DICT (\(keys.count))", attributes: self.common!.keyAtts)
+                        } else {
+                            // result.textField?.stringValue = "\(keys[0].string ?? "????")"
+                            result.textField?.attributedStringValue = NSAttributedString.init(string: "\(keys[0].string ?? "????")", attributes: self.common!.keyAtts)
+                        }
+                        
+                        return result
+                    }
+                case .null:
+                    let result: NSTableCellView = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "DataCell"), owner: self) as! NSTableCellView
+                    result.textField?.stringValue = "NULL"
+                    return result
+                case .string:
+                    let result: NSTableCellView = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "DataCell"), owner: self) as! NSTableCellView
+                    //result.textField?.stringValue = yamlItem.string ?? "UNKNOWN STRING"
+                    result.textField?.attributedStringValue = NSAttributedString.init(string: yamlItem.string ?? "UNKNOWN STRING", attributes: self.common!.valAtts)
                     return result
                 default:
                     let result: NSTableCellView = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "DataCell"), owner: self) as! NSTableCellView
-                    result.textField?.stringValue = "VALUE"
+                    var valString: String = ""
+                    
+                    if let val = yamlItem.int {
+                        valString = "\(val)"
+                    } else if let val = yamlItem.double {
+                        valString = "\(val)"
+                    } else if let val = yamlItem.bool {
+                        valString = val ? "TRUE" : "FALSE"
+                    } else {
+                        valString = "UNKNOWN"
+                    }
+                    
+                    result.textField?.attributedStringValue = NSAttributedString.init(string: valString, attributes: self.common!.valAtts)
                     return result
             }
         }
