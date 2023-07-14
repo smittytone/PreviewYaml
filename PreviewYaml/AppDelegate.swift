@@ -44,33 +44,33 @@ final class AppDelegate: NSObject,
     @IBOutlet var window: NSWindow!
 
     // Report Sheet
-    @IBOutlet weak var reportWindow: NSWindow!
-    @IBOutlet weak var feedbackText: NSTextField!
-    @IBOutlet weak var connectionProgress: NSProgressIndicator!
+    @IBOutlet var reportWindow: NSWindow!
+    @IBOutlet var feedbackText: NSTextField!
+    @IBOutlet var connectionProgress: NSProgressIndicator!
 
     // Preferences Sheet
     //@IBOutlet weak var codeColourPopup: NSPopUpButton!
-    @IBOutlet weak var preferencesWindow: NSWindow!
-    @IBOutlet weak var fontSizeSlider: NSSlider!
-    @IBOutlet weak var fontSizeLabel: NSTextField!
-    @IBOutlet weak var useLightCheckbox: NSButton!
-    @IBOutlet weak var doShowTagCheckbox: NSButton!
-    @IBOutlet weak var doIndentScalarsCheckbox: NSButton!
-    @IBOutlet weak var doShowRawYamlCheckbox: NSButton!
-    @IBOutlet weak var codeFontPopup: NSPopUpButton!
-    @IBOutlet weak var codeIndentPopup: NSPopUpButton!
+    @IBOutlet var preferencesWindow: NSWindow!
+    @IBOutlet var fontSizeSlider: NSSlider!
+    @IBOutlet var fontSizeLabel: NSTextField!
+    @IBOutlet var useLightCheckbox: NSButton!
+    @IBOutlet var doShowTagCheckbox: NSButton!
+    @IBOutlet var doIndentScalarsCheckbox: NSButton!
+    @IBOutlet var doShowRawYamlCheckbox: NSButton!
+    @IBOutlet var codeFontPopup: NSPopUpButton!
+    @IBOutlet var codeIndentPopup: NSPopUpButton!
     // FROM 1.1.0
-    @IBOutlet weak var codeColorWell: NSColorWell!
-    @IBOutlet weak var codeStylePopup: NSPopUpButton!
+    @IBOutlet var codeColorWell: NSColorWell!
+    @IBOutlet var codeStylePopup: NSPopUpButton!
     // FROM 1.1.1
-    //@IBOutlet weak var tagInfoTextField: NSTextField!
+    //@IBOutlet var tagInfoTextField: NSTextField!
     // FROM 1.2.0
-    @IBOutlet weak var doSortKeysCheckbox: NSButton!
-    @IBOutlet weak var doShowColonCheckbox: NSButton!
+    @IBOutlet var doSortKeysCheckbox: NSButton!
+    @IBOutlet var doShowColonCheckbox: NSButton!
 
     // What's New Sheet
-    @IBOutlet weak var whatsNewWindow: NSWindow!
-    @IBOutlet weak var whatsNewWebView: WKWebView!
+    @IBOutlet var whatsNewWindow: NSWindow!
+    @IBOutlet var whatsNewWebView: WKWebView!
     
 
     // MARK:- Private Properies

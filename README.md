@@ -19,6 +19,8 @@ You can alter some of the key elements of the preview by using the **Preferences
 - The preview’s font style, eg. regular, bold, italic etc.
 - The preview’s text size, from 10pt to 28pt.
 - Level of indentation: 1, 2, 4 or 8 spaces.
+- Whether mapping keys should be suffixed with the YAML colon marker.
+- Whether mappings should be sorted alphabetically by key value.
 - Whether preview should be display white-on-black even in macOS’ Dark Mode.
 
 Changing these settings will affect previews immediately, but may not affect thumbnails until you open a folder that has not been previously opened in the current login session, you edit a thumbnail, or you log back into your Mac account.
@@ -34,6 +36,8 @@ PreviewYaml currently expects files to be encoded in UTF-8.
 Certain YAML features — custom tags — are not as yet correctly rendered by PreviewYAML’s YAML library.
 
 A YAML file containing `.nan`, `.inf` and/or `-.inf` values will prevent PreviewYAML from rendering the file. This is under investigation.
+
+Comments are not rendered.
 
 ## Source Code ##
 
