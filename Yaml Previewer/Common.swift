@@ -459,8 +459,7 @@ final class Common: NSObject {
     func getIndentedString(_ baseString: String, _ indent: Int) -> NSAttributedString {
         
         let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
-        let spaces = "                                                     "
-        let spaceString = String(spaces.suffix(indent))
+        let spaceString = String(repeating: " ", count: indent)
         let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
         indentedString.append(NSAttributedString.init(string: spaceString))
         indentedString.append(NSAttributedString.init(string: trimmedString))
@@ -480,8 +479,7 @@ final class Common: NSObject {
     func getIndentedAttributedString(_ baseString: String, _ indent: Int, _ attType: AttributeType) -> NSAttributedString {
 
         let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
-        let spaces = "                                                     "
-        let spaceString = String(spaces.suffix(indent))
+        let spaceString = String(repeating: " ", count: indent)
         let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
         indentedString.append(NSAttributedString.init(string: spaceString, attributes: getAttributes(.Scalar)))
         indentedString.append(NSAttributedString.init(string: trimmedString, attributes: getAttributes(attType)))
