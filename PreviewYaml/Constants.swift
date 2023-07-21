@@ -99,5 +99,10 @@ struct BUFFOON_CONSTANTS {
         static let BAD                          = "com-bps-previewyaml-show-bad-yaml"
         static let SORT                         = "com-bps-previewyaml-sort-keys"
         static let COLON                        = "com-bps-previewyaml-show-key-colon"
+        static let STRING_COLOUR                = "com-bps-previewyaml-string-colour-hex"
+        static let SPECIAL_COLOUR               = "com-bps-previewyaml-special-colour-hex"
     }
+
+    static let STRING_COLOUR_HEX                = "FC6A5DFF"
+    static let SPECIAL_COLOUR_HEX               = "D0BF69FF"
 }

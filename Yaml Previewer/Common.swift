@@ -17,6 +17,14 @@ import AppKit
 // Implement as a class
 final class Common: NSObject {
     
+    enum AttributeType {
+        case Key
+        case Scalar
+        case String
+        case Special
+        case Comment
+    }
+
     // MARK: - Public Properties
     
     var doShowLightBackground: Bool   = false
@@ -38,7 +46,7 @@ final class Common: NSObject {
     
     // YAML string attributes...
     private var keyAtts: [NSAttributedString.Key: Any] = [:]
-    private var valAtts: [NSAttributedString.Key: Any] = [:]
+    private var scalarAtts: [NSAttributedString.Key: Any] = [:]
     // FROM 1.2.0
     private var specialAtts: [NSAttributedString.Key: Any] = [:]
     private var stringAtts: [NSAttributedString.Key: Any] = [:]
@@ -57,10 +65,13 @@ final class Common: NSObject {
         // FROM 1.1.5
         self.renderThumbnail = isThumbnail
         
-        var fontBaseSize: CGFloat       = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
-        var fontBaseName: String        = BUFFOON_CONSTANTS.CODE_FONT_NAME
-        var codeColour: String          = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
-        
+        var fontSize: CGFloat       = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+        var fontName: String        = BUFFOON_CONSTANTS.CODE_FONT_NAME
+        var keyColour: String       = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+        // FROM 1.2.0
+        var stringColour: String    = BUFFOON_CONSTANTS.STRING_COLOUR_HEX
+        var specialColour: String   = BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX
+
         // The suite name is the app group name, set in each extension's entitlements, and the host app's
         if let prefs = UserDefaults(suiteName: MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME) {
             self.doIndentScalars       = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SCALARS)
@@ -72,37 +83,40 @@ final class Common: NSObject {
             self.sortKeys              = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SORT)
             self.renderColons          = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
 
-            fontBaseSize = CGFloat(isThumbnail
+            fontSize = CGFloat(isThumbnail
                                    ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE
                                    : prefs.float(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE))
             
             // FROM 1.1.0
-            fontBaseName          = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_FONT) ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
-            codeColour            = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR) ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+            fontName        = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_FONT) ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
+            keyColour       = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR) ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+            // FROM 1.2.0
+            stringColour    = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR) ?? BUFFOON_CONSTANTS.STRING_COLOUR_HEX
+            specialColour   = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR) ?? BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX
         }
         
         // Just in case the above block reads in zero values
         // NOTE The other values CAN be zero
-        if fontBaseSize < CGFloat(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[0]) ||
-            fontBaseSize > CGFloat(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS.count - 1]) {
-            fontBaseSize = CGFloat(isThumbnail ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE : BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+        if fontSize < CGFloat(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[0]) ||
+            fontSize > CGFloat(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS.count - 1]) {
+            fontSize = CGFloat(isThumbnail ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE : BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
         }
 
         // Set the YAML key:value fonts and sizes
         var font: NSFont
-        if let chosenFont: NSFont = NSFont.init(name: fontBaseName, size: fontBaseSize) {
+        if let chosenFont: NSFont = NSFont.init(name: fontName, size: fontSize) {
             font = chosenFont
         } else {
-            font = NSFont.systemFont(ofSize: fontBaseSize)
+            font = NSFont.systemFont(ofSize: fontSize)
         }
         
         // Set up the attributed string components we may use during rendering
         self.keyAtts = [
-            .foregroundColor: NSColor.hexToColour(codeColour),
+            .foregroundColor: NSColor.hexToColour(keyColour),
             .font: font
         ]
         
-        self.valAtts = [
+        self.scalarAtts = [
             .foregroundColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.labelColor),
             .font: font
         ]
@@ -112,16 +126,16 @@ final class Common: NSObject {
                                                   .strikethroughColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.white)])
         
         self.cr = NSAttributedString.init(string: "\n",
-                                               attributes: valAtts)
+                                          attributes: self.scalarAtts)
         
         // FROM 1.2.0
         self.specialAtts = [
-            .foregroundColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.hexToColour("D0BF69FF")),
+            .foregroundColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.hexToColour(specialColour)),
             .font: font
         ]
         
         self.stringAtts = [
-            .foregroundColor: (isThumbnail ? NSColor.black : NSColor.hexToColour("AA0000FF")),
+            .foregroundColor: (isThumbnail ? NSColor.black : NSColor.hexToColour(stringColour)),
             .font: font
         ]
     }
@@ -130,28 +144,20 @@ final class Common: NSObject {
     /**
      Update certain style variables on a UI mode switch.
 
-     NOTE This is used by render demo app.
+     This is used by render demo app.
      */
     func resetStylesOnModeChange() {
         
         // Set up the attributed string components we may use during rendering
-        let font: NSFont = self.keyAtts[.font] as! NSFont
-        
-        self.valAtts = [
-            .foregroundColor: (self.doShowLightBackground ? NSColor.black : NSColor.labelColor),
-            .font: font
-        ]
-        
         self.hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
                                      attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
                                                   .strikethroughColor: self.doShowLightBackground ? NSColor.black : NSColor.white])
-        
-        self.specialAtts = [
-            .foregroundColor: (self.doShowLightBackground ? NSColor.black : NSColor.hexToColour("D0BF69FF")),
-            .font: font
-        ]
+
+        self.scalarAtts[.foregroundColor]  = self.doShowLightBackground ? NSColor.black : NSColor.labelColor
+        self.specialAtts[.foregroundColor] = self.doShowLightBackground ? NSColor.black : NSColor.hexToColour(BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX)
     }
-    
+
+
     // MARK: - The Primary Function
 
     /**
@@ -166,7 +172,7 @@ final class Common: NSObject {
 
         // Set up the base string
         var renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "",
-                                                                                       attributes: self.valAtts)
+                                                                                       attributes: self.scalarAtts)
         // FROM 1.1.5
         self.renderLineCount = 0
         self.renderDone = false
@@ -224,7 +230,7 @@ final class Common: NSObject {
             if self.doShowRawYaml {
                 errorString.append(self.hr)
                 errorString.append(NSMutableAttributedString.init(string: yamlFileString + "\n",
-                                                                  attributes: self.valAtts))
+                                                                  attributes: self.scalarAtts))
             }
 
             renderedString = errorString
@@ -258,7 +264,7 @@ final class Common: NSObject {
         }
         
         // Set up the base string
-        let returnString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: self.valAtts)
+        let returnString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: self.scalarAtts)
         
         switch (part) {
         case .array:
@@ -357,59 +363,59 @@ final class Common: NSObject {
                 }
             }
         case .string:
+            // This can be used to render keys or values
             if let keyOrValue = part.string {
+                var attributeType: AttributeType = isKey ? .Key : .String
+
+                // Segment the string by CRs
                 let parts: [String] = keyOrValue.components(separatedBy: "\n")
                 if parts.count > 2 {
+                    // A multiline string
                     if self.renderThumbnail {
+                        // For thumbnails make a combined string without between-line whitespace
                         var joined: String = ""
                         for i in 0..<parts.count {
                             joined += parts[i].trimmingCharacters(in: .whitespaces)
                         }
-                        returnString.append(getIndentedString(joined + "\n", indent))
+                        returnString.append(getIndentedAttributedString(joined + "\n", indent, attributeType))
                     } else {
+                        // For previrews, make indented lines per source line
                         for i in 0..<parts.count {
                             let part: String = parts[i].trimmingCharacters(in: .whitespaces)
                             if part.count == 0 {
                                 continue
                             }
                             
-                            returnString.append(getIndentedString(part + (i < parts.count - 2 ? "\n" : " "),
-                                                                  indent))
+                            returnString.append(getIndentedAttributedString(part + (i < parts.count - 2 ? "\n" : " "), indent, attributeType))
                         }
                     }
                 } else {
-                    returnString.append(getIndentedString(keyOrValue, indent))
+                    // Output the single-line string
+                    if keyOrValue.contains("NaN") || keyOrValue.contains("INF") { attributeType = .Special }
+                    returnString.append(getIndentedAttributedString(keyOrValue, indent, attributeType))
                 }
                 
-                // FROM 1.2.0 -- special formatting for NAN, INF
-                var attsToUse: [NSAttributedString.Key: Any] = self.stringAtts
-                if isKey {
-                    attsToUse = self.keyAtts
-                } else {
-                    if returnString.string.contains("NaN") || returnString.string.contains("INF"){
-                        attsToUse = self.specialAtts
-                    }
-                }
-                
-                returnString.setAttributes(attsToUse,
-                                           range: NSMakeRange(0, returnString.length))
+                //returnString.setAttributes(attsToUse, range: NSMakeRange(0, returnString.length))
 
                 // FROM 1.2.0 -- render colons if asked
                 if self.renderColons {
-                    returnString.append(isKey ? NSAttributedString.init(string: ": ", attributes: self.valAtts) : self.cr)
+                    returnString.append(isKey ? NSAttributedString.init(string: ": ", attributes: self.scalarAtts) : self.cr)
                 } else {
-                    returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.cr)
+                    returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.scalarAtts) : self.cr)
                 }
                 
                 // FROM 1.1.5
                 if !isKey { self.renderLineCount += 1 }
             }
         case .null:
+            // May be a key or a value
             let valString: String = isKey ? "NULL KEY" : "NULL VALUE"
-            returnString.append(getIndentedString(valString, indent))
-            returnString.setAttributes(self.valAtts,
-                                       range: NSMakeRange(0, returnString.length))
-            returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.valAtts) : self.cr)
+            returnString.append(getIndentedAttributedString(valString, indent, isKey ? .Key : .Special))
+            //returnString.append(getIndentedString(valString, indent))
+            //returnString.setAttributes(self.specialAtts, range: NSMakeRange(0, returnString.length))
+
+            // Append a space (item is a key) or a CR (item is a value)
+            returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.scalarAtts) : self.cr)
             
             // FROM 1.1.5
             if !isKey { self.renderLineCount += 1 }
@@ -430,10 +436,8 @@ final class Common: NSObject {
                 
             // FROM 1.1.5
             valString += (isKey ? " " : "\n")
-            
-            returnString.append(getIndentedString(valString, indent))
-            returnString.setAttributes((isKey ? self.keyAtts : self.valAtts),
-                                       range: NSMakeRange(0, returnString.length))
+            returnString.append(getIndentedAttributedString(valString, indent, isKey ? .Key : .Scalar))
+            //returnString.setAttributes((isKey ? self.keyAtts : self.scalarAtts), range: NSMakeRange(0, returnString.length))
             
             // FROM 1.1.5
             self.renderLineCount += 1
@@ -462,6 +466,27 @@ final class Common: NSObject {
         indentedString.append(NSAttributedString.init(string: trimmedString))
         return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
     }
+
+    /**
+     Return a space-prefix NSAttributedString.
+
+     - Parameters:
+        - baseString: The string to be indented.
+        - indent:     The number of indent spaces to add.
+        - attType:    THe attribute to apply
+
+     - Returns: The indented string as an NSAttributedString.
+     */
+    func getIndentedAttributedString(_ baseString: String, _ indent: Int, _ attType: AttributeType) -> NSAttributedString {
+
+        let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
+        let spaces = "                                                     "
+        let spaceString = String(spaces.suffix(indent))
+        let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
+        indentedString.append(NSAttributedString.init(string: spaceString, attributes: getAttributes(.Scalar)))
+        indentedString.append(NSAttributedString.init(string: trimmedString, attributes: getAttributes(attType)))
+        return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
+    }
     
     
     func getIndentedPara(_ baseString: String, _ indent: Int) -> NSAttributedString {
@@ -469,6 +494,20 @@ final class Common: NSObject {
         return NSMutableAttributedString.init()
     }
 
+
+    private func getAttributes(_ attType: AttributeType) -> [NSAttributedString.Key: Any] {
+
+        switch attType {
+            case .Key:
+                return self.keyAtts
+            case .String:
+                return self.stringAtts
+            case .Special:
+                return self.specialAtts
+            default:
+                return self.scalarAtts
+        }
+    }
 
     // MARK: - EXPERIMENTAL
 
