@@ -19,7 +19,8 @@ final class AppDelegate: NSObject,
                          URLSessionDataDelegate,
                          WKNavigationDelegate {
 
-    // MARK:- Class UI Properies
+    // MARK: - Class UI Properies
+    
     // Menu Items
     @IBOutlet var helpMenuOnlineHelp: NSMenuItem!
     @IBOutlet var helpMenuAcknowledgments: NSMenuItem!
@@ -73,9 +74,8 @@ final class AppDelegate: NSObject,
     @IBOutlet var whatsNewWebView: WKWebView!
     
 
-    // MARK:- Private Properies
-    // private var previewCodeColour: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
-    // private var previewCodeFont: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
+    // MARK: - Private Properies
+    
     internal var whatsNewNav: WKNavigation? = nil
     private  var feedbackTask: URLSessionTask? = nil
     private  var indentDepth: Int = BUFFOON_CONSTANTS.YAML_INDENT
@@ -154,7 +154,7 @@ final class AppDelegate: NSObject,
     }
 
 
-    // MARK:- Action Functions
+    // MARK: - Action Functions
 
     /**
      Called from **File > Close** and the various Quit controls.
@@ -435,7 +435,6 @@ final class AppDelegate: NSObject,
         // FROM 1.1.2
         // Hide this option, don't just disable it
         self.doShowTagCheckbox.isHidden = self.isMontereyPlus
-        // self.tagInfoTextField.isHidden = self.isMontereyPlus
 #if DEBUG
         self.doShowTagCheckbox.isHidden = false
 #endif

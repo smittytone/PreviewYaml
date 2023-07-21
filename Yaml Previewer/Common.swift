@@ -39,13 +39,16 @@ final class Common: NSObject {
     // YAML string attributes...
     private var keyAtts: [NSAttributedString.Key: Any] = [:]
     private var valAtts: [NSAttributedString.Key: Any] = [:]
+    // FROM 1.2.0
+    private var specialAtts: [NSAttributedString.Key: Any] = [:]
+    private var stringAtts: [NSAttributedString.Key: Any] = [:]
     
     // String artifacts...
     private var hr: NSAttributedString = NSAttributedString.init(string: "")
     private var cr: NSAttributedString = NSAttributedString.init(string: "")
 
 
-    // MARK:- Lifecycle Functions
+    // MARK: - Lifecycle Functions
     
     init(_ isThumbnail: Bool) {
         
@@ -110,10 +113,46 @@ final class Common: NSObject {
         
         self.cr = NSAttributedString.init(string: "\n",
                                                attributes: valAtts)
+        
+        // FROM 1.2.0
+        self.specialAtts = [
+            .foregroundColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.hexToColour("D0BF69FF")),
+            .font: font
+        ]
+        
+        self.stringAtts = [
+            .foregroundColor: (isThumbnail ? NSColor.black : NSColor.hexToColour("AA0000FF")),
+            .font: font
+        ]
     }
     
     
-    // MARK:- The Primary Function
+    /**
+     Update certain style variables on a UI mode switch.
+
+     NOTE This is used by render demo app.
+     */
+    func resetStylesOnModeChange() {
+        
+        // Set up the attributed string components we may use during rendering
+        let font: NSFont = self.keyAtts[.font] as! NSFont
+        
+        self.valAtts = [
+            .foregroundColor: (self.doShowLightBackground ? NSColor.black : NSColor.labelColor),
+            .font: font
+        ]
+        
+        self.hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
+                                     attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
+                                                  .strikethroughColor: self.doShowLightBackground ? NSColor.black : NSColor.white])
+        
+        self.specialAtts = [
+            .foregroundColor: (self.doShowLightBackground ? NSColor.black : NSColor.hexToColour("D0BF69FF")),
+            .font: font
+        ]
+    }
+    
+    // MARK: - The Primary Function
 
     /**
      Use YamlSwift to render the input YAML as an NSAttributedString.
@@ -135,10 +174,10 @@ final class Common: NSObject {
         // Parse the YAML data
         do {
             // First fix any .NAN, +/-.INF in the file
-            // let processed = fixNan(yamlFileString)
+            let processed = fixNan(yamlFileString)
             // NOTE The following call takes time on large files
             // TODO Optimise it
-            let yaml = try Yaml.loadMultiple(yamlFileString)
+            let yaml = try Yaml.loadMultiple(processed)
             
             // Render the YAML to NSAttributedString
             // NOTE `yaml` is an array of YAML units
@@ -329,7 +368,11 @@ final class Common: NSObject {
                         returnString.append(getIndentedString(joined + "\n", indent))
                     } else {
                         for i in 0..<parts.count {
-                            let part: String = parts[i]
+                            let part: String = parts[i].trimmingCharacters(in: .whitespaces)
+                            if part.count == 0 {
+                                continue
+                            }
+                            
                             returnString.append(getIndentedString(part + (i < parts.count - 2 ? "\n" : " "),
                                                                   indent))
                         }
@@ -337,11 +380,21 @@ final class Common: NSObject {
                 } else {
                     returnString.append(getIndentedString(keyOrValue, indent))
                 }
-
-                returnString.setAttributes((isKey ? self.keyAtts : self.valAtts),
+                
+                // FROM 1.2.0 -- special formatting for NAN, INF
+                var attsToUse: [NSAttributedString.Key: Any] = self.stringAtts
+                if isKey {
+                    attsToUse = self.keyAtts
+                } else {
+                    if returnString.string.contains("NaN") || returnString.string.contains("INF"){
+                        attsToUse = self.specialAtts
+                    }
+                }
+                
+                returnString.setAttributes(attsToUse,
                                            range: NSMakeRange(0, returnString.length))
 
-                // FROM 1.2.0
+                // FROM 1.2.0 -- render colons if asked
                 if self.renderColons {
                     returnString.append(isKey ? NSAttributedString.init(string: ": ", attributes: self.valAtts) : self.cr)
                 } else {
@@ -409,6 +462,12 @@ final class Common: NSObject {
         indentedString.append(NSAttributedString.init(string: trimmedString))
         return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
     }
+    
+    
+    func getIndentedPara(_ baseString: String, _ indent: Int) -> NSAttributedString {
+        
+        return NSMutableAttributedString.init()
+    }
 
 
     // MARK: - EXPERIMENTAL
@@ -423,7 +482,8 @@ final class Common: NSObject {
      */
     func fixNan(_ yamlString: String) -> String {
         
-        let regexes = [#"-\.(inf|Inf|INF)+"#, #"\.(inf|Inf|INF)+"#, #"\.(nan|NaN|NAN)+"#]
+        let numberRegexes = [#"-\.(inf|Inf|INF)+"#, #"\.(inf|Inf|INF)+"#, #"\.(nan|NaN|NAN)+"#]
+        let quoteRegex = #""[^"]+"|(\+)"#
         let unfixedlines = yamlString.components(separatedBy: CharacterSet.newlines)
         var fixedString: String = ""
         
@@ -433,24 +493,29 @@ final class Common: NSObject {
             var count: Int = 0
             var line: String = unfixedlines[i]
             
-            for regex in regexes {
+            for regex in numberRegexes {
+                // Check for a match with a number we're looking for
                 if let itemRange: Range = line.range(of: regex, options: .regularExpression) {
-                    // Set the symbol based on the current value of 'count'
-                    // Can make this more Swift-y with an enum
-                    var symbol = ""
-                    switch(count) {
-                    case 0:
-                        symbol = "\"-INF\""
-                    case 1:
-                        symbol = "\"+INF\""
-                    default:
-                        symbol = "\"NAN\""
+                    // Double-check the matched item is not in quotes
+                    let quoteRange: Range? = line.range(of: quoteRegex, options: .regularExpression)
+                    if quoteRange == nil {
+                        // Set the symbol based on the current value of 'count'
+                        // Can make this more Swift-y with an enum
+                        var symbol = ""
+                        switch(count) {
+                            case 0:
+                                symbol = "\"-INF\""
+                            case 1:
+                                symbol = "\"+INF\""
+                            default:
+                                symbol = "\"NaN\""
+                        }
+                        
+                        // Swap out the originl symbol for a string version
+                        // (which doesn't cause a crash YamlString crash)
+                        line = line.replacingCharacters(in: itemRange, with: symbol)
+                        break;
                     }
-                    
-                    // Swap out the originl symbol for a string version
-                    // (which doesn't cause a crash YamlString crash)
-                    line = line.replacingCharacters(in: itemRange, with: symbol)
-                    break;
                 }
                 
                 // Move to next symbol

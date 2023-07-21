@@ -1,16 +1,14 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "Yaml",
-        "repositoryURL": "https://github.com/smittytone/YamlSwift.git",
-        "state": {
-          "branch": "master",
-          "revision": "43292bdcbf3058802954cdd2fcb231b64cf6d139",
-          "version": null
-        }
+  "pins" : [
+    {
+      "identity" : "yamlswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/smittytone/YamlSwift.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "43292bdcbf3058802954cdd2fcb231b64cf6d139"
       }
-    ]
-  },
-  "version": 1
+    }
+  ],
+  "version" : 2
 }
