@@ -55,7 +55,7 @@ final class AppDelegate: NSObject,
     @IBOutlet var fontSizeSlider: NSSlider!
     @IBOutlet var fontSizeLabel: NSTextField!
     @IBOutlet var useLightCheckbox: NSButton!
-    @IBOutlet var doShowTagCheckbox: NSButton!
+    //@IBOutlet var doShowTagCheckbox: NSButton!
     @IBOutlet var doIndentScalarsCheckbox: NSButton!
     @IBOutlet var doShowRawYamlCheckbox: NSButton!
     @IBOutlet var codeFontPopup: NSPopUpButton!
@@ -68,6 +68,7 @@ final class AppDelegate: NSObject,
     // FROM 1.2.0
     @IBOutlet var doSortKeysCheckbox: NSButton!
     @IBOutlet var doShowColonCheckbox: NSButton!
+    @IBOutlet var colourSelectionPopup: NSPopUpButton!
 
     // What's New Sheet
     @IBOutlet var whatsNewWindow: NSWindow!
@@ -99,6 +100,7 @@ final class AppDelegate: NSObject,
     // FROM 1.2.0
     private var doSortKeys: Bool = true
     private var doShowColons: Bool = false
+    private var displayColours: [String:String] = [:]
     
 
     // MARK: - Class Lifecycle Functions
@@ -310,6 +312,7 @@ final class AppDelegate: NSObject,
         showPanelGenerators()
     }
 
+
     /**
      User has clicked the Report window's **Send** button.
 
@@ -374,21 +377,23 @@ final class AppDelegate: NSObject,
         // The suite name is the app group name, set in each the entitlements file of
         // the host app and of each extension
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            self.codeFontSize = CGFloat(defaults.float(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE))
-            self.indentDepth = defaults.integer(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.INDENT)
-            
-            self.doShowLightBackground = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.USE_LIGHT)
-            self.doShowTag = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.TAG)
-            self.doShowRawYaml = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BAD)
-            self.doIndentScalars = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SCALARS)
+            self.codeFontSize           = CGFloat(defaults.float(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE))
+            self.indentDepth            = defaults.integer(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.INDENT)
+            self.doShowLightBackground  = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.USE_LIGHT)
+            self.doShowTag              = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.TAG)
+            self.doShowRawYaml          = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BAD)
+            self.doIndentScalars        = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SCALARS)
             
             // FROM 1.1.0
-            self.codeFontName = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_FONT) ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
-            self.codeColourHex = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR) ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+            self.codeFontName           = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_FONT) ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
+            //self.codeColourHex = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR) ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
 
             // FROM 1.2.0
-            self.doSortKeys = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SORT)
-            self.doShowColons = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
+            self.doSortKeys                 = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SORT)
+            self.doShowColons               = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
+            self.displayColours["key"]      = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
+            self.displayColours["string"]   = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR) ?? BUFFOON_CONSTANTS.STRING_COLOUR_HEX
+            self.displayColours["special"]  = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR) ?? BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX
         }
 
         // Get the menu item index from the stored value
@@ -400,7 +405,7 @@ final class AppDelegate: NSObject,
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
         
         self.useLightCheckbox.state = self.doShowLightBackground ? .on : .off
-        self.doShowTagCheckbox.state = self.doShowTag ? .on : .off
+        //self.doShowTagCheckbox.state = self.doShowTag ? .on : .off
         self.doShowRawYamlCheckbox.state = self.doShowRawYaml ? .on : .off
         self.doIndentScalarsCheckbox.state = self.doIndentScalars ? .on : .off
         
@@ -409,9 +414,8 @@ final class AppDelegate: NSObject,
         
         // FROM 1.1.0
         // Set the colour panel's initial view
-        // self.codeColourPopup.selectItem(at: self.previewCodeColour)
         NSColorPanel.setPickerMode(.RGB)
-        self.codeColorWell.color = NSColor.hexToColour(self.codeColourHex)
+        self.codeColorWell.color = NSColor.hexToColour(self.displayColours["key"] ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX)
         
         // FROM 1.1.0
         // Set the font name popup
@@ -424,7 +428,8 @@ final class AppDelegate: NSObject,
 
         self.codeStylePopup.isEnabled = false
         selectFontByPostScriptName(self.codeFontName)
-        
+
+        /*
         // FROM 1.1.1
         // Hide tag selection on Monterey
         if self.isMontereyPlus {
@@ -435,9 +440,7 @@ final class AppDelegate: NSObject,
         // FROM 1.1.2
         // Hide this option, don't just disable it
         self.doShowTagCheckbox.isHidden = self.isMontereyPlus
-#if DEBUG
-        self.doShowTagCheckbox.isHidden = false
-#endif
+        */
         
         // FROM 1.1.4
         // Check for the OS mode
@@ -449,6 +452,7 @@ final class AppDelegate: NSObject,
         // FROM 1.2.0
         self.doSortKeysCheckbox.state = self.doSortKeys ? .on : .off
         self.doShowColonCheckbox.state = self.doShowColons ? .on : .off
+        self.colourSelectionPopup.selectItem(at: 0)
 
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
@@ -516,12 +520,14 @@ final class AppDelegate: NSObject,
     @IBAction private func doSavePreferences(sender: Any) {
 
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
+            /*
             let newColour: String = self.codeColorWell.color.hexString
             if newColour != self.codeColourHex {
                 self.codeColourHex = newColour
                 defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
             }
-            
+            */
+
             let newValue: CGFloat = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[Int(self.fontSizeSlider.floatValue)]
             if newValue != self.codeFontSize {
                 defaults.setValue(newValue, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE)
@@ -532,12 +538,14 @@ final class AppDelegate: NSObject,
                 defaults.setValue(state, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.USE_LIGHT)
             }
 
+            /*
             state = self.doShowTagCheckbox.state == .on
             if self.isMontereyPlus { state = false }
             if self.doShowTag != state {
                 defaults.setValue(state, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.TAG)
             }
-            
+            */
+
             state = self.doShowRawYamlCheckbox.state == .on
             if self.doShowRawYaml != state {
                 defaults.setValue(state, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BAD)
@@ -574,6 +582,18 @@ final class AppDelegate: NSObject,
                 defaults.setValue(state, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
             }
 
+            if let newColour: String = self.displayColours["new_key"] {
+                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
+            }
+
+            if let newColour: String = self.displayColours["new_string"] {
+                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR)
+            }
+
+            if let newColour: String = self.displayColours["new_special"] {
+                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR)
+            }
+
             // Sync any changes
             defaults.synchronize()
         }
@@ -602,6 +622,49 @@ final class AppDelegate: NSObject,
     @IBAction private func checkboxClicked(sender: Any) {
         
         self.havePrefsChanged = true
+    }
+
+
+    /**
+        Update the colour preferences dictionary with a value from the
+        colour well when a colour is chosen.
+
+        - Parameters:
+            - sender: The source of the action.
+     */
+    @objc @IBAction private func colourSelected(sender: Any) {
+
+        let keys: [String] = ["key", "string", "special"]
+        let key: String = "new_" + keys[self.colourSelectionPopup.indexOfSelectedItem]
+        self.displayColours[key] = self.codeColorWell.color.hexString
+    }
+
+
+    /**
+        Update the colour well with the stored colour: either a new one, previously
+        chosen, or the loaded preference.
+
+        - Parameters:
+            - sender: The source of the action.
+     */
+    @IBAction private func doChooseColourType(sender: Any) {
+
+        let keys: [String] = ["key", "string", "special"]
+        let key: String = keys[self.colourSelectionPopup.indexOfSelectedItem]
+
+        // If there's no `new_xxx` key, the next line will evaluate to false
+        if let colour: String = self.displayColours["new_" + key] {
+            if colour.count != 0 {
+                // Set the colourwell with the updated colour and exit
+                self.codeColorWell.color = NSColor.hexToColour(colour)
+                return
+            }
+        }
+
+        // Set the colourwell with the stored colour
+        if let colour: String = self.displayColours[key] {
+            self.codeColorWell.color = NSColor.hexToColour(colour)
+        }
     }
 
 
@@ -720,14 +783,17 @@ final class AppDelegate: NSObject,
             }
             
             // FROM 1.1.0
-            // Colour of code blocks in the preview, stored as in integer array index
+            // Colour of keys in the preview, stored as in integer array index
             // Default: #007D78FF
+            // REMOVED 1.2.0
+            /*
             let codeColourDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
             if codeColourDefault == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR_HEX,
                                   forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
             }
-            
+            */
+
             // FROM 1.1.0
             // Font for previews and thumbnails
             // Default: Courier
@@ -798,6 +864,30 @@ final class AppDelegate: NSObject,
             let showColonDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
             if showColonDefault == nil {
                 defaults.setValue(false, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
+            }
+
+            // Colour of keys in the preview, stored as in integer array index
+            // Default: #007D78FF
+            var colourDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
+            if colourDefault == nil {
+                defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR_HEX,
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
+            }
+
+            // Colour of strings in the preview, stored as in integer array index
+            // Default: #FC6A5DFF
+            colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR)
+            if colourDefault == nil {
+                defaults.setValue(BUFFOON_CONSTANTS.STRING_COLOUR_HEX,
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR)
+            }
+
+            // Colour of special values (NaN +/-INF in the preview, stored as in integer array index
+            // Default: #D0BF69FF
+            colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR)
+            if colourDefault == nil {
+                defaults.setValue(BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX,
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR)
             }
 
             // Sync any additions

@@ -47,6 +47,7 @@ This repository contains the primary source code for PreviewYaml. Certain graphi
 
 - 1.2.0 *Unreleased*
     - Add sort keys and show key colon marker prefs.
+    - Allow the colours of strings and special values (NAN, ±INF) to be chosen.
 - 1.1.5 *14 February 2023*
     - Fix regression affecting thumbnails of large documents.
 - 1.1.4 *21 January 2023*

@@ -45,11 +45,11 @@ final class Common: NSObject {
     private var sortKeys: Bool        = true
     
     // YAML string attributes...
-    private var keyAtts: [NSAttributedString.Key: Any] = [:]
-    private var scalarAtts: [NSAttributedString.Key: Any] = [:]
+    private var keyAttributes: [NSAttributedString.Key: Any] = [:]
+    private var scalarAttributes: [NSAttributedString.Key: Any] = [:]
     // FROM 1.2.0
-    private var specialAtts: [NSAttributedString.Key: Any] = [:]
-    private var stringAtts: [NSAttributedString.Key: Any] = [:]
+    private var specialAttributes: [NSAttributedString.Key: Any] = [:]
+    private var stringAttributes: [NSAttributedString.Key: Any] = [:]
     
     // String artifacts...
     private var hr: NSAttributedString = NSAttributedString.init(string: "")
@@ -63,7 +63,7 @@ final class Common: NSObject {
         super.init()
         
         // FROM 1.1.5
-        self.renderThumbnail = isThumbnail
+        self.renderThumbnail        = isThumbnail
         
         var fontSize: CGFloat       = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
         var fontName: String        = BUFFOON_CONSTANTS.CODE_FONT_NAME
@@ -84,8 +84,8 @@ final class Common: NSObject {
             self.renderColons          = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
 
             fontSize = CGFloat(isThumbnail
-                                   ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE
-                                   : prefs.float(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE))
+                               ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE
+                               : prefs.float(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE))
             
             // FROM 1.1.0
             fontName        = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_FONT) ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
@@ -111,30 +111,30 @@ final class Common: NSObject {
         }
         
         // Set up the attributed string components we may use during rendering
-        self.keyAtts = [
+        self.keyAttributes = [
             .foregroundColor: NSColor.hexToColour(keyColour),
             .font: font
         ]
         
-        self.scalarAtts = [
+        self.scalarAttributes = [
             .foregroundColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.labelColor),
             .font: font
         ]
-        
+
         self.hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
                                      attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
-                                                  .strikethroughColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.white)])
+                                                  .strikethroughColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.labelColor)])
         
         self.cr = NSAttributedString.init(string: "\n",
-                                          attributes: self.scalarAtts)
+                                          attributes: self.scalarAttributes)
         
         // FROM 1.2.0
-        self.specialAtts = [
+        self.specialAttributes = [
             .foregroundColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.hexToColour(specialColour)),
             .font: font
         ]
         
-        self.stringAtts = [
+        self.stringAttributes = [
             .foregroundColor: (isThumbnail ? NSColor.black : NSColor.hexToColour(stringColour)),
             .font: font
         ]
@@ -151,10 +151,10 @@ final class Common: NSObject {
         // Set up the attributed string components we may use during rendering
         self.hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
                                      attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
-                                                  .strikethroughColor: self.doShowLightBackground ? NSColor.black : NSColor.white])
+                                                  .strikethroughColor: self.doShowLightBackground ? NSColor.black : NSColor.labelColor])
 
-        self.scalarAtts[.foregroundColor]  = self.doShowLightBackground ? NSColor.black : NSColor.labelColor
-        self.specialAtts[.foregroundColor] = self.doShowLightBackground ? NSColor.black : NSColor.hexToColour(BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX)
+        self.scalarAttributes[.foregroundColor]  = self.doShowLightBackground ? NSColor.black : NSColor.labelColor
+        self.specialAttributes[.foregroundColor] = self.doShowLightBackground ? NSColor.black : NSColor.hexToColour(BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX)
     }
 
 
@@ -172,7 +172,7 @@ final class Common: NSObject {
 
         // Set up the base string
         var renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "",
-                                                                                       attributes: self.scalarAtts)
+                                                                                       attributes: self.scalarAttributes)
         // FROM 1.1.5
         self.renderLineCount = 0
         self.renderDone = false
@@ -181,6 +181,7 @@ final class Common: NSObject {
         do {
             // First fix any .NAN, +/-.INF in the file
             let processed = fixNan(yamlFileString)
+
             // NOTE The following call takes time on large files
             // TODO Optimise it
             let yaml = try Yaml.loadMultiple(processed)
@@ -201,14 +202,14 @@ final class Common: NSObject {
             // Just in case...
             if renderedString.length == 0 {
                 renderedString = NSMutableAttributedString.init(string: "Could not render the YAML.\n",
-                                                                attributes: self.keyAtts)
+                                                                attributes: self.keyAttributes)
             }
             
 #if DEBUG
             // FROM 1.1.5
             let countString: String = "Lines: \(self.renderLineCount), sorted: \(self.sortKeys ? "true" : "false") \n"
             renderedString.insert(NSMutableAttributedString.init(string: countString,
-                                                                 attributes: self.keyAtts), at: 0)
+                                                                 attributes: self.keyAttributes), at: 0)
 #endif
             
         } catch {
@@ -223,14 +224,14 @@ final class Common: NSObject {
 
             // Assemble the error string
             let errorString: NSMutableAttributedString = NSMutableAttributedString.init(string: "Could not render the YAML. Error: " + yamlErrString,
-                                                                                        attributes: self.keyAtts)
+                                                                                        attributes: self.keyAttributes)
 
             // Should we include the raw text?
             // At least the user can see the data this way
             if self.doShowRawYaml {
                 errorString.append(self.hr)
                 errorString.append(NSMutableAttributedString.init(string: yamlFileString + "\n",
-                                                                  attributes: self.scalarAtts))
+                                                                  attributes: self.scalarAttributes))
             }
 
             renderedString = errorString
@@ -259,12 +260,12 @@ final class Common: NSObject {
         // FROM 1.1.5
         // If we're rendering a thumbnail and we've reached the limit, bail
         if self.renderThumbnail && self.renderLineCount >= BUFFOON_CONSTANTS.THUMBNAIL_LINE_COUNT {
-            if !self.renderDone { self.renderDone = true }
+            self.renderDone = true
             return nil
         }
         
         // Set up the base string
-        let returnString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: self.scalarAtts)
+        let returnString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: self.scalarAttributes)
         
         switch (part) {
         case .array:
@@ -398,12 +399,10 @@ final class Common: NSObject {
                 //returnString.setAttributes(attsToUse, range: NSMakeRange(0, returnString.length))
 
                 // FROM 1.2.0 -- render colons if asked
-                if self.renderColons {
-                    returnString.append(isKey ? NSAttributedString.init(string: ": ", attributes: self.scalarAtts) : self.cr)
-                } else {
-                    returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.scalarAtts) : self.cr)
-                }
-                
+                returnString.append(isKey
+                                    ? NSAttributedString.init(string: (self.renderColons ? ": " : " "), attributes: self.scalarAttributes)
+                                    : self.cr)
+
                 // FROM 1.1.5
                 if !isKey { self.renderLineCount += 1 }
             }
@@ -412,10 +411,12 @@ final class Common: NSObject {
             let valString: String = isKey ? "NULL KEY" : "NULL VALUE"
             returnString.append(getIndentedAttributedString(valString, indent, isKey ? .Key : .Special))
             //returnString.append(getIndentedString(valString, indent))
-            //returnString.setAttributes(self.specialAtts, range: NSMakeRange(0, returnString.length))
+            //returnString.setAttributes(self.specialAttributes, range: NSMakeRange(0, returnString.length))
 
             // Append a space (item is a key) or a CR (item is a value)
-            returnString.append(isKey ? NSAttributedString.init(string: " ", attributes: self.scalarAtts) : self.cr)
+            returnString.append(isKey
+                                ? NSAttributedString.init(string: " ", attributes: self.scalarAttributes)
+                                : self.cr)
             
             // FROM 1.1.5
             if !isKey { self.renderLineCount += 1 }
@@ -437,7 +438,7 @@ final class Common: NSObject {
             // FROM 1.1.5
             valString += (isKey ? " " : "\n")
             returnString.append(getIndentedAttributedString(valString, indent, isKey ? .Key : .Scalar))
-            //returnString.setAttributes((isKey ? self.keyAtts : self.scalarAtts), range: NSMakeRange(0, returnString.length))
+            //returnString.setAttributes((isKey ? self.keyAttributes : self.scalarAttributes), range: NSMakeRange(0, returnString.length))
             
             // FROM 1.1.5
             self.renderLineCount += 1
@@ -449,6 +450,7 @@ final class Common: NSObject {
 
     /**
      Return a space-prefix NSAttributedString.
+     DEPRECATED
 
      - Parameters:
         - baseString: The string to be indented.
@@ -466,48 +468,52 @@ final class Common: NSObject {
         return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
     }
 
+
     /**
      Return a space-prefix NSAttributedString.
 
      - Parameters:
-        - baseString: The string to be indented.
-        - indent:     The number of indent spaces to add.
-        - attType:    THe attribute to apply
+        - baseString:    The string to be indented.
+        - indent:        The number of indent spaces to add.
+        - attributeType: The attribute to apply.
 
      - Returns: The indented string as an NSAttributedString.
      */
-    func getIndentedAttributedString(_ baseString: String, _ indent: Int, _ attType: AttributeType) -> NSAttributedString {
+    func getIndentedAttributedString(_ baseString: String, _ indent: Int, _ attributeType: AttributeType) -> NSAttributedString {
 
         let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
         let spaceString = String(repeating: " ", count: indent)
         let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
         indentedString.append(NSAttributedString.init(string: spaceString, attributes: getAttributes(.Scalar)))
-        indentedString.append(NSAttributedString.init(string: trimmedString, attributes: getAttributes(attType)))
+        indentedString.append(NSAttributedString.init(string: trimmedString, attributes: getAttributes(attributeType)))
         return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
     }
     
-    
-    func getIndentedPara(_ baseString: String, _ indent: Int) -> NSAttributedString {
-        
-        return NSMutableAttributedString.init()
-    }
 
+    /**
+     Return an attribute dictionary from a passed attribute type.
 
-    private func getAttributes(_ attType: AttributeType) -> [NSAttributedString.Key: Any] {
+     - Parameters:
+        - attributeType: The requested attribute type.
 
-        switch attType {
+     - Returns: The attributes as a dictionary.
+     */
+    private func getAttributes(_ attributeType: AttributeType) -> [NSAttributedString.Key: Any] {
+
+        switch attributeType {
             case .Key:
-                return self.keyAtts
+                return self.keyAttributes
             case .String:
-                return self.stringAtts
+                return self.stringAttributes
             case .Special:
-                return self.specialAtts
+                return self.specialAttributes
             default:
-                return self.scalarAtts
+                return self.scalarAttributes
         }
     }
 
-    // MARK: - EXPERIMENTAL
+
+    // MARK: - Handlers
 
     /**
      Attempt to trap and fix .NaN, -.INF and .INF, which give YamlSwift trouble.
@@ -531,7 +537,7 @@ final class Common: NSObject {
             var line: String = unfixedlines[i]
             
             for regex in numberRegexes {
-                // Check for a match with a number we're looking for
+                // Check for a match with a special number we're looking for
                 if let itemRange: Range = line.range(of: regex, options: .regularExpression) {
                     // Double-check the matched item is not in quotes
                     let quoteRange: Range? = line.range(of: quoteRegex, options: .regularExpression)

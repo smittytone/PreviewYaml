@@ -8,11 +8,11 @@ steeple:
   - 2002
   - 2020
 is-null:
-help: |
+help one: |
       This is some multiline text.
       Which means it appears on multiple lines.
       That's more than one lines.
-brief: But this is only one line.
+help two: But this is only one line.
 Odd Value 1: .nan
 Odd Value 2: -.inf
 Odd Value 3: ".nAn"
