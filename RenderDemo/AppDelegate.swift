@@ -19,6 +19,7 @@ class AppDelegate:  NSObject,
     @IBOutlet var previewTextView: NSTextView!
     @IBOutlet var previewScrollView: NSScrollView!
     @IBOutlet var modeButton: NSButton!
+    @IBOutlet var indentButton: NSButton!
 
 
     // MARK: - Private Properies
@@ -26,6 +27,7 @@ class AppDelegate:  NSObject,
     private var openDialog: NSOpenPanel? = nil
     private var currentURL: URL? = nil
     private var renderAsDark: Bool = true
+    private var renderIndents: Bool = false
     private var common: Common = Common.init(false)
 
     
@@ -34,7 +36,8 @@ class AppDelegate:  NSObject,
     func applicationDidFinishLaunching(_ notification: Notification) {
         
         // Set the mode button
-        self.modeButton.title = self.renderAsDark ? "Light" : "Dark"
+        self.modeButton.state = self.renderAsDark ? .on : .off
+        self.indentButton.state = self.renderIndents ? .on : .off
         
         // Centre the main window and display
         self.window.center()
@@ -51,7 +54,7 @@ class AppDelegate:  NSObject,
 
     // MARK: - Action Functions
     
-    @IBAction private func doLoadYamlFile(_ sender: Any) {
+    @IBAction private func doLoadFile(_ sender: Any) {
 
         self.openDialog = NSOpenPanel.init()
         self.openDialog!.canChooseFiles = true
@@ -75,15 +78,26 @@ class AppDelegate:  NSObject,
     
     @IBAction private func doSwitchMode(_ sender: Any) {
         
-        self.renderAsDark = !self.renderAsDark
-        self.modeButton.title = self.renderAsDark ? "Light" : "Dark"
-        
+        self.renderAsDark = self.modeButton.state == .on
+        doReRenderFile(self)
+    }
+
+
+    @IBAction private func doReRenderFile(_ sender: Any) {
+
         let possibleError: NSError? = renderContent(self.currentURL)
         if possibleError != nil {
             // Pop up an alert
             let errorAlert: NSAlert = NSAlert.init(error: possibleError!)
             errorAlert.beginSheetModal(for: self.window)
         }
+    }
+
+
+    @IBAction private func doSetIndentCharacter(_ sender: Any) {
+
+        self.renderIndents = self.indentButton.state == .on
+        doReRenderFile(self)
     }
 
     
@@ -105,7 +119,9 @@ class AppDelegate:  NSObject,
 
                 if let yamlFileString: String = String.init(data: data, encoding: encoding) {
                     common.doShowLightBackground = !self.renderAsDark
+                    common.doUseSpecialIndentChar = self.renderIndents
                     common.resetStylesOnModeChange()
+                    
                     let yamlAttString: NSAttributedString = common.getAttributedString(yamlFileString)
 
                     self.previewTextView.backgroundColor = common.doShowLightBackground ? NSColor.init(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
