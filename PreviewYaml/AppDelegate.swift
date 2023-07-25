@@ -866,7 +866,7 @@ final class AppDelegate: NSObject,
                 defaults.setValue(false, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
             }
 
-            // Colour of keys in the preview, stored as in integer array index
+            // Colour of keys in the preview, stored as a hex string
             // Default: #007D78FF
             var colourDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
             if colourDefault == nil {
@@ -874,7 +874,7 @@ final class AppDelegate: NSObject,
                                   forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
             }
 
-            // Colour of strings in the preview, stored as in integer array index
+            // Colour of strings in the preview, stored as a hex string
             // Default: #FC6A5DFF
             colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR)
             if colourDefault == nil {
@@ -882,7 +882,7 @@ final class AppDelegate: NSObject,
                                   forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR)
             }
 
-            // Colour of special values (NaN +/-INF in the preview, stored as in integer array index
+            // Colour of special values (NaN +/-INF in the preview, stored as a hex string
             // Default: #D0BF69FF
             colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR)
             if colourDefault == nil {
