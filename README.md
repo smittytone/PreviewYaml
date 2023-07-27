@@ -6,13 +6,13 @@ App Extension-based macOS QuickLook previews and Finder thumbnails for [YAML](ht
 
 ## Installation and Usage ##
 
-Just run the host app once to register the extensions &mdash; you can quit the app as soon as it has launched. We recommend logging out of your Mac and back in again at this point. Now you can preview YAML documents using QuickLook (select an icon and hit Space), and Finder’s preview pane and **Info*- panels.
+Just *run* the host app once to register the extensions &mdash; you can quit the app as soon as it has launched. We recommend logging out of your Mac and back in again at this point. Now you can preview YAML documents using QuickLook (select an icon and hit Space), and Finder’s preview pane and **Info** panels.
 
 You can disable and re-enable the Yaml Previewer and Yaml Thumbnailer extensions at any time in **System Preferences > Extensions > Quick Look**.
 
 ### Adjusting the Preview ###
 
-You can alter some of the key elements of the preview by using the **Preferences*- panel:
+You can alter some of the key elements of the preview by using the **Preferences** panel:
 
 - The colour of keys, selected using the macOS colour picker.
 - The preview’s font, which you can now choose from all the monospace fonts installed on your system.
@@ -27,7 +27,7 @@ Changing these settings will affect previews immediately, but may not affect thu
 
 ## Troubleshooting ##
 
-If PreviewYaml reports that it was unable to render YAML, this is almost certainly caused by a slight malformation of the YAML itself — the error message should help you spot the problem. PreviewYaml’s YAML library is quite strict, so YAML malformations which other apps may accept may be rejected by PreviewYaml. For this reason, you can optionally tell PreviewYaml to display a file’s raw YAML in the event of a parsing error. This option is chosen in PreviewYaml’s **Preferences*- panel and will allow you to QuickLook YAML files, albeit without rendering.
+If PreviewYaml reports that it was unable to render YAML, this is almost certainly caused by a slight malformation of the YAML itself — the error message should help you spot the problem. PreviewYaml’s YAML library is quite strict, so YAML malformations which other apps may accept may be rejected by PreviewYaml. For this reason, you can optionally tell PreviewYaml to display a file’s raw YAML in the event of a parsing error. This option is chosen in PreviewYaml’s **Preferences** panel and will allow you to QuickLook YAML files, albeit without rendering.
 
 ## Known Issues ##
 

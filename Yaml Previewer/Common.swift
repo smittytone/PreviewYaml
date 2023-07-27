@@ -38,8 +38,8 @@ final class Common: NSObject {
     private var yamlIndent: Int       = BUFFOON_CONSTANTS.YAML_INDENT
     // FROM 1.1.5
     private var renderThumbnail: Bool = false
-    private var renderLineCount: Int  = 0
     private var renderDone: Bool      = false
+    private var renderLineCount: Int  = 0
     // FROM 1.2.0
     private var renderColons: Bool    = false
     private var sortKeys: Bool        = true
@@ -512,8 +512,6 @@ final class Common: NSObject {
         }
     }
 
-
-    // MARK: - Handlers
 
     /**
      Attempt to trap and fix .NaN, -.INF and .INF, which give YamlSwift trouble.
