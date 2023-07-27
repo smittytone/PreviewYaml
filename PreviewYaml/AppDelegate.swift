@@ -496,18 +496,50 @@ final class AppDelegate: NSObject,
      */
     @IBAction private func doClosePreferences(sender: Any) {
 
+        if self.havePrefsChanged {
+            let alert: NSAlert = showAlert("You have made changes",
+                                           "Do you wish to go back and save them, or ignore them? ",
+                                           false)
+            alert.addButton(withTitle: "Go Back")
+            alert.addButton(withTitle: "Ignore Changes")
+            alert.beginSheetModal(for: self.preferencesWindow) { (response: NSApplication.ModalResponse) in
+                if response != NSApplication.ModalResponse.alertFirstButtonReturn {
+                    // The user clicked 'Cancel'
+                    self.closePrefsWindow()
+                }
+            }
+        } else {
+            closePrefsWindow()
+        }
+    }
+
+
+    /**
+        Follow-on function to close the **Preferences** sheet without saving.
+        FROM 1.1.0
+
+        - Parameters:
+            - sender: The source of the action.
+     */
+
+    private func closePrefsWindow() {
+
         // FROM 1.1.0
         // Close the colour selection panel if it's open
         if self.codeColorWell.isActive {
             NSColorPanel.shared.close()
             self.codeColorWell.deactivate()
         }
-        
+
         self.window.endSheet(self.preferencesWindow)
-        
+
         // FROM 1.1.4
         // Restore menus
         showPanelGenerators()
+
+        // FROM 1.2.0
+        clearNewColours()
+        self.havePrefsChanged = false
     }
 
 
@@ -610,6 +642,9 @@ final class AppDelegate: NSObject,
         
         // Restore menus
         showPanelGenerators()
+
+        // FROM 1.2.0
+        clearNewColours()
     }
     
     
@@ -637,6 +672,7 @@ final class AppDelegate: NSObject,
         let keys: [String] = ["key", "string", "special"]
         let key: String = "new_" + keys[self.colourSelectionPopup.indexOfSelectedItem]
         self.displayColours[key] = self.codeColorWell.color.hexString
+        self.havePrefsChanged = true
     }
 
 
@@ -664,6 +700,22 @@ final class AppDelegate: NSObject,
         // Set the colourwell with the stored colour
         if let colour: String = self.displayColours[key] {
             self.codeColorWell.color = NSColor.hexToColour(colour)
+        }
+    }
+
+
+    /**
+        Zap any temporary colour values.
+        FROM 1.2.0
+
+     */
+    private func clearNewColours() {
+
+        let keys: [String] = ["key", "string", "special"]
+        for key in keys {
+            if let _: String = self.displayColours["new_" + key] {
+                self.displayColours["new_" + key] = nil
+            }
         }
     }
 
