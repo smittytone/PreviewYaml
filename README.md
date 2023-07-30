@@ -1,4 +1,4 @@
-# PreviewYaml 1.2.0
+# PreviewYaml 1.2.0 #
 
 App Extension-based macOS QuickLook previews and Finder thumbnails for [YAML](https://yaml.org) files.
 
@@ -33,17 +33,21 @@ If PreviewYaml reports that it was unable to render YAML, this is almost certain
 
 PreviewYaml currently expects files to be encoded in UTF-8.
 
-Certain YAML features — custom tags — are not as yet correctly rendered by PreviewYAML’s YAML library.
-
-A YAML file containing `.nan`, `.inf` and/or `-.inf` values will prevent PreviewYAML from rendering the file. This is under investigation.
+Certain YAML features — custom tags — are not as yet correctly rendered by *PreviewYAML*’s YAML library.
 
 Comments are not rendered.
 
 ## Source Code ##
 
-This repository contains the primary source code for PreviewYaml. Certain graphical assets and data files are not included, but are required to build the application. To build PreviewYaml from scratch, you will need to examine the source code and add these files yourself.
+This repository contains the primary source code for *PreviewYaml*. Certain graphical assets and data files are not included, but are required to build the application. To build *PreviewYaml* from scratch, you will need to examine the source code and add these files yourself.
 
-## Release Notes
+## Contributions ##
+
+Contributions are welcome, but pull requestss can only be accepted when they target the `develop` branch. PRs targetting `main` will be rejected.
+
+Contributions will only be accepted if they code they contain is licensed under the terms of [the MIT Licence](#LICENSE.md)
+
+## Release Notes ##
 
 - 1.2.0 *Unreleased*
     - Add sort keys and show key colon marker prefs.
