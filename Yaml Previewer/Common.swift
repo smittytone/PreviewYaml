@@ -16,7 +16,9 @@ import AppKit
 // FROM 1.1.0
 // Implement as a class
 final class Common: NSObject {
-    
+
+    // MARK: - Definitions
+
     enum AttributeType {
         case Key
         case Scalar
@@ -24,6 +26,7 @@ final class Common: NSObject {
         case Special
         case Comment
     }
+
 
     // MARK: - Public Properties
     
@@ -241,7 +244,7 @@ final class Common: NSObject {
     }
 
 
-    // MARK:- Yaml Functions
+    // MARK: - Yaml Functions
 
     /**
      Render a supplied YAML sub-component ('part') to an NSAttributedString.
@@ -396,7 +399,9 @@ final class Common: NSObject {
                     returnString.append(getIndentedAttributedString(keyOrValue, indent, attributeType))
                 }
                 
-                //returnString.setAttributes(attsToUse, range: NSMakeRange(0, returnString.length))
+                /* REMOVED 1.2.0
+                 returnString.setAttributes(attsToUse, range: NSMakeRange(0, returnString.length))
+                 */
 
                 // FROM 1.2.0 -- render colons if asked
                 returnString.append(isKey
@@ -410,8 +415,10 @@ final class Common: NSObject {
             // May be a key or a value
             let valString: String = isKey ? "NULL KEY" : "NULL VALUE"
             returnString.append(getIndentedAttributedString(valString, indent, isKey ? .Key : .Special))
-            //returnString.append(getIndentedString(valString, indent))
-            //returnString.setAttributes(self.specialAttributes, range: NSMakeRange(0, returnString.length))
+            /* REMOVED 1.2.0
+            returnString.append(getIndentedString(valString, indent))
+            returnString.setAttributes(self.specialAttributes, range: NSMakeRange(0, returnString.length))
+             */
 
             // Append a space (item is a key) or a CR (item is a value)
             returnString.append(isKey
@@ -438,8 +445,10 @@ final class Common: NSObject {
             // FROM 1.1.5
             valString += (isKey ? " " : "\n")
             returnString.append(getIndentedAttributedString(valString, indent, isKey ? .Key : .Scalar))
-            //returnString.setAttributes((isKey ? self.keyAttributes : self.scalarAttributes), range: NSMakeRange(0, returnString.length))
-            
+            /* REMOVED 1.2.0
+             returnString.setAttributes((isKey ? self.keyAttributes : self.scalarAttributes), range: NSMakeRange(0, returnString.length))
+             */
+
             // FROM 1.1.5
             self.renderLineCount += 1
         }
@@ -448,7 +457,7 @@ final class Common: NSObject {
     }
 
 
-    /**
+    /** REMOVED 1.2.0
      Return a space-prefix NSAttributedString.
      DEPRECATED
 
@@ -457,7 +466,7 @@ final class Common: NSObject {
         - indent:     The number of indent spaces to add.
 
      - Returns: The indented string as an NSAttributedString.
-     */
+
     func getIndentedString(_ baseString: String, _ indent: Int) -> NSAttributedString {
         
         let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
@@ -467,7 +476,8 @@ final class Common: NSObject {
         indentedString.append(NSAttributedString.init(string: trimmedString))
         return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
     }
-
+     */
+    
 
     /**
      Return a space-prefix NSAttributedString.

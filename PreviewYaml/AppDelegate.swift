@@ -429,7 +429,7 @@ final class AppDelegate: NSObject,
         self.codeStylePopup.isEnabled = false
         selectFontByPostScriptName(self.codeFontName)
 
-        /*
+        /* REMOVED 1.2.0
         // FROM 1.1.1
         // Hide tag selection on Monterey
         if self.isMontereyPlus {
@@ -552,7 +552,7 @@ final class AppDelegate: NSObject,
     @IBAction private func doSavePreferences(sender: Any) {
 
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            /*
+            /* REMOVED 1.2.0
             let newColour: String = self.codeColorWell.color.hexString
             if newColour != self.codeColourHex {
                 self.codeColourHex = newColour
@@ -570,7 +570,7 @@ final class AppDelegate: NSObject,
                 defaults.setValue(state, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.USE_LIGHT)
             }
 
-            /*
+            /* REMOVED 1.2.0
             state = self.doShowTagCheckbox.state == .on
             if self.isMontereyPlus { state = false }
             if self.doShowTag != state {
@@ -834,11 +834,10 @@ final class AppDelegate: NSObject,
                                   forKey: BUFFOON_CONSTANTS.PREFS_KEYS.THUMB_SIZE)
             }
             
+            /* REMOVED 1.2.0
             // FROM 1.1.0
             // Colour of keys in the preview, stored as in integer array index
             // Default: #007D78FF
-            // REMOVED 1.2.0
-            /*
             let codeColourDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
             if codeColourDefault == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR_HEX,
