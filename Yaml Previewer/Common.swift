@@ -427,6 +427,16 @@ final class Common: NSObject {
             
             // FROM 1.1.5
             if !isKey { self.renderLineCount += 1 }
+        case .bool:
+            var valString: String = ""
+
+            if let boolValue = part.bool {
+                valString = boolValue ? "TRUE" : "FALSE"
+            }
+
+            valString += (isKey ? " " : "\n")
+            returnString.append(getIndentedAttributedString(valString, indent, isKey ? .Key : .Special))
+            self.renderLineCount += 1
         default:
             // Place all the scalar values here
             // TODO These *may* be keys too, so we need to check that
@@ -436,8 +446,6 @@ final class Common: NSObject {
                 valString = "\(val)"
             } else if let val = part.double {
                 valString = "\(val)"
-            } else if let val = part.bool {
-                valString = val ? "TRUE" : "FALSE"
             } else {
                 valString = "UNKNOWN"
             }
