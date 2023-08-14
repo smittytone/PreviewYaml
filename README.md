@@ -31,9 +31,8 @@ If PreviewYaml reports that it was unable to render YAML, this is almost certain
 
 ## Known Issues ##
 
-PreviewYaml currently expects files to be encoded in UTF-8.
-
-YAML custom tags are not as yet correctly rendered by *PreviewYAML*’s YAML library.
+* PreviewYaml currently expects files to be encoded in UTF-8.
+* YAML custom tags are not as yet correctly rendered by *PreviewYAML*’s YAML library.
 
 Comments are not rendered.
 
