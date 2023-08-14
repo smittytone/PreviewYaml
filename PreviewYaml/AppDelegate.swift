@@ -335,7 +335,7 @@ final class AppDelegate: NSObject,
         if feedback.count > 0 {
             // Start the connection indicator if it's not already visible
             self.connectionProgress.startAnimation(self)
-            
+
             /*
              Add your own `func sendFeedback(_ feedback: String) -> URLSessionTask?` function
              */
