@@ -20,9 +20,12 @@
 		3B3CEF682A5B7A8F00D05123 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64DED2632013A003CD14D /* Common.swift */; };
 		3B3CEF692A5B7A9600D05123 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E112632023C003CD14D /* Constants.swift */; };
 		3B3CEF6A2A5B7AA800D05123 /* GenericColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B07D225267CA77500BAEF6B /* GenericColorExtensions.swift */; };
-		3B3CEF6B2A5B7D4F00D05123 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E1A2632033F003CD14D /* Secrets.swift */; };
 		3B3CEF6D2A5B7D9600D05123 /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3B3CEF6C2A5B7D9600D05123 /* Yaml */; };
 		3B6C9177268FAA5000745DF4 /* PMFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6C9176268FAA5000745DF4 /* PMFont.swift */; };
+		3B7D83AB2A8A1F45008A4B2E /* REPLACE_WITH_YOUR_FUNCTIONS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83A92A8A1F45008A4B2E /* REPLACE_WITH_YOUR_FUNCTIONS.swift */; };
+		3B7D83AC2A8A1F45008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83AA2A8A1F45008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */; };
+		3B7D83AD2A8A1F51008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83AA2A8A1F45008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */; };
+		3B7D83AE2A8A1F51008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83AA2A8A1F45008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */; };
 		3BAE671D28D4D481001532BD /* GenericFontExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAE671C28D4D481001532BD /* GenericFontExtensions.swift */; };
 		3BB64D8926320064003CD14D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64D8826320064003CD14D /* AppDelegate.swift */; };
 		3BB64D8B26320065003CD14D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8A26320065003CD14D /* Assets.xcassets */; };
@@ -44,9 +47,6 @@
 		3BB64E122632023C003CD14D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E112632023C003CD14D /* Constants.swift */; };
 		3BB64E132632023C003CD14D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E112632023C003CD14D /* Constants.swift */; };
 		3BB64E142632023C003CD14D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E112632023C003CD14D /* Constants.swift */; };
-		3BB64E1B2632033F003CD14D /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E1A2632033F003CD14D /* Secrets.swift */; };
-		3BB64E1C2632033F003CD14D /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E1A2632033F003CD14D /* Secrets.swift */; };
-		3BB64E1D2632033F003CD14D /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E1A2632033F003CD14D /* Secrets.swift */; };
 		3BB64E3426320C5B003CD14D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8A26320065003CD14D /* Assets.xcassets */; };
 		3BB64E3A26320C6F003CD14D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8A26320065003CD14D /* Assets.xcassets */; };
 		3BB9205A2A562E9E006C088E /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = 3BB920582A562E9E006C088E /* LICENSE.md */; };
@@ -110,6 +110,8 @@
 		3B3CEF622A5B798B00D05123 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		3B3CEF642A5B798B00D05123 /* RenderDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RenderDemo.entitlements; sourceTree = "<group>"; };
 		3B6C9176268FAA5000745DF4 /* PMFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PMFont.swift; sourceTree = "<group>"; };
+		3B7D83A92A8A1F45008A4B2E /* REPLACE_WITH_YOUR_FUNCTIONS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = REPLACE_WITH_YOUR_FUNCTIONS.swift; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/PreviewApps/REPLACE_WITH_YOUR_FUNCTIONS.swift"; sourceTree = "<absolute>"; };
+		3B7D83AA2A8A1F45008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = REPLACE_WITH_YOUR_CODES.swift; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/PreviewApps/REPLACE_WITH_YOUR_CODES.swift"; sourceTree = "<absolute>"; };
 		3BAE671C28D4D481001532BD /* GenericFontExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericFontExtensions.swift; sourceTree = "<group>"; };
 		3BB64D8526320064003CD14D /* PreviewYaml.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PreviewYaml.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BB64D8826320064003CD14D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -137,7 +139,6 @@
 		3BB64DED2632013A003CD14D /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		3BB64DF42632014D003CD14D /* licences.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = licences.txt; sourceTree = "<group>"; };
 		3BB64E112632023C003CD14D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		3BB64E1A2632033F003CD14D /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Secrets.swift; path = "../../../Library/CloudStorage/OneDrive-Personal/Programming/mnu/Secrets.swift"; sourceTree = "<group>"; };
 		3BB920582A562E9E006C088E /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 		3BB920592A562E9E006C088E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3BDE3EF3267CE6C10037351C /* GenericExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericExtensions.swift; sourceTree = "<group>"; };
@@ -237,13 +238,14 @@
 		3BB64D8726320064003CD14D /* PreviewYaml */ = {
 			isa = PBXGroup;
 			children = (
-				3BB64E1A2632033F003CD14D /* Secrets.swift */,
 				3BB64E112632023C003CD14D /* Constants.swift */,
 				3BB64D8826320064003CD14D /* AppDelegate.swift */,
 				3BDE3EF3267CE6C10037351C /* GenericExtensions.swift */,
 				3B07D225267CA77500BAEF6B /* GenericColorExtensions.swift */,
 				3BAE671C28D4D481001532BD /* GenericFontExtensions.swift */,
 				3B6C9176268FAA5000745DF4 /* PMFont.swift */,
+				3B7D83A92A8A1F45008A4B2E /* REPLACE_WITH_YOUR_FUNCTIONS.swift */,
+				3B7D83AA2A8A1F45008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */,
 				3BB64D8A26320065003CD14D /* Assets.xcassets */,
 				3B21718826344E88000C5AF6 /* new */,
 				3B21717C26344C81000C5AF6 /* sample.yml */,
@@ -553,7 +555,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B3CEF682A5B7A8F00D05123 /* Common.swift in Sources */,
-				3B3CEF6B2A5B7D4F00D05123 /* Secrets.swift in Sources */,
 				3B3CEF5E2A5B798A00D05123 /* AppDelegate.swift in Sources */,
 				3B3CEF692A5B7A9600D05123 /* Constants.swift in Sources */,
 				3B3CEF6A2A5B7AA800D05123 /* GenericColorExtensions.swift in Sources */,
@@ -567,7 +568,8 @@
 				3BB64D8926320064003CD14D /* AppDelegate.swift in Sources */,
 				3BAE671D28D4D481001532BD /* GenericFontExtensions.swift in Sources */,
 				3BDE3EF4267CE6C10037351C /* GenericExtensions.swift in Sources */,
-				3BB64E1B2632033F003CD14D /* Secrets.swift in Sources */,
+				3B7D83AB2A8A1F45008A4B2E /* REPLACE_WITH_YOUR_FUNCTIONS.swift in Sources */,
+				3B7D83AC2A8A1F45008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */,
 				3B6C9177268FAA5000745DF4 /* PMFont.swift in Sources */,
 				3B07D226267CA77500BAEF6B /* GenericColorExtensions.swift in Sources */,
 				3BB64E122632023C003CD14D /* Constants.swift in Sources */,
@@ -595,7 +597,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BB64DEE2632013A003CD14D /* Common.swift in Sources */,
-				3BB64E1C2632033F003CD14D /* Secrets.swift in Sources */,
+				3B7D83AD2A8A1F51008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */,
 				3B07D227267CA77500BAEF6B /* GenericColorExtensions.swift in Sources */,
 				3BB64DBF263200A8003CD14D /* PreviewViewController.swift in Sources */,
 				3BB64E132632023C003CD14D /* Constants.swift in Sources */,
@@ -607,7 +609,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BB64E05263201A6003CD14D /* Common.swift in Sources */,
-				3BB64E1D2632033F003CD14D /* Secrets.swift in Sources */,
+				3B7D83AE2A8A1F51008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */,
 				3B07D228267CA77500BAEF6B /* GenericColorExtensions.swift in Sources */,
 				3BB64DDA263200BA003CD14D /* ThumbnailProvider.swift in Sources */,
 				3BB64E142632023C003CD14D /* Constants.swift in Sources */,
@@ -676,7 +678,7 @@
 				CODE_SIGN_ENTITLEMENTS = RenderDemo/RenderDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 39;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -705,7 +707,7 @@
 				CODE_SIGN_ENTITLEMENTS = RenderDemo/RenderDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 39;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -853,7 +855,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 39;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -865,6 +867,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.2.0;
+				OTHER_SWIFT_FLAGS = "-D TARGET_IS_PY";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewYaml;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -883,7 +886,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 39;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -895,6 +898,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MARKETING_VERSION = 1.2.0;
+				OTHER_SWIFT_FLAGS = "-D TARGET_IS_PY";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewYaml;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -997,7 +1001,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 39;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1024,7 +1028,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 39;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1051,7 +1055,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 39;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
@@ -1079,7 +1083,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 35;
+				CURRENT_PROJECT_VERSION = 39;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;

@@ -39,7 +39,13 @@ Comments are not rendered.
 
 ## Source Code ##
 
-This repository contains the primary source code for *PreviewYaml*. Certain graphical assets and data files are not included, but are required to build the application. To build *PreviewYaml* from scratch, you will need to examine the source code and add these files yourself.
+This repository contains the primary source code for *PreviewYaml*. Certain graphical assets, code components and data files are not included. To build *PreviewYaml* from scratch, you will need to add these files yourself or remove them from your fork.
+
+The files `REPLACE_WITH_YOUR_FUNCTIONS` and `REPLACE_WITH_YOUR_CODES` must be replaced with your own files. The former will contain your `sendFeedback(_ feedback: String) -> URLSessionTask?` function. The latter your Developer Team ID, used as the App Suite identifier prefix.
+
+You will need to generate your own `Assets.xcassets` file containing the app icon and an `app_logo.png` file.
+
+You will need to create your own `new` directory containing your own `new.html` file.
 
 ## Contributions ##
 
@@ -52,7 +58,7 @@ Contributions will only be accepted if they code they contain is licensed under 
 - 1.2.0 *Unreleased*
     - Make the alphabetical sorting of keys optional. Default: do sort.
     - Make the display of key colon symbols a setting. Default: do not show.
-    - Allow users to choose the colours of strings and special values (NAN, ±INF).
+    - Allow users to choose the colours of strings and special values (NaN, ±INF).
 - 1.1.5 *14 February 2023*
     - Fix regression affecting thumbnails of large documents.
 - 1.1.4 *21 January 2023*
