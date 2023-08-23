@@ -26,15 +26,6 @@
 		3B7D83FB2A8A3100008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */; };
 		3B7D83FC2A8A3102008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */; };
 		3B7D83FE2A8A311D008A4B2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B7D83FD2A8A311D008A4B2E /* Assets.xcassets */; };
-		3B7D84092A8A3134008A4B2E /* prefs_colours_d.webp in Resources */ = {isa = PBXBuildFile; fileRef = 3B7D84002A8A3133008A4B2E /* prefs_colours_d.webp */; };
-		3B7D840A2A8A3134008A4B2E /* prefs_tags_d.webp in Resources */ = {isa = PBXBuildFile; fileRef = 3B7D84012A8A3133008A4B2E /* prefs_tags_d.webp */; };
-		3B7D840B2A8A3134008A4B2E /* prefs_colours_d@2x.webp in Resources */ = {isa = PBXBuildFile; fileRef = 3B7D84022A8A3133008A4B2E /* prefs_colours_d@2x.webp */; };
-		3B7D840C2A8A3134008A4B2E /* prefs_tags_l@2x.webp in Resources */ = {isa = PBXBuildFile; fileRef = 3B7D84032A8A3133008A4B2E /* prefs_tags_l@2x.webp */; };
-		3B7D840D2A8A3134008A4B2E /* prefs_colours_l.webp in Resources */ = {isa = PBXBuildFile; fileRef = 3B7D84042A8A3133008A4B2E /* prefs_colours_l.webp */; };
-		3B7D840E2A8A3134008A4B2E /* prefs_colours_l@2x.webp in Resources */ = {isa = PBXBuildFile; fileRef = 3B7D84052A8A3133008A4B2E /* prefs_colours_l@2x.webp */; };
-		3B7D840F2A8A3134008A4B2E /* prefs_tags_d@2x.webp in Resources */ = {isa = PBXBuildFile; fileRef = 3B7D84062A8A3133008A4B2E /* prefs_tags_d@2x.webp */; };
-		3B7D84102A8A3134008A4B2E /* prefs_tags_l.webp in Resources */ = {isa = PBXBuildFile; fileRef = 3B7D84072A8A3133008A4B2E /* prefs_tags_l.webp */; };
-		3B7D84112A8A3134008A4B2E /* new.html in Resources */ = {isa = PBXBuildFile; fileRef = 3B7D84082A8A3134008A4B2E /* new.html */; };
 		3BAE671D28D4D481001532BD /* GenericFontExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAE671C28D4D481001532BD /* GenericFontExtensions.swift */; };
 		3BB64D8926320064003CD14D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64D8826320064003CD14D /* AppDelegate.swift */; };
 		3BB64D8E26320065003CD14D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8C26320065003CD14D /* MainMenu.xib */; };
@@ -55,8 +46,7 @@
 		3BB64E122632023C003CD14D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E112632023C003CD14D /* Constants.swift */; };
 		3BB64E132632023C003CD14D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E112632023C003CD14D /* Constants.swift */; };
 		3BB64E142632023C003CD14D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E112632023C003CD14D /* Constants.swift */; };
-		3BB9205A2A562E9E006C088E /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = 3BB920582A562E9E006C088E /* LICENSE.md */; };
-		3BB9205B2A562E9E006C088E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 3BB920592A562E9E006C088E /* README.md */; };
+		3BC233812A96927E005C3015 /* new in Resources */ = {isa = PBXBuildFile; fileRef = 3BC233802A96927E005C3015 /* new */; };
 		3BDE3EF4267CE6C10037351C /* GenericExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDE3EF3267CE6C10037351C /* GenericExtensions.swift */; };
 /* End PBXBuildFile section */
 
@@ -118,15 +108,6 @@
 		3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = REPLACE_WITH_YOUR_CODES.swift; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/PreviewApps/REPLACE_WITH_YOUR_CODES.swift"; sourceTree = "<absolute>"; };
 		3B7D83F82A8A30E1008A4B2E /* REPLACE_WITH_YOUR_FUNCTIONS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = REPLACE_WITH_YOUR_FUNCTIONS.swift; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/PreviewApps/REPLACE_WITH_YOUR_FUNCTIONS.swift"; sourceTree = "<absolute>"; };
 		3B7D83FD2A8A311D008A4B2E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/PreviewYaml/Assets.xcassets"; sourceTree = "<absolute>"; };
-		3B7D84002A8A3133008A4B2E /* prefs_colours_d.webp */ = {isa = PBXFileReference; lastKnownFileType = file; path = prefs_colours_d.webp; sourceTree = "<group>"; };
-		3B7D84012A8A3133008A4B2E /* prefs_tags_d.webp */ = {isa = PBXFileReference; lastKnownFileType = file; path = prefs_tags_d.webp; sourceTree = "<group>"; };
-		3B7D84022A8A3133008A4B2E /* prefs_colours_d@2x.webp */ = {isa = PBXFileReference; lastKnownFileType = file; path = "prefs_colours_d@2x.webp"; sourceTree = "<group>"; };
-		3B7D84032A8A3133008A4B2E /* prefs_tags_l@2x.webp */ = {isa = PBXFileReference; lastKnownFileType = file; path = "prefs_tags_l@2x.webp"; sourceTree = "<group>"; };
-		3B7D84042A8A3133008A4B2E /* prefs_colours_l.webp */ = {isa = PBXFileReference; lastKnownFileType = file; path = prefs_colours_l.webp; sourceTree = "<group>"; };
-		3B7D84052A8A3133008A4B2E /* prefs_colours_l@2x.webp */ = {isa = PBXFileReference; lastKnownFileType = file; path = "prefs_colours_l@2x.webp"; sourceTree = "<group>"; };
-		3B7D84062A8A3133008A4B2E /* prefs_tags_d@2x.webp */ = {isa = PBXFileReference; lastKnownFileType = file; path = "prefs_tags_d@2x.webp"; sourceTree = "<group>"; };
-		3B7D84072A8A3133008A4B2E /* prefs_tags_l.webp */ = {isa = PBXFileReference; lastKnownFileType = file; path = prefs_tags_l.webp; sourceTree = "<group>"; };
-		3B7D84082A8A3134008A4B2E /* new.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = new.html; sourceTree = "<group>"; };
 		3BAE671C28D4D481001532BD /* GenericFontExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericFontExtensions.swift; sourceTree = "<group>"; };
 		3BB64D8526320064003CD14D /* PreviewYaml.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PreviewYaml.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BB64D8826320064003CD14D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -155,6 +136,7 @@
 		3BB64E112632023C003CD14D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3BB920582A562E9E006C088E /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 		3BB920592A562E9E006C088E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		3BC233802A96927E005C3015 /* new */ = {isa = PBXFileReference; lastKnownFileType = folder; name = new; path = "../../../Library/CloudStorage/OneDrive-Personal/Programming/PreviewYaml/new"; sourceTree = "<group>"; };
 		3BDE3EF3267CE6C10037351C /* GenericExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -227,27 +209,10 @@
 				3B7D83F82A8A30E1008A4B2E /* REPLACE_WITH_YOUR_FUNCTIONS.swift */,
 				3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */,
 				3B7D83FD2A8A311D008A4B2E /* Assets.xcassets */,
-				3B7D83FF2A8A3133008A4B2E /* new */,
+				3BC233802A96927E005C3015 /* new */,
 			);
 			name = "YOU MUST SUPPLY";
 			sourceTree = "<group>";
-		};
-		3B7D83FF2A8A3133008A4B2E /* new */ = {
-			isa = PBXGroup;
-			children = (
-				3B7D84002A8A3133008A4B2E /* prefs_colours_d.webp */,
-				3B7D84012A8A3133008A4B2E /* prefs_tags_d.webp */,
-				3B7D84022A8A3133008A4B2E /* prefs_colours_d@2x.webp */,
-				3B7D84032A8A3133008A4B2E /* prefs_tags_l@2x.webp */,
-				3B7D84042A8A3133008A4B2E /* prefs_colours_l.webp */,
-				3B7D84052A8A3133008A4B2E /* prefs_colours_l@2x.webp */,
-				3B7D84062A8A3133008A4B2E /* prefs_tags_d@2x.webp */,
-				3B7D84072A8A3133008A4B2E /* prefs_tags_l.webp */,
-				3B7D84082A8A3134008A4B2E /* new.html */,
-			);
-			name = new;
-			path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/PreviewYaml/new";
-			sourceTree = "<absolute>";
 		};
 		3BB64D7C26320064003CD14D = {
 			isa = PBXGroup;
@@ -544,20 +509,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3BB9205B2A562E9E006C088E /* README.md in Resources */,
-				3B7D840D2A8A3134008A4B2E /* prefs_colours_l.webp in Resources */,
-				3B7D840E2A8A3134008A4B2E /* prefs_colours_l@2x.webp in Resources */,
-				3B7D84102A8A3134008A4B2E /* prefs_tags_l.webp in Resources */,
-				3B7D84092A8A3134008A4B2E /* prefs_colours_d.webp in Resources */,
-				3B7D84112A8A3134008A4B2E /* new.html in Resources */,
-				3BB9205A2A562E9E006C088E /* LICENSE.md in Resources */,
-				3B7D840A2A8A3134008A4B2E /* prefs_tags_d.webp in Resources */,
 				3B21717D26344C81000C5AF6 /* sample.yml in Resources */,
-				3B7D840B2A8A3134008A4B2E /* prefs_colours_d@2x.webp in Resources */,
-				3B7D840C2A8A3134008A4B2E /* prefs_tags_l@2x.webp in Resources */,
+				3BC233812A96927E005C3015 /* new in Resources */,
 				3B7D83FE2A8A311D008A4B2E /* Assets.xcassets in Resources */,
 				3BB64D8E26320065003CD14D /* MainMenu.xib in Resources */,
-				3B7D840F2A8A3134008A4B2E /* prefs_tags_d@2x.webp in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -723,7 +678,7 @@
 				CODE_SIGN_ENTITLEMENTS = RenderDemo/RenderDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 45;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -752,7 +707,7 @@
 				CODE_SIGN_ENTITLEMENTS = RenderDemo/RenderDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 45;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -900,7 +855,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 45;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -931,7 +886,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 45;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1046,7 +1001,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 45;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1073,7 +1028,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 45;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1100,7 +1055,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 45;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
@@ -1128,7 +1083,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 40;
+				CURRENT_PROJECT_VERSION = 45;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
