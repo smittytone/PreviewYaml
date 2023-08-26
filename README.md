@@ -14,7 +14,7 @@ You can disable and re-enable the Yaml Previewer and Yaml Thumbnailer extensions
 
 You can alter some of the key elements of the preview by using the **Preferences** panel:
 
-- The colour of keys, strings and special values (NaN, ±INF) can selected using the macOS colour picker.
+- The colour of keys, strings and special values (`NaN, `±INF`) can selected using the macOS colour picker.
 - The preview’s font, which you can now choose from all the monospace fonts installed on your system.
 - The preview’s font style, eg. regular, bold, italic etc.
 - The preview’s text size, from 10pt to 28pt.
@@ -54,10 +54,10 @@ Contributions will only be accepted if they code they contain is licensed under 
 
 ## Release Notes ##
 
-- 1.2.0 *Unreleased*
-    - Make the alphabetical sorting of keys optional. Default: do sort.
+- 1.2.0 *25 August 2023*
+    - Make the alphabetical sorting of keys optional. Default: do sort. Requested by: klas.
     - Make the display of key colon symbols a setting. Default: do not show.
-    - Allow users to choose the colours of strings and special values (NaN, ±INF).
+    - Allow users to choose the colours of strings and special values (`NaN`, `±INF`).
 - 1.1.5 *14 February 2023*
     - Fix regression affecting thumbnails of large documents.
 - 1.1.4 *21 January 2023*
