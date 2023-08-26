@@ -19,7 +19,8 @@ final class AppDelegate: NSObject,
                          URLSessionDataDelegate,
                          WKNavigationDelegate {
 
-    // MARK:- Class UI Properies
+    // MARK: - Class UI Properies
+    
     // Menu Items
     @IBOutlet var helpMenuOnlineHelp: NSMenuItem!
     @IBOutlet var helpMenuAcknowledgments: NSMenuItem!
@@ -44,46 +45,46 @@ final class AppDelegate: NSObject,
     @IBOutlet var window: NSWindow!
 
     // Report Sheet
-    @IBOutlet weak var reportWindow: NSWindow!
-    @IBOutlet weak var feedbackText: NSTextField!
-    @IBOutlet weak var connectionProgress: NSProgressIndicator!
+    @IBOutlet var reportWindow: NSWindow!
+    @IBOutlet var feedbackText: NSTextField!
+    @IBOutlet var connectionProgress: NSProgressIndicator!
 
     // Preferences Sheet
     //@IBOutlet weak var codeColourPopup: NSPopUpButton!
-    @IBOutlet weak var preferencesWindow: NSWindow!
-    @IBOutlet weak var fontSizeSlider: NSSlider!
-    @IBOutlet weak var fontSizeLabel: NSTextField!
-    @IBOutlet weak var useLightCheckbox: NSButton!
-    @IBOutlet weak var doShowTagCheckbox: NSButton!
-    @IBOutlet weak var doIndentScalarsCheckbox: NSButton!
-    @IBOutlet weak var doShowRawYamlCheckbox: NSButton!
-    @IBOutlet weak var codeFontPopup: NSPopUpButton!
-    @IBOutlet weak var codeIndentPopup: NSPopUpButton!
+    @IBOutlet var preferencesWindow: NSWindow!
+    @IBOutlet var fontSizeSlider: NSSlider!
+    @IBOutlet var fontSizeLabel: NSTextField!
+    @IBOutlet var useLightCheckbox: NSButton!
+    //@IBOutlet var doShowTagCheckbox: NSButton!
+    @IBOutlet var doIndentScalarsCheckbox: NSButton!
+    @IBOutlet var doShowRawYamlCheckbox: NSButton!
+    @IBOutlet var codeFontPopup: NSPopUpButton!
+    @IBOutlet var codeIndentPopup: NSPopUpButton!
     // FROM 1.1.0
-    @IBOutlet weak var codeColorWell: NSColorWell!
-    @IBOutlet weak var codeStylePopup: NSPopUpButton!
+    @IBOutlet var codeColorWell: NSColorWell!
+    @IBOutlet var codeStylePopup: NSPopUpButton!
     // FROM 1.1.1
-    @IBOutlet weak var tagInfoTextField: NSTextField!
+    //@IBOutlet var tagInfoTextField: NSTextField!
+    // FROM 1.2.0
+    @IBOutlet var doSortKeysCheckbox: NSButton!
+    @IBOutlet var doShowColonCheckbox: NSButton!
+    @IBOutlet var colourSelectionPopup: NSPopUpButton!
 
     // What's New Sheet
-    @IBOutlet weak var whatsNewWindow: NSWindow!
-    @IBOutlet weak var whatsNewWebView: WKWebView!
+    @IBOutlet var whatsNewWindow: NSWindow!
+    @IBOutlet var whatsNewWebView: WKWebView!
     
 
-    // MARK:- Private Properies
-    // private var previewCodeColour: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
-    // private var previewCodeFont: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
+    // MARK: - Private Properies
+    
     internal var whatsNewNav: WKNavigation? = nil
     private  var feedbackTask: URLSessionTask? = nil
     private  var indentDepth: Int = BUFFOON_CONSTANTS.YAML_INDENT
-    private  var localYamlUTI: String = "N/A"
-    private  var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
+             var localYamlUTI: String = "N/A"
     private  var doShowLightBackground: Bool = false
     private  var doShowTag: Bool = false
     private  var doShowRawYaml: Bool = false
     private  var doIndentScalars: Bool = false
-    // FROM 1.0.1
-    private var feedbackPath: String = MNU_SECRETS.ADDRESS.B
     // FROM 1.1.0
     internal var codeFonts: [PMFont] = []
     private  var codeFontName: String = BUFFOON_CONSTANTS.CODE_FONT_NAME
@@ -93,7 +94,18 @@ final class AppDelegate: NSObject,
     internal var isMontereyPlus: Bool = false
     // FROM 1.1.4
     private  var havePrefsChanged: Bool = false
-    
+    // FROM 1.2.0
+    private var doSortKeys: Bool = true
+    private var doShowColons: Bool = false
+    private var displayColours: [String:String] = [:]
+
+    /*
+     Replace the following string with your own team ID. This is used to
+     identify the app suite and so share preferences set by the main app with
+     the previewer and thumbnailer extensions.
+     */
+    private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
+
 
     // MARK: - Class Lifecycle Functions
 
@@ -148,7 +160,7 @@ final class AppDelegate: NSObject,
     }
 
 
-    // MARK:- Action Functions
+    // MARK: - Action Functions
 
     /**
      Called from **File > Close** and the various Quit controls.
@@ -304,6 +316,7 @@ final class AppDelegate: NSObject,
         showPanelGenerators()
     }
 
+
     /**
      User has clicked the Report window's **Send** button.
 
@@ -322,8 +335,11 @@ final class AppDelegate: NSObject,
         if feedback.count > 0 {
             // Start the connection indicator if it's not already visible
             self.connectionProgress.startAnimation(self)
-            
-            self.feedbackTask = submitFeedback(feedback)
+
+            /*
+             Add your own `func sendFeedback(_ feedback: String) -> URLSessionTask?` function
+             */
+            self.feedbackTask = sendFeedback(feedback)
             
             if self.feedbackTask != nil {
                 // We have a valid URL Session Task, so start it to send
@@ -368,17 +384,23 @@ final class AppDelegate: NSObject,
         // The suite name is the app group name, set in each the entitlements file of
         // the host app and of each extension
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            self.codeFontSize = CGFloat(defaults.float(forKey: "com-bps-previewyaml-base-font-size"))
-            self.indentDepth = defaults.integer(forKey: "com-bps-previewyaml-yaml-indent")
-            
-            self.doShowLightBackground = defaults.bool(forKey: "com-bps-previewyaml-do-use-light")
-            self.doShowTag = defaults.bool(forKey: "com-bps-previewyaml-do-show-tag")
-            self.doShowRawYaml = defaults.bool(forKey: "com-bps-previewyaml-show-bad-yaml")
-            self.doIndentScalars = defaults.bool(forKey: "com-bps-previewyaml-do-indent-scalars")
+            self.codeFontSize           = CGFloat(defaults.float(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE))
+            self.indentDepth            = defaults.integer(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.INDENT)
+            self.doShowLightBackground  = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.USE_LIGHT)
+            self.doShowTag              = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.TAG)
+            self.doShowRawYaml          = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BAD)
+            self.doIndentScalars        = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SCALARS)
             
             // FROM 1.1.0
-            self.codeFontName = defaults.string(forKey: "com-bps-previewyaml-base-font-name") ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
-            self.codeColourHex = defaults.string(forKey: "com-bps-previewyaml-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+            self.codeFontName           = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_FONT) ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
+            //self.codeColourHex = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR) ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+
+            // FROM 1.2.0
+            self.doSortKeys                 = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SORT)
+            self.doShowColons               = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
+            self.displayColours["key"]      = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
+            self.displayColours["string"]   = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR) ?? BUFFOON_CONSTANTS.STRING_COLOUR_HEX
+            self.displayColours["special"]  = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR) ?? BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX
         }
 
         // Get the menu item index from the stored value
@@ -390,7 +412,7 @@ final class AppDelegate: NSObject,
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
         
         self.useLightCheckbox.state = self.doShowLightBackground ? .on : .off
-        self.doShowTagCheckbox.state = self.doShowTag ? .on : .off
+        //self.doShowTagCheckbox.state = self.doShowTag ? .on : .off
         self.doShowRawYamlCheckbox.state = self.doShowRawYaml ? .on : .off
         self.doIndentScalarsCheckbox.state = self.doIndentScalars ? .on : .off
         
@@ -399,9 +421,8 @@ final class AppDelegate: NSObject,
         
         // FROM 1.1.0
         // Set the colour panel's initial view
-        // self.codeColourPopup.selectItem(at: self.previewCodeColour)
         NSColorPanel.setPickerMode(.RGB)
-        self.codeColorWell.color = NSColor.hexToColour(self.codeColourHex)
+        self.codeColorWell.color = NSColor.hexToColour(self.displayColours["key"] ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX)
         
         // FROM 1.1.0
         // Set the font name popup
@@ -414,26 +435,32 @@ final class AppDelegate: NSObject,
 
         self.codeStylePopup.isEnabled = false
         selectFontByPostScriptName(self.codeFontName)
-        
+
+        /* REMOVED 1.2.0
         // FROM 1.1.1
         // Hide tag selection on Monterey
         if self.isMontereyPlus {
             self.doShowTagCheckbox.toolTip = "Not available in macOS 12.0 and up"
-            self.tagInfoTextField.stringValue = "macOS 12.0 Monterey adds its own thumbnail file extension tags, so this option is no longer available."
+            // self.tagInfoTextField.stringValue = "macOS 12.0 Monterey adds its own thumbnail file extension tags, so this option is no longer available."
         }
         
         // FROM 1.1.2
         // Hide this option, don't just disable it
         self.doShowTagCheckbox.isHidden = self.isMontereyPlus
-        self.tagInfoTextField.isHidden = self.isMontereyPlus
+        */
         
         // FROM 1.1.4
         // Check for the OS mode
         let appearance: NSAppearance = NSApp.effectiveAppearance
-        if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
-            self.useLightCheckbox.isHidden = (appearName == .aqua)
+        if let appearanceName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
+            self.useLightCheckbox.isEnabled = (appearanceName != .aqua)
         }
-        
+
+        // FROM 1.2.0
+        self.doSortKeysCheckbox.state = self.doSortKeys ? .on : .off
+        self.doShowColonCheckbox.state = self.doShowColons ? .on : .off
+        self.colourSelectionPopup.selectItem(at: 0)
+
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
     }
@@ -476,18 +503,50 @@ final class AppDelegate: NSObject,
      */
     @IBAction private func doClosePreferences(sender: Any) {
 
+        if self.havePrefsChanged {
+            let alert: NSAlert = showAlert("You have made changes",
+                                           "Do you wish to go back and save them, or ignore them? ",
+                                           false)
+            alert.addButton(withTitle: "Go Back")
+            alert.addButton(withTitle: "Ignore Changes")
+            alert.beginSheetModal(for: self.preferencesWindow) { (response: NSApplication.ModalResponse) in
+                if response != NSApplication.ModalResponse.alertFirstButtonReturn {
+                    // The user clicked 'Cancel'
+                    self.closePrefsWindow()
+                }
+            }
+        } else {
+            closePrefsWindow()
+        }
+    }
+
+
+    /**
+        Follow-on function to close the **Preferences** sheet without saving.
+        FROM 1.1.0
+
+        - Parameters:
+            - sender: The source of the action.
+     */
+
+    private func closePrefsWindow() {
+
         // FROM 1.1.0
         // Close the colour selection panel if it's open
         if self.codeColorWell.isActive {
             NSColorPanel.shared.close()
             self.codeColorWell.deactivate()
         }
-        
+
         self.window.endSheet(self.preferencesWindow)
-        
+
         // FROM 1.1.4
         // Restore menus
         showPanelGenerators()
+
+        // FROM 1.2.0
+        clearNewColours()
+        self.havePrefsChanged = false
     }
 
 
@@ -500,49 +559,46 @@ final class AppDelegate: NSObject,
     @IBAction private func doSavePreferences(sender: Any) {
 
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
+            /* REMOVED 1.2.0
             let newColour: String = self.codeColorWell.color.hexString
             if newColour != self.codeColourHex {
                 self.codeColourHex = newColour
-                defaults.setValue(newColour,
-                                  forKey: "com-bps-previewyaml-code-colour-hex")
+                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
             }
-            
+            */
+
             let newValue: CGFloat = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[Int(self.fontSizeSlider.floatValue)]
             if newValue != self.codeFontSize {
-                defaults.setValue(newValue,
-                                  forKey: "com-bps-previewyaml-base-font-size")
+                defaults.setValue(newValue, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE)
             }
             
             var state: Bool = self.useLightCheckbox.state == .on
             if self.doShowLightBackground != state {
-                defaults.setValue(state,
-                                  forKey: "com-bps-previewyaml-do-use-light")
+                defaults.setValue(state, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.USE_LIGHT)
             }
 
+            /* REMOVED 1.2.0
             state = self.doShowTagCheckbox.state == .on
             if self.isMontereyPlus { state = false }
             if self.doShowTag != state {
-                defaults.setValue(state,
-                                  forKey: "com-bps-previewyaml-do-show-tag")
+                defaults.setValue(state, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.TAG)
             }
-            
+            */
+
             state = self.doShowRawYamlCheckbox.state == .on
             if self.doShowRawYaml != state {
-                defaults.setValue(state,
-                                  forKey: "com-bps-previewyaml-show-bad-yaml")
+                defaults.setValue(state, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BAD)
             }
             
             state = self.doIndentScalarsCheckbox.state == .on
             if self.doIndentScalars != state {
-                defaults.setValue(state,
-                                  forKey: "com-bps-previewyaml-do-indent-scalars")
+                defaults.setValue(state, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SCALARS)
             }
             
             let indents: [Int] = [1, 2, 4, 8]
             let indent: Int = indents[self.codeIndentPopup.indexOfSelectedItem]
             if self.indentDepth != indent {
-                defaults.setValue(indent,
-                                  forKey: "com-bps-previewyaml-yaml-indent")
+                defaults.setValue(indent, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.INDENT)
             }
             
             // FROM 1.1.0
@@ -550,9 +606,31 @@ final class AppDelegate: NSObject,
             if let fontName: String = getPostScriptName() {
                 if fontName != self.codeFontName {
                     self.codeFontName = fontName
-                    defaults.setValue(fontName,
-                                      forKey: "com-bps-previewyaml-base-font-name")
+                    defaults.setValue(fontName, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_FONT)
                 }
+            }
+
+            // FROM 1.2.0
+            state = self.doSortKeysCheckbox.state == .on
+            if self.doSortKeys != state {
+                defaults.setValue(state, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SORT)
+            }
+
+            state = self.doShowColonCheckbox.state == .on
+            if self.doShowColons != state {
+                defaults.setValue(state, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
+            }
+
+            if let newColour: String = self.displayColours["new_key"] {
+                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
+            }
+
+            if let newColour: String = self.displayColours["new_string"] {
+                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR)
+            }
+
+            if let newColour: String = self.displayColours["new_special"] {
+                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR)
             }
 
             // Sync any changes
@@ -571,6 +649,9 @@ final class AppDelegate: NSObject,
         
         // Restore menus
         showPanelGenerators()
+
+        // FROM 1.2.0
+        clearNewColours()
     }
     
     
@@ -583,6 +664,66 @@ final class AppDelegate: NSObject,
     @IBAction private func checkboxClicked(sender: Any) {
         
         self.havePrefsChanged = true
+    }
+
+
+    /**
+        Update the colour preferences dictionary with a value from the
+        colour well when a colour is chosen.
+
+        - Parameters:
+            - sender: The source of the action.
+     */
+    @objc @IBAction private func colourSelected(sender: Any) {
+
+        let keys: [String] = ["key", "string", "special"]
+        let key: String = "new_" + keys[self.colourSelectionPopup.indexOfSelectedItem]
+        self.displayColours[key] = self.codeColorWell.color.hexString
+        self.havePrefsChanged = true
+    }
+
+
+    /**
+        Update the colour well with the stored colour: either a new one, previously
+        chosen, or the loaded preference.
+
+        - Parameters:
+            - sender: The source of the action.
+     */
+    @IBAction private func doChooseColourType(sender: Any) {
+
+        let keys: [String] = ["key", "string", "special"]
+        let key: String = keys[self.colourSelectionPopup.indexOfSelectedItem]
+
+        // If there's no `new_xxx` key, the next line will evaluate to false
+        if let colour: String = self.displayColours["new_" + key] {
+            if colour.count != 0 {
+                // Set the colourwell with the updated colour and exit
+                self.codeColorWell.color = NSColor.hexToColour(colour)
+                return
+            }
+        }
+
+        // Set the colourwell with the stored colour
+        if let colour: String = self.displayColours[key] {
+            self.codeColorWell.color = NSColor.hexToColour(colour)
+        }
+    }
+
+
+    /**
+        Zap any temporary colour values.
+        FROM 1.2.0
+
+     */
+    private func clearNewColours() {
+
+        let keys: [String] = ["key", "string", "special"]
+        for key in keys {
+            if let _: String = self.displayColours["new_" + key] {
+                self.displayColours["new_" + key] = nil
+            }
+        }
     }
 
 
@@ -658,7 +799,7 @@ final class AppDelegate: NSObject,
 
         // Set this version's preference
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            let key: String = "com-bps-previewyaml-do-show-whats-new-" + getVersion()
+            let key: String = BUFFOON_CONSTANTS.PREFS_KEYS.WHATS_NEW + getVersion()
             defaults.setValue(false, forKey: key)
 
             #if DEBUG
@@ -686,52 +827,52 @@ final class AppDelegate: NSObject,
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
             // Preview body font size, stored as a CGFloat
             // Default: 16.0
-            let bodyFontSizeDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-base-font-size")
+            let bodyFontSizeDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE)
             if bodyFontSizeDefault == nil {
                 defaults.setValue(CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE),
-                                  forKey: "com-bps-previewyaml-base-font-size")
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE)
             }
 
             // Thumbnail view base font size, stored as a CGFloat, not currently used
             // Default: 28.0
-            let thumbFontSizeDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-thumb-font-size")
+            let thumbFontSizeDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.THUMB_SIZE)
             if thumbFontSizeDefault == nil {
                 defaults.setValue(CGFloat(BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE),
-                                  forKey: "com-bps-previewyaml-thumb-font-size")
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.THUMB_SIZE)
             }
             
+            /* REMOVED 1.2.0
             // FROM 1.1.0
-            // Colour of code blocks in the preview, stored as in integer array index
+            // Colour of keys in the preview, stored as in integer array index
             // Default: #007D78FF
-            let codeColourDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-code-colour-hex")
+            let codeColourDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
             if codeColourDefault == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR_HEX,
-                                  forKey: "com-bps-previewyaml-code-colour-hex")
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
             }
-            
+            */
+
             // FROM 1.1.0
             // Font for previews and thumbnails
             // Default: Courier
-            let codeFontName: Any? = defaults.object(forKey: "com-bps-previewyaml-base-font-name")
+            let codeFontName: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_FONT)
             if codeFontName == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.CODE_FONT_NAME,
-                                  forKey: "com-bps-previewyaml-base-font-name")
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_FONT)
             }
             
             // Use light background even in dark mode, stored as a bool
             // Default: false
-            let useLightDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-do-use-light")
+            let useLightDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.USE_LIGHT)
             if useLightDefault == nil {
-                defaults.setValue(false,
-                                  forKey: "com-bps-previewyaml-do-use-light")
+                defaults.setValue(false, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.USE_LIGHT)
             }
 
             // Show the file identity ('tag') on Finder thumbnails
             // Default: true
-            let showTagDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-do-show-tag")
+            let showTagDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.TAG)
             if showTagDefault == nil {
-                defaults.setValue(false,
-                                  forKey: "com-bps-previewyaml-do-show-tag")
+                defaults.setValue(false, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.TAG)
             }
 
             // Show the What's New sheet
@@ -740,7 +881,7 @@ final class AppDelegate: NSObject,
             // this will persist, but with each new major and/or minor version, we make a
             // new preference that will be read by 'doShowWhatsNew()' to see if the sheet
             // should be shown this run
-            let key: String = "com-bps-previewyaml-do-show-whats-new-" + getVersion()
+            let key: String = BUFFOON_CONSTANTS.PREFS_KEYS.WHATS_NEW + getVersion()
             let showNewDefault: Any? = defaults.object(forKey: key)
             if showNewDefault == nil {
                 defaults.setValue(true, forKey: key)
@@ -748,26 +889,63 @@ final class AppDelegate: NSObject,
             
             // Record the preferred indent depth in spaces
             // Default: 2
-            let indentDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-yaml-indent")
+            let indentDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.INDENT)
             if indentDefault == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.YAML_INDENT,
-                                  forKey: "com-bps-previewyaml-yaml-indent")
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.INDENT)
             }
             
             // Indent scalar values?
             // Default: false
-            let indentScalarsDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-do-indent-scalars")
+            let indentScalarsDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SCALARS)
             if indentScalarsDefault == nil {
-                defaults.setValue(false,
-                                  forKey: "com-bps-previewyaml-do-indent-scalars")
+                defaults.setValue(false, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SCALARS)
             }
             
             // Present malformed YAML on error?
             // Default: false
-            let presentBadYamlDefault: Any? = defaults.object(forKey: "com-bps-previewyaml-show-bad-yaml")
+            let presentBadYamlDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BAD)
             if presentBadYamlDefault == nil {
-                defaults.setValue(false,
-                                  forKey: "com-bps-previewyaml-show-bad-yaml")
+                defaults.setValue(false, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BAD)
+            }
+
+            // FROM 1.2.0
+            // Sort dictionary keys
+            // Default: true
+            let sortKeysDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SORT)
+            if sortKeysDefault == nil {
+                defaults.setValue(true, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SORT)
+            }
+
+            // Render colon after keys
+            // Default: false
+            let showColonDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
+            if showColonDefault == nil {
+                defaults.setValue(false, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.COLON)
+            }
+
+            // Colour of keys in the preview, stored as a hex string
+            // Default: #007D78FF
+            var colourDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
+            if colourDefault == nil {
+                defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR_HEX,
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.CODE_COLOUR)
+            }
+
+            // Colour of strings in the preview, stored as a hex string
+            // Default: #FC6A5DFF
+            colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR)
+            if colourDefault == nil {
+                defaults.setValue(BUFFOON_CONSTANTS.STRING_COLOUR_HEX,
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR)
+            }
+
+            // Colour of special values (NaN +/-INF in the preview, stored as a hex string
+            // Default: #D0BF69FF
+            colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR)
+            if colourDefault == nil {
+                defaults.setValue(BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX,
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR)
             }
 
             // Sync any additions
@@ -775,67 +953,8 @@ final class AppDelegate: NSObject,
         }
 
     }
-    
 
-    /**
-     Send the feedback string etc.
 
-     - Parameters:
-        - feedback: The text of the user's comment.
-
-     - Returns: A URLSessionTask primed to send the comment, or `nil` on error.
-     */
-    private func submitFeedback(_ feedback: String) -> URLSessionTask? {
-
-        // First get the data we need to build the user agent string
-        let userAgent: String = getUserAgentForFeedback()
-        let endPoint: String = MNU_SECRETS.ADDRESS.A
-
-        // Get the date as a string
-        let dateString: String = getDateForFeedback()
-
-        // Assemble the message string
-        let dataString: String = """
-         *FEEDBACK REPORT*
-         *Date:* \(dateString)
-         *User Agent:* \(userAgent)
-         *UTI:* \(self.localYamlUTI)
-         *FEEDBACK:*
-         \(feedback)
-         """
-
-        // Build the data we will POST:
-        let dict: NSMutableDictionary = NSMutableDictionary()
-        dict.setObject(dataString,
-                        forKey: NSString.init(string: "text"))
-        dict.setObject(true, forKey: NSString.init(string: "mrkdwn"))
-
-        // Make and return the HTTPS request for sending
-        if let url: URL = URL.init(string: self.feedbackPath + endPoint) {
-            var request: URLRequest = URLRequest.init(url: url)
-            request.httpMethod = "POST"
-
-            do {
-                request.httpBody = try JSONSerialization.data(withJSONObject: dict,
-                                                              options:JSONSerialization.WritingOptions.init(rawValue: 0))
-
-                request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
-                request.addValue("application/json", forHTTPHeaderField: "Content-type")
-
-                let config: URLSessionConfiguration = URLSessionConfiguration.ephemeral
-                let session: URLSession = URLSession.init(configuration: config,
-                                                          delegate: self,
-                                                          delegateQueue: OperationQueue.main)
-                return session.dataTask(with: request)
-            } catch {
-                // NOP
-            }
-        }
-
-        return nil
-    }
-    
-    
     /**
      Handler for macOS UI mode change notifications.
      
@@ -849,10 +968,10 @@ final class AppDelegate: NSObject,
             // NOTE For light mode, this checkbox is irrelevant, so the
             //      checkbox should be disabled
             let appearance: NSAppearance = NSApp.effectiveAppearance
-            if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
+            if let appearanceName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
                 // NOTE Appearance it this point seems to reflect the mode
                 //      we're coming FROM, not what it has changed to
-                self.useLightCheckbox.isHidden = (appearName != .aqua)
+                self.useLightCheckbox.isEnabled = (appearanceName == .aqua)
             }
         }
     }
