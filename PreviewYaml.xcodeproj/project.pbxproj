@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -866,7 +866,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				OTHER_SWIFT_FLAGS = "-D TARGET_IS_PY";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewYaml;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -897,7 +897,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				OTHER_SWIFT_FLAGS = "-D TARGET_IS_PY";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewYaml;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1012,7 +1012,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Previewer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1039,7 +1039,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Previewer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1067,7 +1067,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Thumbnailer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1094,7 +1094,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Thumbnailer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

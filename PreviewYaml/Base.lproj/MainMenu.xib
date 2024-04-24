@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21701"/>
-        <plugIn identifier="com.apple.WebKit2IBPlugin" version="21701"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22689"/>
+        <plugIn identifier="com.apple.WebKit2IBPlugin" version="22689"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -217,7 +217,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="335" y="390" width="610" height="432"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
             <value key="minSize" type="size" width="610" height="432"/>
             <value key="maxSize" type="size" width="610" height="432"/>
             <value key="minFullScreenContentSize" type="size" width="610" height="432"/>
@@ -262,10 +262,6 @@
                     </textField>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wao-aS-JHP">
                         <rect key="frame" x="275" y="13" width="60" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="20" id="eHB-03-312"/>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="40" id="sMS-7r-U90"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Quit" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="WzE-6l-rP0">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -273,20 +269,24 @@
 DQ
 </string>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="eHB-03-312"/>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="40" id="sMS-7r-U90"/>
+                        </constraints>
                         <connections>
                             <action selector="doClose:" target="Voe-Tx-rLC" id="s6v-Eq-vXA"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="uyh-RX-zrN">
                         <rect key="frame" x="202" y="225" width="210" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="196" id="TLS-tW-GmJ"/>
-                            <constraint firstAttribute="height" constant="20" id="e2j-zM-6yV"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Open System Preferences" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="IsR-bU-vrU">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="196" id="TLS-tW-GmJ"/>
+                            <constraint firstAttribute="height" constant="20" id="e2j-zM-6yV"/>
+                        </constraints>
                         <connections>
                             <action selector="doOpenSysPrefsWithSender:" target="Voe-Tx-rLC" id="Mqf-5N-7qI"/>
                         </connections>
@@ -296,7 +296,7 @@ DQ
                         <constraints>
                             <constraint firstAttribute="height" constant="22" id="Ufp-er-r74"/>
                         </constraints>
-                        <textFieldCell key="cell" controlSize="mini" lineBreakMode="clipping" alignment="center" title="PreviewYaml © 2023, Tony Smith. Contains YamlSwift © 2019 Behrang Noruzi Niya" id="g12-Ft-65u">
+                        <textFieldCell key="cell" controlSize="mini" lineBreakMode="clipping" alignment="center" title="PreviewYaml © 2024, Tony Smith. Contains YamlSwift © 2019 Behrang Noruzi Niya" id="g12-Ft-65u">
                             <font key="font" metaFont="miniSystem"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -304,28 +304,28 @@ DQ
                     </textField>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wsQ-ot-4qZ">
                         <rect key="frame" x="202" y="95" width="210" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="196" id="K1J-bI-fiE"/>
-                            <constraint firstAttribute="height" constant="20" id="y5d-Zx-ng0"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Send Feedback" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="zAO-EE-eq3">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="196" id="K1J-bI-fiE"/>
+                            <constraint firstAttribute="height" constant="20" id="y5d-Zx-ng0"/>
+                        </constraints>
                         <connections>
                             <action selector="doShowReportWindowWithSender:" target="Voe-Tx-rLC" id="1AA-t5-tea"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="H25-9I-Shn">
                         <rect key="frame" x="202" y="127" width="210" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="20" id="ejc-07-UOy"/>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="196" id="s2S-EE-w5t"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Show Preview Preferences" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="KuI-DA-1Cp">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="ejc-07-UOy"/>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="196" id="s2S-EE-w5t"/>
+                        </constraints>
                         <connections>
                             <action selector="doShowPreferencesWithSender:" target="Voe-Tx-rLC" id="vLf-pz-Pz1"/>
                         </connections>
@@ -385,7 +385,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="560" height="400"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
             <value key="minSize" type="size" width="560" height="400"/>
             <value key="maxSize" type="size" width="560" height="400"/>
             <value key="minFullScreenContentSize" type="size" width="560" height="400"/>
@@ -453,10 +453,6 @@ DQ
                     </textField>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qir-zB-bPV">
                         <rect key="frame" x="409" y="13" width="76" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="20" id="JfY-gs-r9a"/>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="62" id="qyZ-Rt-lLx"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="DKd-s0-vqX">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -464,16 +460,16 @@ DQ
 Gw
 </string>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="JfY-gs-r9a"/>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="62" id="qyZ-Rt-lLx"/>
+                        </constraints>
                         <connections>
                             <action selector="doClosePreferencesWithSender:" target="Voe-Tx-rLC" id="OKe-kC-BPT"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="L3S-3t-ZLg">
                         <rect key="frame" x="483" y="13" width="64" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="20" id="q0n-s0-rQ4"/>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="zIa-Tx-Xpb"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Save" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ygQ-DZ-akN">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -481,6 +477,10 @@ Gw
 DQ
 </string>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="q0n-s0-rQ4"/>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="zIa-Tx-Xpb"/>
+                        </constraints>
                         <connections>
                             <action selector="doSavePreferencesWithSender:" target="Voe-Tx-rLC" id="hOW-fE-aH9"/>
                         </connections>
@@ -726,7 +726,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="560" height="410"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
             <value key="minSize" type="size" width="560" height="410"/>
             <value key="maxSize" type="size" width="560" height="410"/>
             <value key="minFullScreenContentSize" type="size" width="560" height="410"/>
@@ -748,10 +748,6 @@ DQ
                     </wkWebView>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ed1-Rx-KY0">
                         <rect key="frame" x="247" y="13" width="66" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="20" id="69p-J4-Tyd"/>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="52" id="ztC-i1-gg0"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Done" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="C1d-FE-FgP">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -759,6 +755,10 @@ DQ
 DQ
 </string>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="69p-J4-Tyd"/>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="52" id="ztC-i1-gg0"/>
+                        </constraints>
                         <connections>
                             <action selector="doCloseWhatsNew:" target="Voe-Tx-rLC" id="Uo0-QA-lXC"/>
                         </connections>
@@ -779,7 +779,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="560" height="356"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1025"/>
             <value key="minSize" type="size" width="560" height="356"/>
             <value key="maxSize" type="size" width="560" height="356"/>
             <value key="minFullScreenContentSize" type="size" width="560" height="356"/>
@@ -801,24 +801,20 @@ DQ
                     </textField>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oB4-7g-RzQ">
                         <rect key="frame" x="481" y="13" width="66" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="52" id="BCO-bT-uSf"/>
-                            <constraint firstAttribute="height" constant="20" id="duf-Vq-8Gi"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Send" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="wJq-4j-XSw">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="52" id="BCO-bT-uSf"/>
+                            <constraint firstAttribute="height" constant="20" id="duf-Vq-8Gi"/>
+                        </constraints>
                         <connections>
                             <action selector="doSendFeedbackWithSender:" target="Voe-Tx-rLC" id="rwC-QE-yQ4"/>
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="VXv-x3-7nw">
                         <rect key="frame" x="407" y="13" width="76" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="62" id="SBH-Vx-UX7"/>
-                            <constraint firstAttribute="height" constant="20" id="nmK-wW-g7P"/>
-                        </constraints>
                         <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Ahb-sl-jY1">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -826,6 +822,10 @@ DQ
 Gw
 </string>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="62" id="SBH-Vx-UX7"/>
+                            <constraint firstAttribute="height" constant="20" id="nmK-wW-g7P"/>
+                        </constraints>
                         <connections>
                             <action selector="doCancelReportWindowWithSender:" target="Voe-Tx-rLC" id="YVg-dA-ixr"/>
                         </connections>

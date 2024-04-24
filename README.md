@@ -1,4 +1,4 @@
-# PreviewYaml 1.2.0 #
+# PreviewYaml 1.2.1 #
 
 App Extension-based macOS QuickLook previews and Finder thumbnails for [YAML](https://yaml.org) files.
 
@@ -54,6 +54,8 @@ Contributions will only be accepted if they code they contain is licensed under 
 
 ## Release Notes ##
 
+- 1.2.1 *Unreleased*
+    - Revise thumbnailer to improve memory utilization and efficiency.
 - 1.2.0 *25 August 2023*
     - Make the alphabetical sorting of keys optional. Default: do sort. Requested by: klas.
     - Make the display of key colon symbols a setting. Default: do not show.
@@ -88,6 +90,6 @@ Contributions will only be accepted if they code they contain is licensed under 
 
 ## Copyright and Licensing
 
-PreviewYaml © 2023, Tony Smith (@smittytone). Contains YamlSwift © 2019 Behrang Noruzi Niya.
+PreviewYaml © 2024, Tony Smith (@smittytone). Contains YamlSwift © 2019 Behrang Noruzi Niya.
 
 Source code only licensed under the [MIT Licence](LICENSE).

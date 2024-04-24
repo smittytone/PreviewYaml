@@ -4,7 +4,7 @@
  *  Code common to Yaml Previewer and Yaml Thumbnailer
  *
  *  Created by Tony Smith on 22/04/2021.
- *  Copyright © 2023 Tony Smith. All rights reserved.
+ *  Copyright © 2024 Tony Smith. All rights reserved.
  */
 
 
