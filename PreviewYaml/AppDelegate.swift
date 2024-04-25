@@ -73,14 +73,16 @@ final class AppDelegate: NSObject,
     // What's New Sheet
     @IBOutlet var whatsNewWindow: NSWindow!
     @IBOutlet var whatsNewWebView: WKWebView!
-    
 
     // MARK: - Private Properies
-    
+
+    var localYamlUTI: String = "N/A"
+
+    // MARK: - Private Properies
+
     internal var whatsNewNav: WKNavigation? = nil
     private  var feedbackTask: URLSessionTask? = nil
     private  var indentDepth: Int = BUFFOON_CONSTANTS.YAML_INDENT
-             var localYamlUTI: String = "N/A"
     private  var doShowLightBackground: Bool = false
     private  var doShowTag: Bool = false
     private  var doShowRawYaml: Bool = false

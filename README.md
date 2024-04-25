@@ -56,6 +56,7 @@ Contributions will only be accepted if they code they contain is licensed under 
 
 - 1.2.1 *Unreleased*
     - Revise thumbnailer to improve memory utilization and efficiency.
+    - Fix the 'white flash' seen on first presenting the What's New sheet.
 - 1.2.0 *25 August 2023*
     - Make the alphabetical sorting of keys optional. Default: do sort. Requested by: klas.
     - Make the display of key colon symbols a setting. Default: do not show.
