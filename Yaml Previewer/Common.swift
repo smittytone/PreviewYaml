@@ -416,7 +416,7 @@ final class Common: NSObject {
                                     : self.cr)
 
                 // FROM 1.1.5
-                if !isKey { self.renderLineCount += 1 }
+                if !isKey { self.renderLineCount += parts.count }
             }
         case .null:
             // May be a key or a value
@@ -460,6 +460,7 @@ final class Common: NSObject {
             // FROM 1.1.5
             valString += (isKey ? " " : "\n")
             returnString.append(getIndentedAttributedString(valString, indent, isKey ? .Key : .Scalar))
+            
             /* REMOVED 1.2.0
              returnString.setAttributes((isKey ? self.keyAttributes : self.scalarAttributes), range: NSMakeRange(0, returnString.length))
              */
