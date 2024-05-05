@@ -54,7 +54,7 @@ Contributions will only be accepted if they code they contain is licensed under 
 
 ## Release Notes ##
 
-- 1.2.1 *Unreleased*
+- 1.2.1 *5 May 2024*
     - Revise thumbnailer to improve memory utilization and efficiency.
     - Fix the 'white flash' seen on first presenting the What's New sheet.
 - 1.2.0 *25 August 2023*
