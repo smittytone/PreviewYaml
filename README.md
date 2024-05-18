@@ -54,6 +54,8 @@ Contributions will only be accepted if they code they contain is licensed under 
 
 ## Release Notes ##
 
+- 1.2.2 *Unreleased*
+    - Correctly render the bad YAML separator line.
 - 1.2.1 *5 May 2024*
     - Revise thumbnailer to improve memory utilization and efficiency.
     - Fix the 'white flash' seen on first presenting the What's New sheet.
