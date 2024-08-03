@@ -1,4 +1,4 @@
-# PreviewYaml 1.2.1 #
+# PreviewYaml 1.2.2 #
 
 App Extension-based macOS QuickLook previews and Finder thumbnails for [YAML](https://yaml.org) files.
 
