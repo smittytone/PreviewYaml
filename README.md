@@ -31,7 +31,7 @@ If PreviewYaml reports that it was unable to render YAML, this is almost certain
 
 ## Known Issues ##
 
-* PreviewYaml currently expects files to be encoded in UTF-8.
+* *PreviewYaml* currently expects files to be encoded in UTF-8.
 * YAML custom tags are not as yet correctly rendered by *PreviewYAML*’s YAML library.
 
 Comments are not rendered.
@@ -56,6 +56,7 @@ Contributions will only be accepted if they code they contain is licensed under 
 
 - 1.2.2 *Unreleased*
     - Correctly render the bad YAML separator line.
+    - Revert NSTextViews to TextKit 1 (previously bumped to 2 by Xcode).
 - 1.2.1 *5 May 2024*
     - Revise thumbnailer to improve memory utilization and efficiency.
     - Fix the 'white flash' seen on first presenting the What's New sheet.
