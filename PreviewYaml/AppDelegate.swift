@@ -95,7 +95,7 @@ final class AppDelegate: NSObject,
     // FROM 1.1.1
     internal var isMontereyPlus: Bool = false
     // FROM 1.1.4
-    private  var havePrefsChanged: Bool = false
+    //private  var havePrefsChanged: Bool = false
     // FROM 1.2.0
     private var doSortKeys: Bool = true
     private var doShowColons: Bool = false
@@ -178,7 +178,7 @@ final class AppDelegate: NSObject,
         // FROM 1.1.4
         // Check for open panels
         if self.preferencesWindow.isVisible {
-            if self.havePrefsChanged {
+            if checkPrefs() {
                 let alert: NSAlert = showAlert("You have unsaved settings",
                                                "Do you wish to cancel and save them, or quit the app anyway?",
                                                false)
@@ -381,7 +381,7 @@ final class AppDelegate: NSObject,
         
         // FROM 1.1.4
         // Reset the changed prefs flag
-        self.havePrefsChanged = false
+        //self.havePrefsChanged = false
 
         // The suite name is the app group name, set in each the entitlements file of
         // the host app and of each extension
@@ -467,91 +467,7 @@ final class AppDelegate: NSObject,
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
     }
 
-
-    /**
-        When the font size slider is moved and released, this function updates the font size readout.
-
-        - Parameters:
-            - sender: The source of the action.
-     */
-    @IBAction private func doMoveSlider(sender: Any) {
-        
-        let index: Int = Int(self.fontSizeSlider.floatValue)
-        self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
-        self.havePrefsChanged = true
-    }
-
-
-    /**
-     Called when the user selects a font from either list.
-
-     FROM 1.1.0
-
-     - Parameters:
-        - sender: The source of the action.
-     */
-    @IBAction private func doUpdateFonts(sender: Any) {
-        
-        self.havePrefsChanged = true
-        setStylePopup()
-    }
-
     
-    /**
-        Close the **Preferences** sheet without saving.
-
-        - Parameters:
-            - sender: The source of the action.
-     */
-    @IBAction private func doClosePreferences(sender: Any) {
-
-        if self.havePrefsChanged {
-            let alert: NSAlert = showAlert("You have made changes",
-                                           "Do you wish to go back and save them, or ignore them? ",
-                                           false)
-            alert.addButton(withTitle: "Go Back")
-            alert.addButton(withTitle: "Ignore Changes")
-            alert.beginSheetModal(for: self.preferencesWindow) { (response: NSApplication.ModalResponse) in
-                if response != NSApplication.ModalResponse.alertFirstButtonReturn {
-                    // The user clicked 'Cancel'
-                    self.closePrefsWindow()
-                }
-            }
-        } else {
-            closePrefsWindow()
-        }
-    }
-
-
-    /**
-        Follow-on function to close the **Preferences** sheet without saving.
-        FROM 1.1.0
-
-        - Parameters:
-            - sender: The source of the action.
-     */
-
-    private func closePrefsWindow() {
-
-        // FROM 1.1.0
-        // Close the colour selection panel if it's open
-        if self.codeColorWell.isActive {
-            NSColorPanel.shared.close()
-            self.codeColorWell.deactivate()
-        }
-
-        self.window.endSheet(self.preferencesWindow)
-
-        // FROM 1.1.4
-        // Restore menus
-        showPanelGenerators()
-
-        // FROM 1.2.0
-        clearNewColours()
-        self.havePrefsChanged = false
-    }
-
-
     /**
         Close the **Preferences** sheet and save any settings that have changed.
 
@@ -639,6 +555,41 @@ final class AppDelegate: NSObject,
             defaults.synchronize()
         }
         
+        // Close the **Preferences** sheet and tidy up
+        closePrefsWindow()
+    }
+    
+    
+    @IBAction private func doClosePreferences(sender: Any) {
+
+        if checkPrefs() {
+            let alert: NSAlert = showAlert("You have made changes",
+                                           "Do you wish to go back and save them, or ignore them? ",
+                                           false)
+            alert.addButton(withTitle: "Go Back")
+            alert.addButton(withTitle: "Ignore Changes")
+            alert.beginSheetModal(for: self.preferencesWindow) { (response: NSApplication.ModalResponse) in
+                if response != NSApplication.ModalResponse.alertFirstButtonReturn {
+                    // The user clicked 'Cancel'
+                    self.closePrefsWindow()
+                }
+            }
+        } else {
+            closePrefsWindow()
+        }
+    }
+
+
+    /**
+        Follow-on function to close the **Preferences** sheet without saving.
+        FROM 1.1.0
+
+        - Parameters:
+            - sender: The source of the action.
+     */
+
+    private func closePrefsWindow() {
+
         // FROM 1.1.0
         // Close the colour selection panel if it's open
         if self.codeColorWell.isActive {
@@ -646,15 +597,125 @@ final class AppDelegate: NSObject,
             self.codeColorWell.deactivate()
         }
 
-        // Remove the sheet now we have the data
         self.window.endSheet(self.preferencesWindow)
-        
+
+        // FROM 1.1.4
         // Restore menus
         showPanelGenerators()
 
         // FROM 1.2.0
         clearNewColours()
+        //self.havePrefsChanged = false
     }
+    
+    
+    /**
+        Check prefs for differences from the initial state.
+        Used when the **Preferences** sheet is closed with the Cancel button.
+        FROM 1.1.3
+     */
+    private func checkPrefs() -> Bool {
+        
+        var haveChanged: Bool = false
+        
+        // Check for a use light background change
+        var state: Bool = self.useLightCheckbox.state == .on
+        haveChanged = (self.doShowLightBackground != state)
+        
+        // Check for a raw JSON presentation change
+        if !haveChanged {
+            state = self.doShowRawYamlCheckbox.state == .on
+            haveChanged = (self.doShowRawYaml != state)
+        }
+        
+        // Check for an indent scalar values change
+        if !haveChanged {
+            state = self.doIndentScalarsCheckbox.state == .on
+            haveChanged = (self.doIndentScalars != state)
+        }
+        
+        // Check for a key sorting change
+        if !haveChanged {
+            state = self.doSortKeysCheckbox.state == .on
+            haveChanged = (self.doSortKeys != state)
+        }
+        
+        // Check for a show colon change
+        if !haveChanged {
+            state = self.doShowColonCheckbox.state == .on
+            haveChanged = (self.doShowColons != state)
+        }
+        
+        // Check for and record an indent change
+        if !haveChanged {
+            let indents: [Int] = [1, 2, 4, 8]
+            haveChanged = (self.indentDepth != indents[self.codeIndentPopup.indexOfSelectedItem])
+        }
+        
+        // Check for and record a font and style change
+        if let fontName: String = getPostScriptName() {
+            if !haveChanged {
+                haveChanged = (fontName != self.codeFontName)
+            }
+        }
+        
+        // Check for and record a font size change
+        if !haveChanged {
+            haveChanged = (self.codeFontSize != BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[Int(self.fontSizeSlider.floatValue)])
+        }
+        
+        // FROM 1.1.0
+        if let _ = self.displayColours["new_key"] {
+            haveChanged = true
+        }
+
+        if let _ = self.displayColours["new_string"] {
+            haveChanged = true
+        }
+
+        if let _ = self.displayColours["new_special"] {
+            haveChanged = true
+        }
+        
+        return haveChanged
+    }
+    
+    
+    /**
+        When the font size slider is moved and released, this function updates the font size readout.
+
+        - Parameters:
+            - sender: The source of the action.
+     */
+    @IBAction private func doMoveSlider(sender: Any) {
+        
+        let index: Int = Int(self.fontSizeSlider.floatValue)
+        self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
+        //self.havePrefsChanged = true
+    }
+
+
+    /**
+     Called when the user selects a font from either list.
+
+     FROM 1.1.0
+
+     - Parameters:
+        - sender: The source of the action.
+     */
+    @IBAction private func doUpdateFonts(sender: Any) {
+        
+        //self.havePrefsChanged = true
+        setStylePopup()
+    }
+
+    
+    /**
+        Close the **Preferences** sheet without saving.
+
+        - Parameters:
+            - sender: The source of the action.
+     */
     
     
     /**
@@ -665,7 +726,7 @@ final class AppDelegate: NSObject,
      */
     @IBAction private func checkboxClicked(sender: Any) {
         
-        self.havePrefsChanged = true
+        //self.havePrefsChanged = true
     }
 
 
@@ -681,7 +742,7 @@ final class AppDelegate: NSObject,
         let keys: [String] = ["key", "string", "special"]
         let key: String = "new_" + keys[self.colourSelectionPopup.indexOfSelectedItem]
         self.displayColours[key] = self.codeColorWell.color.hexString
-        self.havePrefsChanged = true
+        //self.havePrefsChanged = true
     }
 
 
