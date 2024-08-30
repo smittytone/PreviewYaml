@@ -54,7 +54,7 @@ Contributions will only be accepted if they code they contain is licensed under 
 
 ## Release Notes ##
 
-- 1.2.2 *Unreleased*
+- 1.2.2 *30 August 2024*
     - Correctly render the bad YAML separator line: revert NSTextViews to TextKit 1 (previously bumped to 2 by Xcode).
     - Improve preference change handling.
     - Fix out-of-bounds double-to-int conversion in Yaml library.
