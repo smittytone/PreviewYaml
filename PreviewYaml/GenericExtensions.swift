@@ -5,7 +5,7 @@
  *  These functions can be used by all PreviewApps
  *
  *  Created by Tony Smith on 18/06/2021.
- *  Copyright © 2024 Tony Smith. All rights reserved.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
  */
 
 
@@ -205,7 +205,7 @@ extension AppDelegate {
      */
     internal func hidePanelGenerators() {
         
-        self.helpMenuReportBug.isEnabled = false
+        //self.helpMenuReportBug.isEnabled = false
         self.helpMenuWhatsNew.isEnabled = false
         self.mainMenuSettings.isEnabled = false
     }
@@ -216,7 +216,7 @@ extension AppDelegate {
      */
     internal func showPanelGenerators() {
         
-        self.helpMenuReportBug.isEnabled = true
+        //self.helpMenuReportBug.isEnabled = true
         self.helpMenuWhatsNew.isEnabled = true
         self.mainMenuSettings.isEnabled = true
     }

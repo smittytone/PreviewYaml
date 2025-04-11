@@ -3,7 +3,7 @@
  *  PreviewYaml
  *
  *  Created by Tony Smith on 22/04/2021.
- *  Copyright © 2024 Tony Smith. All rights reserved.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
  */
 
 
@@ -33,9 +33,9 @@ final class AppDelegate: NSObject,
     // FROM 1.1.3
     @IBOutlet var helpMenuOthersPreviewjson: NSMenuItem!
     // FROM 1.1.4
-    @IBOutlet var helpMenuOthersPreviewText: NSMenuItem!
+    //@IBOutlet var helpMenuOthersPreviewText: NSMenuItem!
     @IBOutlet var helpMenuWhatsNew: NSMenuItem!
-    @IBOutlet var helpMenuReportBug: NSMenuItem!
+    //@IBOutlet var helpMenuReportBug: NSMenuItem!
     @IBOutlet var mainMenuSettings: NSMenuItem!
     
     // Panel Items
@@ -255,9 +255,9 @@ final class AppDelegate: NSObject,
             path = BUFFOON_CONSTANTS.APP_URLS.PC
         } else if item == self.helpMenuOthersPreviewjson {
             path = BUFFOON_CONSTANTS.APP_URLS.PJ
-        } else if item == self.helpMenuOthersPreviewText {
-            path = BUFFOON_CONSTANTS.APP_URLS.PT
-        }
+        } //else if item == self.helpMenuOthersPreviewText {
+          //  path = BUFFOON_CONSTANTS.APP_URLS.PT
+        //}
         
         // Open the selected website
         NSWorkspace.shared.open(URL.init(string:path)!)
@@ -277,7 +277,7 @@ final class AppDelegate: NSObject,
 
 
     // MARK: - Report Functions
-
+    /*
     /**
      Display a window in which the user can submit feedback, or report a bug.
 
@@ -363,7 +363,7 @@ final class AppDelegate: NSObject,
         // NOTE sheet closes asynchronously unless there was no feedback to send,
         //      or an error occured with setting up the feedback session
     }
-    
+    */
 
     // MARK: - Preferences Functions
 

@@ -54,6 +54,8 @@ Contributions will only be accepted if they code they contain is licensed under 
 
 ## Release Notes ##
 
+- 1.2.3 *Unreleased*
+    - Preparation work ahead of deprecation.
 - 1.2.2 *30 August 2024*
     - Correctly render the bad YAML separator line: revert NSTextViews to TextKit 1 (previously bumped to 2 by Xcode).
     - Improve preference change handling.
@@ -95,6 +97,6 @@ Contributions will only be accepted if they code they contain is licensed under 
 
 ## Copyright and Licensing
 
-PreviewYaml © 2024, Tony Smith (@smittytone). Contains YamlSwift © 2019 Behrang Noruzi Niya.
+Primary app code and UI design © 2025, Tony Smith. Contains YamlSwift © 2019 Behrang Noruzi Niya.
 
 Source code only licensed under the [MIT Licence](LICENSE).
