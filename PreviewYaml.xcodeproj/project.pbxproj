@@ -106,9 +106,9 @@
 		3B3CEF622A5B798B00D05123 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		3B3CEF642A5B798B00D05123 /* RenderDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RenderDemo.entitlements; sourceTree = "<group>"; };
 		3B6C9176268FAA5000745DF4 /* PMFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PMFont.swift; sourceTree = "<group>"; };
-		3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = REPLACE_WITH_YOUR_CODES.swift; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/PreviewApps/REPLACE_WITH_YOUR_CODES.swift"; sourceTree = "<absolute>"; };
-		3B7D83F82A8A30E1008A4B2E /* REPLACE_WITH_YOUR_FUNCTIONS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = REPLACE_WITH_YOUR_FUNCTIONS.swift; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/PreviewApps/REPLACE_WITH_YOUR_FUNCTIONS.swift"; sourceTree = "<absolute>"; };
-		3B7D83FD2A8A311D008A4B2E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "/Users/smitty/Library/CloudStorage/OneDrive-Personal/Programming/PreviewYaml/Assets.xcassets"; sourceTree = "<absolute>"; };
+		3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = REPLACE_WITH_YOUR_CODES.swift; path = "/Users/smitty/Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewApps/REPLACE_WITH_YOUR_CODES.swift"; sourceTree = "<absolute>"; };
+		3B7D83F82A8A30E1008A4B2E /* REPLACE_WITH_YOUR_FUNCTIONS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = REPLACE_WITH_YOUR_FUNCTIONS.swift; path = "/Users/smitty/Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewApps/REPLACE_WITH_YOUR_FUNCTIONS.swift"; sourceTree = "<absolute>"; };
+		3B7D83FD2A8A311D008A4B2E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "/Users/smitty/Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewYaml/Assets.xcassets"; sourceTree = "<absolute>"; };
 		3BAE671C28D4D481001532BD /* GenericFontExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericFontExtensions.swift; sourceTree = "<group>"; };
 		3BB64D8526320064003CD14D /* PreviewYaml.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PreviewYaml.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BB64D8826320064003CD14D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -137,7 +137,7 @@
 		3BB64E112632023C003CD14D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3BB920582A562E9E006C088E /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 		3BB920592A562E9E006C088E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		3BC233802A96927E005C3015 /* new */ = {isa = PBXFileReference; lastKnownFileType = folder; name = new; path = "../../../Library/CloudStorage/OneDrive-Personal/Programming/PreviewYaml/new"; sourceTree = "<group>"; };
+		3BC233802A96927E005C3015 /* new */ = {isa = PBXFileReference; lastKnownFileType = folder; name = new; path = "../../../Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewYaml/new"; sourceTree = "<group>"; };
 		3BDE3EF3267CE6C10037351C /* GenericExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
