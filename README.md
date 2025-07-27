@@ -2,7 +2,7 @@
 
 App Extension-based macOS QuickLook previews and Finder thumbnails for [YAML](https://yaml.org) files.
 
-![PreviewYaml App Store QR code](qr-code-py.jpg)
+[![PreviewYaml App Store QR code](qr-code-py.jpg)](https://apps.apple.com/gb/app/previewyaml/id1564574724?mt=12)
 
 ## Installation and Usage ##
 
