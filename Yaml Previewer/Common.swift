@@ -11,6 +11,7 @@
 import Foundation
 import Yaml
 import AppKit
+import Yams
 
 
 // FROM 1.1.0
@@ -46,14 +47,16 @@ final class Common: NSObject {
     // FROM 1.2.0
     private var renderColons: Bool    = false
     private var sortKeys: Bool        = true
-    
+    // FROM
+    private var extraInset: Int       = 0
+
     // YAML string attributes...
     private var keyAttributes: [NSAttributedString.Key: Any] = [:]
     private var scalarAttributes: [NSAttributedString.Key: Any] = [:]
     // FROM 1.2.0
     private var specialAttributes: [NSAttributedString.Key: Any] = [:]
     private var stringAttributes: [NSAttributedString.Key: Any] = [:]
-    
+
     // String artifacts...
     private var hr: NSAttributedString = NSAttributedString.init(string: "")
     private var cr: NSAttributedString = NSAttributedString.init(string: "")
@@ -194,21 +197,62 @@ final class Common: NSObject {
 
             // NOTE The following call takes time on large files
             // TODO Optimise it
-            let yaml = try Yaml.loadMultiple(processed)
-            
-            // Render the YAML to NSAttributedString
-            // NOTE `yaml` is an array of YAML units
-            for i in 0..<yaml.count {
-                if let yamlString = renderYaml(yaml[i], 0, false) {
-                    if i > 0 { renderedString.append(hr) }
+            //let yaml = try Yaml.loadMultiple(processed)
+
+
+            /*
+            if let yaml = try Yams.load(yaml: processed) as? [String: Any] {
+                // Document base is a mapping
+                if let yamlString = processYamlDict(yaml) {
                     renderedString.append(yamlString)
                 }
-                
-                // FROM 1.1.5
-                // Break out of loop if we're done rendering a thumbnail
-                if self.renderDone { break }
+            } else if let yaml = try Yams.load(yaml: processed) as? [Any] {
+                // Document base is a sequence
+                if let yamlString = processYamlArray(yaml) {
+                    renderedString.append(yamlString)
+                }
             }
-            
+            */
+
+            var yamlDocs: [(Bool, Any)] = []
+            for item in try Yams.load_all(yaml: processed) {
+                if let validItem: [String: Any] = item as? [String: Any] {
+                    yamlDocs.append((true, validItem))
+                } else if let validItem: [ Any] = item as? [Any] {
+                    yamlDocs.append((false, validItem))
+                }
+            }
+
+            for (i, yamlDoc) in yamlDocs.enumerated() {
+                if yamlDoc.0 {
+                    // Document base is a mapping
+                    if let yamlString = processYamlDict(yamlDoc.1 as! [String:Any]) {
+                        renderedString.append(yamlString)
+                    }
+                } else {
+                    // Document base is a sequence
+                    if let yamlString = processYamlArray(yamlDoc.1 as! [Any]) {
+                        renderedString.append(yamlString)
+                    }
+                }
+
+                // Add a separator between docs
+                if i < yamlDocs.count - 1 {
+                    renderedString.append(self.hr)
+                }
+            }
+
+
+            /* YAMS Node
+            do {
+                let nodes = try Yams.compose_all(yaml: processed)
+                for node in nodes {
+                    renderedString.append(processNode(node))
+                }
+            }
+             */
+
+
             // Just in case...
             if renderedString.length == 0 {
                 renderedString = NSMutableAttributedString.init(string: "Could not render the YAML.\n",
@@ -216,8 +260,7 @@ final class Common: NSObject {
             }
             
 #if DEBUG
-            // FROM 1.1.5
-            let countString: String = "Lines: \(self.renderLineCount), sorted: \(self.sortKeys ? "true" : "false") \n"
+            let countString: String = "Lines: \(self.renderLineCount), sorted: \(self.sortKeys ? "true" : "false") Indent scalars: \(self.doIndentScalars ? "true" : "false")\n"
             renderedString.insert(NSMutableAttributedString.init(string: countString,
                                                                  attributes: self.keyAttributes), at: 0)
 #endif
@@ -225,26 +268,17 @@ final class Common: NSObject {
         } catch {
             // No YAML to render, or the YAML was mis-formatted
             // Get the error as reported by YamlSwift
-            let yamlErr: Yaml.ResultError = error as! Yaml.ResultError
-            var yamlErrString: String
-            switch(yamlErr) {
-                case .message(let s):
-                    yamlErrString = s ?? "unknown"
-            }
-
-            // Assemble the error string
-            let errorString: NSMutableAttributedString = NSMutableAttributedString.init(string: "Could not render the YAML. Error: " + yamlErrString,
-                                                                                        attributes: self.keyAttributes)
+            let yamlErr: YamlError = error as! YamlError
+            var yamlErrString: String = yamlErr.localizedDescription
+            renderedString.append(NSAttributedString(string: yamlErrString + "\n"))
 
             // Should we include the raw text?
             // At least the user can see the data this way
             if self.doShowRawYaml {
-                errorString.append(self.hr)
-                errorString.append(NSMutableAttributedString.init(string: yamlFileString + "\n",
+                renderedString.append(self.hr)
+                renderedString.append(NSMutableAttributedString.init(string: yamlFileString + "\n",
                                                                   attributes: self.scalarAttributes))
             }
-
-            renderedString = errorString
         }
         
         return renderedString as NSAttributedString
@@ -253,247 +287,272 @@ final class Common: NSObject {
 
     // MARK: - Yaml Functions
 
-    /**
-     Render a supplied YAML sub-component ('part') to an NSAttributedString.
+    func processYamlArray(_ yaml: [Any], _ indent: Int = 0) -> NSAttributedString? {
 
-     Indents the value as required.
+        let returnString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: self.scalarAttributes)
 
-     - Parameters:
-        - part:   A partial Yaml object.
-        - indent: The number of indent spaces to add.
-        - isKey:  Is the Yaml part a key?
+        for (i, item) in yaml.enumerated() {
+            if let yamlString = renderPair(item, indent, false) {
+                // Apply a prefix to separate array and dictionary elements from a
+                // previous one -- so apply to all but the first item
+                if i > 0 {
+                    if let _ = item as? [Any] {
+                        returnString.append(self.cr)
+                        self.renderLineCount += 1
+                    } else if let _ = item as? [String: Any] {
+                        returnString.append(self.cr)
+                        self.renderLineCount += 1
+                    }
+                }
 
-     - Returns: The rendered string as an NSAttributedString, or nil on error.
-     */
-    func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedString? {
-        
-        // FROM 1.1.5
+                // Add the element itself
+                returnString.append(yamlString)
+            }
+        }
+
+        return returnString
+    }
+
+
+    func processYamlDict(_ yaml: [String: Any]) -> NSAttributedString? {
+
+        let returnString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: self.scalarAttributes)
+        var keys: [String] = Array(yaml.keys)
+        /*
+        if self.sortKeys {
+            keys = keys.sorted(by: { (a, b) -> Bool in
+                // Strings?
+                if let a_s = a as? String {
+                    if let b_s: String = b as? String {
+                        return (a_s.lowercased() < b_s.lowercased())
+                    }
+                }
+
+                /*
+                // Ints?
+                if let a_i: Int = a.int {
+                    if let b_i: Int = b.int {
+                        return (a_i < b_i)
+                    }
+                }
+
+                // Doubles?
+                if let a_d: Double = a.double {
+                    if let b_d: Double = b.double {
+                        return (a_d < b_d)
+                    }
+                }
+
+                // Bools
+                if let a_b: Bool = a.bool {
+                    if let b_b: Bool = b.bool {
+                        return (a_b && !b_b)
+                    }
+                }
+                 */
+
+                return false
+            })
+        }
+         */
+
+        // Iterate through the keys array
+        for i in 0..<keys.count {
+            // Get the key:value pairs
+            let key = keys[i]
+            let value = yaml[key] ?? "NULL"
+
+            // Render the key
+            if let yamlString = renderPair(key, 0, true) {
+                returnString.append(yamlString)
+            }
+
+            // If the value is a collection, we drop to the next line and indent
+            if let _ = value as? [Any] {
+                returnString.append(self.cr)
+                self.renderLineCount += 1
+            } else if let _ = value as? [String: Any] {
+                returnString.append(self.cr)
+                self.renderLineCount += 1
+            } else if self.doIndentScalars {
+                returnString.append(self.cr)
+                self.renderLineCount += 1
+            }
+
+            // Render the key's value of whatever type
+            if let yamlString = renderPair(value, 1, false) {
+                returnString.append(yamlString)
+            }
+        }
+
+        return returnString
+    }
+
+
+    func renderPair(_ item: Any, _ indent: Int, _ isKey: Bool) -> NSAttributedString? {
+
         // If we're rendering a thumbnail and we've reached the limit, bail
+        if self.renderDone {
+            return nil
+        }
+
         if self.renderThumbnail && self.renderLineCount >= BUFFOON_CONSTANTS.THUMBNAIL_LINE_COUNT {
             self.renderDone = true
             return nil
         }
-        
+
         // Set up the base string
         let returnString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: self.scalarAttributes)
-        
-        switch (part) {
-        case .array:
-            if let value = part.array {
-                // Iterate through array elements
-                // NOTE A given element can be of any YAML type
-                for i in 0..<value.count {
-                    if let yamlString = renderYaml(value[i], indent, false) {
-                        // Apply a prefix to separate array and dictionary elements from a
-                        // previous one -- so apply to all but the first item
-                        if i > 0 && (value[i].array != nil || value[i].dictionary != nil) {
+        let spacing = isKey ? indent : 0
+
+        if let mapItem = item as? [String: Any] {
+            let keys: [String] = Array(mapItem.keys)
+            for (i, key) in keys.enumerated() {
+                // Get the key:value pairs
+                let value = mapItem[key] ?? "NULL"
+
+                // Render the key
+                if let yamlString = renderPair(key, indent, true) {
+                    returnString.append(yamlString)
+                }
+
+                // If the value is a collection, we drop to the next line and indent
+                if let _ = value as? [Any] {
+                    returnString.append(self.cr)
+                    self.renderLineCount += 1
+                } else if let _ = value as? [String: Any] {
+                    returnString.append(self.cr)
+                    self.renderLineCount += 1
+                } else if self.doIndentScalars {
+                    returnString.append(self.cr)
+                    self.renderLineCount += 1
+                }
+
+                // Render the key's value
+                if let yamlString = renderPair(value, indent + 1, false) {
+                    returnString.append(yamlString)
+                }
+
+                // Prefix root-level key:value pairs after the first with a new line
+                if i == keys.count - 1 {
+                    // returnString.append(self.cr)
+                }
+            }
+        } else if let listItem = item as? [Any] {
+            // Iterate through array elements
+            // NOTE A given element can be of any YAML type
+            for (i, item) in listItem.enumerated() {
+                if let yamlString = renderPair(item, indent, false) {
+                    // Apply a prefix to separate array and dictionary elements from a
+                    // previous one -- so apply to all but the first item
+                    if i > 0 {
+                        if let _ = item as? [Any] {
                             returnString.append(self.cr)
-                            
-                            // FROM 1.1.5
+                            self.renderLineCount += 1
+                        } else if let _ = item as? [String: Any] {
+                            returnString.append(self.cr)
                             self.renderLineCount += 1
                         }
-                        
-                        // Add the element itself
-                        returnString.append(yamlString)
                     }
+
+                    // Add the element itself
+                    returnString.append(yamlString)
                 }
             }
-        case .dictionary:
-            if let dict = part.dictionary {
-                // Iterate through the dictionary's keys and their values
-                // NOTE A given value can be of any YAML type
-                
-                // Sort the dictionary's keys (ascending)
-                // We assume all keys will be strings, ints, doubles or bools
-                // FROM 1.2.0 -- sort is optional, but true by default
-                var keys: [Yaml] = Array(dict.keys)
-                if self.sortKeys {
-                    keys = keys.sorted(by: { (a, b) -> Bool in
-                        // Strings?
-                        if let a_s: String = a.string {
-                            if let b_s: String = b.string {
-                                return (a_s.lowercased() < b_s.lowercased())
-                            }
-                        }
-
-                        // Ints?
-                        if let a_i: Int = a.int {
-                            if let b_i: Int = b.int {
-                                return (a_i < b_i)
-                            }
-                        }
-
-                        // Doubles?
-                        if let a_d: Double = a.double {
-                            if let b_d: Double = b.double {
-                                return (a_d < b_d)
-                            }
-                        }
-
-                        // Bools
-                        if let a_b: Bool = a.bool {
-                            if let b_b: Bool = b.bool {
-                                return (a_b && !b_b)
-                            }
-                        }
-
-                        return false
-                    })
-                }
-                
-                // Iterate through the sorted keys array
-                for i in 0..<keys.count {
-                    // Prefix root-level key:value pairs after the first with a new line
-                    if indent == 0 && i > 0 {
-                        returnString.append(self.cr)
-                    }
-                    
-                    // Get the key:value pairs
-                    let key: Yaml = keys[i]
-                    let value: Yaml = dict[key] ?? .null
-                    
-                    // Render the key
-                    if let yamlString = renderYaml(key, indent, true) {
-                        returnString.append(yamlString)
-                    }
-                    
-                    // If the value is a collection, we drop to the next line and indent
-                    var valueIndent: Int = 0
-                    if (value.array != nil || value.dictionary != nil || self.doIndentScalars) {
-                        valueIndent = indent + self.yamlIndent
-                        returnString.append(self.cr)
-                        
-                        // FROM 1.1.5
-                        self.renderLineCount += 1
-                    }
-                    
-                    // Render the key's value
-                    if let yamlString = renderYaml(value, valueIndent, false) {
-                        returnString.append(yamlString)
-                    }
-                }
-            }
-        case .string:
+        } else if let stringItem = item as? String {
             // This can be used to render keys or values
-            if let keyOrValue = part.string {
-                var attributeType: AttributeType = isKey ? .Key : .String
+            var attributeType: AttributeType = isKey ? .Key : .String
 
-                // Segment the string by CRs
-                let parts: [String] = keyOrValue.components(separatedBy: "\n")
-                if parts.count > 2 {
-                    // A multiline string
-                    if self.renderThumbnail {
-                        // For thumbnails make a combined string without between-line whitespace
-                        var joined: String = ""
-                        for i in 0..<parts.count {
-                            joined += parts[i].trimmingCharacters(in: .whitespaces)
+            // Segment the string by CRs
+            let parts: [String] = stringItem.components(separatedBy: "\n")
+            if parts.count > 2 {
+                // A multiline string
+                if self.renderThumbnail {
+                    // For thumbnails make a combined string without between-line whitespace
+                    var joined: String = ""
+                    for i in 0..<parts.count {
+                        joined += parts[i].trimmingCharacters(in: .whitespaces)
+                    }
+                    returnString.append(getIndentedAttributedString(joined + "\n", spacing, attributeType))
+                } else {
+                    for i in 0..<parts.count {
+                        let part: String = parts[i].trimmingCharacters(in: .whitespaces)
+                        if part.count == 0 {
+                            continue
                         }
-                        returnString.append(getIndentedAttributedString(joined + "\n", indent, attributeType))
-                    } else {
-                        // For previrews, make indented lines per source line
-                        for i in 0..<parts.count {
-                            let part: String = parts[i].trimmingCharacters(in: .whitespaces)
-                            if part.count == 0 {
-                                continue
-                            }
-                            
-                            returnString.append(getIndentedAttributedString(part + (i < parts.count - 2 ? "\n" : " "), indent, attributeType))
+
+                        returnString.append(getIndentedAttributedString(part, spacing, attributeType, (!isKey && i > 0)))
+                        if i < part.count - 2 {
+                            returnString.append(self.cr)
                         }
                     }
-                } else {
-                    // Output the single-line string
-                    if keyOrValue.contains("NaN") || keyOrValue.contains("INF") { attributeType = .Special }
-                    returnString.append(getIndentedAttributedString(keyOrValue, indent, attributeType))
                 }
-                
-                /* REMOVED 1.2.0
-                 returnString.setAttributes(attsToUse, range: NSMakeRange(0, returnString.length))
-                 */
-
-                // FROM 1.2.0 -- render colons if asked
-                returnString.append(isKey
-                                    ? NSAttributedString.init(string: (self.renderColons ? ": " : " "), attributes: self.scalarAttributes)
-                                    : self.cr)
-
-                // FROM 1.1.5
-                if !isKey { self.renderLineCount += parts.count }
+            } else {
+                // Output the single-line string
+                if stringItem.contains("NaN") || stringItem.contains("INF") { attributeType = .Special }
+                returnString.append(getIndentedAttributedString(stringItem, spacing, attributeType))
             }
-        case .null:
+
+            // Post key colon or CR
+            returnString.append(isKey
+                                ? NSAttributedString.init(string: (self.renderColons ? ": " : " "), attributes: self.scalarAttributes)
+                                : self.cr)
+
+            if isKey {
+                self.extraInset = returnString.string.count
+
+                if self.doIndentScalars {
+                    returnString.append(self.cr)
+                }
+            }
+
+            if !isKey { self.renderLineCount += parts.count }
+        } else if let intItem = item as? Int {
+            var valString: String = "\(intItem)"
+            valString += (isKey ? " " : "\n")
+            returnString.append(getIndentedAttributedString(valString, spacing, isKey ? .Key : .Scalar))
+            self.renderLineCount += 1
+        } else if let doubleItem = item as? Double {
+            var valString: String = "\(doubleItem)"
+            valString += (isKey ? " " : "\n")
+            returnString.append(getIndentedAttributedString(valString, spacing, isKey ? .Key : .Scalar))
+            self.renderLineCount += 1
+        } else if let boolItem = item as? Bool {
+            var valString: String = boolItem ? "TRUE" : "FALSE"
+            valString += (isKey ? " " : "\n")
+            returnString.append(getIndentedAttributedString(valString, spacing, isKey ? .Key : .Special))
+            self.renderLineCount += 1
+        } else if let dateItem = item as? Date {
+            // DATE
             // May be a key or a value
+            let attributeType: AttributeType = isKey ? .Key : .Special
+            let dateString: String = dateItem.formatted()
+            returnString.append(getIndentedAttributedString(dateString, spacing, attributeType))
+
+            // Post key colon or CR
+            returnString.append(isKey
+                                ? NSAttributedString.init(string: (self.renderColons ? ": " : " "), attributes: self.scalarAttributes)
+                                : self.cr)
+
+            if !isKey { self.renderLineCount += 1 }
+        } else {
+            // NULL
+            // May be a key or a value
+            let attributeType: AttributeType = isKey ? .Key : .Special
             let valString: String = isKey ? "NULL KEY" : "NULL VALUE"
-            returnString.append(getIndentedAttributedString(valString, indent, isKey ? .Key : .Special))
-            /* REMOVED 1.2.0
-            returnString.append(getIndentedString(valString, indent))
-            returnString.setAttributes(self.specialAttributes, range: NSMakeRange(0, returnString.length))
-             */
+            returnString.append(getIndentedAttributedString(valString, spacing, attributeType))
 
             // Append a space (item is a key) or a CR (item is a value)
             returnString.append(isKey
                                 ? NSAttributedString.init(string: " ", attributes: self.scalarAttributes)
                                 : self.cr)
-            
-            // FROM 1.1.5
+
             if !isKey { self.renderLineCount += 1 }
-        case .bool:
-            var valString: String = ""
-
-            if let boolValue = part.bool {
-                valString = boolValue ? "TRUE" : "FALSE"
-            }
-
-            valString += (isKey ? " " : "\n")
-            returnString.append(getIndentedAttributedString(valString, indent, isKey ? .Key : .Special))
-            self.renderLineCount += 1
-        default:
-            // Place all the scalar values here
-            // TODO These *may* be keys too, so we need to check that
-            var valString: String = ""
-            
-            if let val = part.int {
-                valString = "\(val)"
-            } else if let val = part.double {
-                valString = "\(val)"
-            } else {
-                valString = "UNKNOWN"
-            }
-                
-            // FROM 1.1.5
-            valString += (isKey ? " " : "\n")
-            returnString.append(getIndentedAttributedString(valString, indent, isKey ? .Key : .Scalar))
-            
-            /* REMOVED 1.2.0
-             returnString.setAttributes((isKey ? self.keyAttributes : self.scalarAttributes), range: NSMakeRange(0, returnString.length))
-             */
-
-            // FROM 1.1.5
-            self.renderLineCount += 1
         }
-        
+
         return returnString.string.count > 0 ? returnString : nil
     }
 
-
-    /** REMOVED 1.2.0
-     Return a space-prefix NSAttributedString.
-     DEPRECATED
-
-     - Parameters:
-        - baseString: The string to be indented.
-        - indent:     The number of indent spaces to add.
-
-     - Returns: The indented string as an NSAttributedString.
-
-    func getIndentedString(_ baseString: String, _ indent: Int) -> NSAttributedString {
-        
-        let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
-        let spaceString = String(repeating: " ", count: indent)
-        let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
-        indentedString.append(NSAttributedString.init(string: spaceString))
-        indentedString.append(NSAttributedString.init(string: trimmedString))
-        return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
-    }
-     */
-    
 
     /**
      Return a space-prefix NSAttributedString.
@@ -505,10 +564,19 @@ final class Common: NSObject {
 
      - Returns: The indented string as an NSAttributedString.
      */
-    func getIndentedAttributedString(_ baseString: String, _ indent: Int, _ attributeType: AttributeType) -> NSAttributedString {
+    func getIndentedAttributedString(_ baseString: String, _ indent: Int, _ attributeType: AttributeType, _ useExtra: Bool = false) -> NSAttributedString {
 
         let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
-        let spaceString = String(repeating: " ", count: indent)
+
+        /*
+        var spaceString = ""
+        if indent > 0 {
+            spaceString = String(repeating: ".", count: indent * self.yamlIndent - "\(indent)".count)
+            spaceString = "\(indent)" + spaceString
+        }
+         */
+
+        let spaceString = String(repeating: " ", count: (indent * self.yamlIndent) + (useExtra ? self.extraInset : 0))
         let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
         indentedString.append(NSAttributedString.init(string: spaceString, attributes: getAttributes(.Scalar)))
         indentedString.append(NSAttributedString.init(string: trimmedString, attributes: getAttributes(attributeType)))
@@ -595,6 +663,257 @@ final class Common: NSObject {
         
         // Send the updated string back
         return fixedString
+    }
+
+
+    func processNode(_ node: Yams.Node, _ isKey: Bool = false, _ level: Int = 0) -> NSAttributedString {
+
+        let returnString: NSMutableAttributedString = NSMutableAttributedString()
+
+        if node.mapping != nil {
+            for item in node.mapping! {
+                returnString.append(processNode(item.key, true, level))
+                returnString.append(processNode(item.value, false, level + 1))
+            }
+        } else if node.sequence != nil {
+
+            for item in node.sequence! {
+                returnString.append(processNode(item, false, level + 1))
+            }
+        } else {
+            if node.scalar != nil {
+                if let sc = node.scalar {
+                    if level > 0 {
+                        returnString.append(NSMutableAttributedString(string: String(repeating: "\t", count: level)))
+                    }
+
+                    returnString.append(NSMutableAttributedString(string: sc.string + (isKey ? ": " : "\n"),
+                                                                  attributes: isKey ? self.keyAttributes : self.scalarAttributes))
+                }
+            }
+        }
+
+        return returnString as NSAttributedString
+    }
+
+
+    /**
+     Render a supplied YAML sub-component ('part') to an NSAttributedString.
+
+     Indents the value as required.
+
+     - Parameters:
+        - part:   A partial Yaml object.
+        - indent: The number of indent spaces to add.
+        - isKey:  Is the Yaml part a key?
+
+     - Returns: The rendered string as an NSAttributedString, or nil on error.
+     */
+    func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedString? {
+
+        // FROM 1.1.5
+        // If we're rendering a thumbnail and we've reached the limit, bail
+        if self.renderThumbnail && self.renderLineCount >= BUFFOON_CONSTANTS.THUMBNAIL_LINE_COUNT {
+            self.renderDone = true
+            return nil
+        }
+
+        // Set up the base string
+        let returnString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: self.scalarAttributes)
+
+        switch (part) {
+        case .array:
+            if let value = part.array {
+                // Iterate through array elements
+                // NOTE A given element can be of any YAML type
+                for i in 0..<value.count {
+                    if let yamlString = renderYaml(value[i], indent, false) {
+                        // Apply a prefix to separate array and dictionary elements from a
+                        // previous one -- so apply to all but the first item
+                        if i > 0 && (value[i].array != nil || value[i].dictionary != nil) {
+                            returnString.append(self.cr)
+
+                            // FROM 1.1.5
+                            self.renderLineCount += 1
+                        }
+
+                        // Add the element itself
+                        returnString.append(yamlString)
+                    }
+                }
+            }
+        case .dictionary:
+            if let dict = part.dictionary {
+                // Iterate through the dictionary's keys and their values
+                // NOTE A given value can be of any YAML type
+
+                // Sort the dictionary's keys (ascending)
+                // We assume all keys will be strings, ints, doubles or bools
+                // FROM 1.2.0 -- sort is optional, but true by default
+                var keys: [Yaml] = Array(dict.keys)
+                if self.sortKeys {
+                    keys = keys.sorted(by: { (a, b) -> Bool in
+                        // Strings?
+                        if let a_s: String = a.string {
+                            if let b_s: String = b.string {
+                                return (a_s.lowercased() < b_s.lowercased())
+                            }
+                        }
+
+                        // Ints?
+                        if let a_i: Int = a.int {
+                            if let b_i: Int = b.int {
+                                return (a_i < b_i)
+                            }
+                        }
+
+                        // Doubles?
+                        if let a_d: Double = a.double {
+                            if let b_d: Double = b.double {
+                                return (a_d < b_d)
+                            }
+                        }
+
+                        // Bools
+                        if let a_b: Bool = a.bool {
+                            if let b_b: Bool = b.bool {
+                                return (a_b && !b_b)
+                            }
+                        }
+
+                        return false
+                    })
+                }
+
+                // Iterate through the sorted keys array
+                for i in 0..<keys.count {
+                    // Prefix root-level key:value pairs after the first with a new line
+                    if indent == 0 && i > 0 {
+                        returnString.append(self.cr)
+                    }
+
+                    // Get the key:value pairs
+                    let key: Yaml = keys[i]
+                    let value: Yaml = dict[key] ?? .null
+
+                    // Render the key
+                    if let yamlString = renderYaml(key, indent, true) {
+                        returnString.append(yamlString)
+                    }
+
+                    // If the value is a collection, we drop to the next line and indent
+                    var valueIndent: Int = 0
+                    if (value.array != nil || value.dictionary != nil || self.doIndentScalars) {
+                        valueIndent = indent + self.yamlIndent
+                        returnString.append(self.cr)
+
+                        // FROM 1.1.5
+                        self.renderLineCount += 1
+                    }
+
+                    // Render the key's value
+                    if let yamlString = renderYaml(value, valueIndent, false) {
+                        returnString.append(yamlString)
+                    }
+                }
+            }
+        case .string:
+            // This can be used to render keys or values
+            if let keyOrValue = part.string {
+                var attributeType: AttributeType = isKey ? .Key : .String
+
+                // Segment the string by CRs
+                let parts: [String] = keyOrValue.components(separatedBy: "\n")
+                if parts.count > 2 {
+                    // A multiline string
+                    if self.renderThumbnail {
+                        // For thumbnails make a combined string without between-line whitespace
+                        var joined: String = ""
+                        for i in 0..<parts.count {
+                            joined += parts[i].trimmingCharacters(in: .whitespaces)
+                        }
+                        returnString.append(getIndentedAttributedString(joined + "\n", indent, attributeType))
+                    } else {
+                        // For previrews, make indented lines per source line
+                        for i in 0..<parts.count {
+                            let part: String = parts[i].trimmingCharacters(in: .whitespaces)
+                            if part.count == 0 {
+                                continue
+                            }
+
+                            returnString.append(getIndentedAttributedString(part + (i < parts.count - 2 ? "\n" : " "), indent, attributeType))
+                        }
+                    }
+                } else {
+                    // Output the single-line string
+                    if keyOrValue.contains("NaN") || keyOrValue.contains("INF") { attributeType = .Special }
+                    returnString.append(getIndentedAttributedString(keyOrValue, indent, attributeType))
+                }
+
+                /* REMOVED 1.2.0
+                 returnString.setAttributes(attsToUse, range: NSMakeRange(0, returnString.length))
+                 */
+
+                // FROM 1.2.0 -- render colons if asked
+                returnString.append(isKey
+                                    ? NSAttributedString.init(string: (self.renderColons ? ": " : " "), attributes: self.scalarAttributes)
+                                    : self.cr)
+
+                // FROM 1.1.5
+                if !isKey { self.renderLineCount += parts.count }
+            }
+        case .null:
+            // May be a key or a value
+            let valString: String = isKey ? "NULL KEY" : "NULL VALUE"
+            returnString.append(getIndentedAttributedString(valString, indent, isKey ? .Key : .Special))
+            /* REMOVED 1.2.0
+            returnString.append(getIndentedString(valString, indent))
+            returnString.setAttributes(self.specialAttributes, range: NSMakeRange(0, returnString.length))
+             */
+
+            // Append a space (item is a key) or a CR (item is a value)
+            returnString.append(isKey
+                                ? NSAttributedString.init(string: " ", attributes: self.scalarAttributes)
+                                : self.cr)
+
+            // FROM 1.1.5
+            if !isKey { self.renderLineCount += 1 }
+        case .bool:
+            var valString: String = ""
+
+            if let boolValue = part.bool {
+                valString = boolValue ? "TRUE" : "FALSE"
+            }
+
+            valString += (isKey ? " " : "\n")
+            returnString.append(getIndentedAttributedString(valString, indent, isKey ? .Key : .Special))
+            self.renderLineCount += 1
+        default:
+            // Place all the scalar values here
+            // TODO These *may* be keys too, so we need to check that
+            var valString: String = ""
+
+            if let val = part.int {
+                valString = "\(val)"
+            } else if let val = part.double {
+                valString = "\(val)"
+            } else {
+                valString = "UNKNOWN"
+            }
+
+            // FROM 1.1.5
+            valString += (isKey ? " " : "\n")
+            returnString.append(getIndentedAttributedString(valString, indent, isKey ? .Key : .Scalar))
+
+            /* REMOVED 1.2.0
+             returnString.setAttributes((isKey ? self.keyAttributes : self.scalarAttributes), range: NSMakeRange(0, returnString.length))
+             */
+
+            // FROM 1.1.5
+            self.renderLineCount += 1
+        }
+
+        return returnString.string.count > 0 ? returnString : nil
     }
 
 }

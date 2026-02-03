@@ -27,6 +27,10 @@
 		3B7D83FC2A8A3102008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */; };
 		3B7D83FE2A8A311D008A4B2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B7D83FD2A8A311D008A4B2E /* Assets.xcassets */; };
 		3B93E5CF2BD994CD0042F553 /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3B93E5CE2BD994CD0042F553 /* Yaml */; };
+		3BA6EEB42E5B994300032DC3 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = 3BA6EEB32E5B994300032DC3 /* Yams */; };
+		3BA6EEB62E5B994F00032DC3 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = 3BA6EEB52E5B994F00032DC3 /* Yams */; };
+		3BA6EEB82E5B995900032DC3 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = 3BA6EEB72E5B995900032DC3 /* Yams */; };
+		3BA6EEB92E5B9ADD00032DC3 /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */; };
 		3BAE671D28D4D481001532BD /* GenericFontExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAE671C28D4D481001532BD /* GenericFontExtensions.swift */; };
 		3BB64D8926320064003CD14D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64D8826320064003CD14D /* AppDelegate.swift */; };
 		3BB64D8E26320065003CD14D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8C26320065003CD14D /* MainMenu.xib */; };
@@ -146,6 +150,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3BA6EEB62E5B994F00032DC3 /* Yams in Frameworks */,
 				3B3CEF6D2A5B7D9600D05123 /* Yaml in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -177,6 +182,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BB64DBC263200A8003CD14D /* Quartz.framework in Frameworks */,
+				3BA6EEB42E5B994300032DC3 /* Yams in Frameworks */,
 				3B218DDB2637F41F0024446B /* Yaml in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -187,6 +193,7 @@
 			files = (
 				3BB64DD6263200BA003CD14D /* QuickLookThumbnailing.framework in Frameworks */,
 				3BB64DD7263200BA003CD14D /* Quartz.framework in Frameworks */,
+				3BA6EEB82E5B995900032DC3 /* Yams in Frameworks */,
 				3B218DE22637F4290024446B /* Yaml in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -216,6 +223,13 @@
 			name = "YOU MUST SUPPLY";
 			sourceTree = "<group>";
 		};
+		3BA6EEB22E5B994300032DC3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		3BB64D7C26320064003CD14D = {
 			isa = PBXGroup;
 			children = (
@@ -226,6 +240,7 @@
 				3BB64DA326320065003CD14D /* PreviewYamlUITests */,
 				3B3CEF5C2A5B798A00D05123 /* RenderDemo */,
 				3BB920572A562E80006C088E /* Misc */,
+				3BA6EEB22E5B994300032DC3 /* Frameworks */,
 				3BB64D8626320064003CD14D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -340,6 +355,7 @@
 			name = RenderDemo;
 			packageProductDependencies = (
 				3B3CEF6C2A5B7D9600D05123 /* Yaml */,
+				3BA6EEB52E5B994F00032DC3 /* Yams */,
 			);
 			productName = RenderDemo;
 			productReference = 3B3CEF5B2A5B798A00D05123 /* RenderDemo.app */;
@@ -420,6 +436,7 @@
 			name = "Yaml Previewer";
 			packageProductDependencies = (
 				3B218DDA2637F41F0024446B /* Yaml */,
+				3BA6EEB32E5B994300032DC3 /* Yams */,
 			);
 			productName = "Yaml Previewer";
 			productReference = 3BB64DB9263200A8003CD14D /* Yaml Previewer.appex */;
@@ -441,6 +458,7 @@
 			name = "Yaml Thumbnailer";
 			packageProductDependencies = (
 				3B218DE12637F4290024446B /* Yaml */,
+				3BA6EEB72E5B995900032DC3 /* Yams */,
 			);
 			productName = "Yaml Thumbnailer";
 			productReference = 3BB64DD4263200BA003CD14D /* Yaml Thumbnailer.appex */;
@@ -489,6 +507,7 @@
 			mainGroup = 3BB64D7C26320064003CD14D;
 			packageReferences = (
 				3B218DD92637F41F0024446B /* XCRemoteSwiftPackageReference "YamlSwift" */,
+				3BA6EEB12E5B98EF00032DC3 /* XCRemoteSwiftPackageReference "Yams" */,
 			);
 			productRefGroup = 3BB64D8626320064003CD14D /* Products */;
 			projectDirPath = "";
@@ -564,6 +583,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B3CEF682A5B7A8F00D05123 /* Common.swift in Sources */,
+				3BA6EEB92E5B9ADD00032DC3 /* REPLACE_WITH_YOUR_CODES.swift in Sources */,
 				3B3CEF5E2A5B798A00D05123 /* AppDelegate.swift in Sources */,
 				3B3CEF692A5B7A9600D05123 /* Constants.swift in Sources */,
 				3B3CEF6A2A5B7AA800D05123 /* GenericColorExtensions.swift in Sources */,
@@ -1201,6 +1221,14 @@
 				kind = branch;
 			};
 		};
+		3BA6EEB12E5B98EF00032DC3 /* XCRemoteSwiftPackageReference "Yams" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jpsim/Yams";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1233,6 +1261,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3B218DD92637F41F0024446B /* XCRemoteSwiftPackageReference "YamlSwift" */;
 			productName = Yaml;
+		};
+		3BA6EEB32E5B994300032DC3 /* Yams */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3BA6EEB12E5B98EF00032DC3 /* XCRemoteSwiftPackageReference "Yams" */;
+			productName = Yams;
+		};
+		3BA6EEB52E5B994F00032DC3 /* Yams */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3BA6EEB12E5B98EF00032DC3 /* XCRemoteSwiftPackageReference "Yams" */;
+			productName = Yams;
+		};
+		3BA6EEB72E5B995900032DC3 /* Yams */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3BA6EEB12E5B98EF00032DC3 /* XCRemoteSwiftPackageReference "Yams" */;
+			productName = Yams;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

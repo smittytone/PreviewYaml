@@ -119,7 +119,7 @@ class AppDelegate:  NSObject,
 
                 if let yamlFileString: String = String.init(data: data, encoding: encoding) {
                     common.doShowLightBackground = !self.renderAsDark
-                    common.doUseSpecialIndentChar = self.renderIndents
+                    //common.doUseSpecialIndentChar = self.renderIndents
                     common.resetStylesOnModeChange()
                     
                     let yamlAttString: NSAttributedString = common.getAttributedString(yamlFileString)
