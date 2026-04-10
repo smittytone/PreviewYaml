@@ -184,12 +184,15 @@ final class Common: NSObject {
     func getAttributedString(_ yamlFileString: String) -> NSAttributedString {
 
         // Set up the base string
-        var renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "",
-                                                                                       attributes: self.scalarAttributes)
+        var renderedString: NSMutableAttributedString = NSMutableAttributedString(string: "", attributes: self.scalarAttributes)
         // FROM 1.1.5
         self.renderLineCount = 0
         self.renderDone = false
-        
+
+        renderedString.append(prettyPrintYAML(yamlFileString))
+        return renderedString
+        /*
+
         // Parse the YAML data
         do {
             // First fix any .NAN, +/-.INF in the file
@@ -282,6 +285,7 @@ final class Common: NSObject {
         }
         
         return renderedString as NSAttributedString
+        */
     }
 
 
@@ -916,7 +920,789 @@ final class Common: NSObject {
         return returnString.string.count > 0 ? returnString : nil
     }
 
+
+    public func prettyPrintYAML(_ source: String) -> NSAttributedString {
+
+        let returnString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: self.scalarAttributes)
+        let docs = YAMLParser(source).parse()
+        if docs.isEmpty {
+            return returnString
+        }
+
+        if docs.count == 1 {
+            return docs[0].prettyPrinted(indent: 0)
+        }
+
+        _ = docs.map { doc in
+            returnString.append(doc.prettyPrinted(indent: 0))
+            returnString.append(self.cr)
+        }
+
+        return returnString
+    }
+
 }
+
+
+// ============================================================
+// MARK: - Data Model
+// ============================================================
+
+/// An ordered representation of a YAML value.
+/// Mappings use an array of (key, value) pairs so that
+/// the original source order is always preserved.
+public indirect enum YAMLNode {
+    case null
+    case bool(Bool)
+    case int(Int)
+    case double(Double)
+    case string(String)
+    case sequence([YAMLNode])
+    case mapping([(key: String, value: YAMLNode)])
+}
+
+
+// ============================================================
+// MARK: - Pretty Printer
+// ============================================================
+
+extension YAMLNode {
+
+    /// Returns a canonical, human-readable YAML representation.
+    public func prettyPrinted(indent level: Int = 0, indentCount ic: Int = 2) -> NSAttributedString {
+
+        let pad = String(repeating: " ", count: level * ic)
+        let rs = NSMutableAttributedString(string: "")
+
+        switch self {
+            case .null:
+                return NSAttributedString(string: "NULL")
+            case .bool(let b):
+                return NSAttributedString(string: b ? "true" : "false")
+            case .int(let i):
+                return NSAttributedString(string: String(i))
+            case .double(let d):
+                if d.isNaN {
+                    return NSAttributedString(string: "NaN")
+                }
+
+                if d == .infinity {
+                    return NSAttributedString(string: "INF")
+                }
+
+                if d == -.infinity {
+                    return NSAttributedString(string: "-INF")
+                }
+
+                if d.truncatingRemainder(dividingBy: 1) == 0 {
+                    return NSAttributedString(string: "\(Int(d)).0")
+                }
+
+                return NSAttributedString(string: String(d))
+            case .string(let s):
+                return formatString(s)
+            case .sequence(let items):
+                if items.isEmpty {
+                    return rs
+                }
+
+                _ = items.map { item -> NSAttributedString in
+                    // For a mapping item, put the first key on the same line as "- ".
+                    if case .mapping(let pairs) = item, !pairs.isEmpty {
+                        let body      = item.prettyPrinted(indent: level + 1)
+                        let bodyLines = body.string.components(separatedBy: "\n")
+                        let first     = bodyLines[0].trimmingCharacters(in: .whitespaces)
+                        let rest      = bodyLines.dropFirst().joined(separator: "\n")
+                        return rest.isEmpty ? NSAttributedString(string: "\(pad)\(first)")
+                                            : NSAttributedString(string: "\(pad)\(first)\n\(rest)")
+                    }
+
+                    let inner = item.prettyPrinted(indent: level + 1)
+                    rs.append(inner)
+                    if item != items.last {
+                        rs.append(NSAttributedString(string: "\n"))
+                    }
+
+                    return NSAttributedString(string: "\(pad)\(inner)")
+                }
+
+            case .mapping(let pairs):
+                if pairs.isEmpty {
+                    return rs
+                }
+
+                _ = pairs.map { (key, value) -> String in
+                    let k = formatKey(key)
+                    switch value {
+                    case .mapping(let p)  where !p.isEmpty:
+                        return "\(pad)\(k):\n\(value.prettyPrinted(indent: level + 1))"
+                    case .sequence(let a) where !a.isEmpty:
+                        return "\(pad)\(k):\n\(value.prettyPrinted(indent: level + 1))"
+                    default:
+                        return "\(pad)\(k): \(value.prettyPrinted(indent: 0))"
+                    }
+                }
+        }
+
+        return rs as NSAttributedString
+    }
+
+
+    // MARK: Formatting helpers
+
+    private func formatString(_ s: String) -> NSAttributedString {
+
+        if s.isEmpty {
+            return NSAttributedString(string: "")
+        }
+
+        // Values that look like special YAML scalars must be quoted.
+        let reserved: Set<String> = [
+            "null", "~", "true", "false",
+            "yes", "no", "on", "off",
+            ".inf", "-.inf", ".nan"
+        ]
+
+        if reserved.contains(s.lowercased()) {
+            return singleQuote(s)
+        }
+
+        // Plain strings that look like numbers must be quoted so they
+        // round-trip as strings.
+        if Int(s) != nil || Double(s) != nil {
+            return singleQuote(s)
+        }
+
+        // Characters that have special meaning at the start of a plain scalar.
+        let specialStart: Set<Character> = [
+            " ", "\"", "'", "#", "&", "*", "!", "|",
+            ">", "{", "[", "}", "]", ",", ":", "?",
+            "%", "@", "`"
+        ]
+        if let first = s.first, specialStart.contains(first) {
+            return doubleQuote(s)
+        }
+
+        // Inline content that would confuse a parser.
+        if s.contains(": ") || s.hasSuffix(":") || s.contains(" #") || s.contains("\n") {
+            return doubleQuote(s)
+        }
+
+        return NSAttributedString(string: s)
+    }
+
+
+    private func formatKey(_ key: String) -> NSAttributedString {
+
+        if key.isEmpty {
+            return NSAttributedString(string: "")
+        }
+
+        if key.contains(":") || key.contains("#") || key.hasPrefix(" ") {
+            return singleQuote(key)
+        }
+
+        return NSAttributedString(string: key)
+    }
+
+
+    private func singleQuote(_ s: String) -> NSAttributedString {
+
+        return NSAttributedString(string:"‘\(s.replacingOccurrences(of: "'", with: "''"))’")
+    }
+
+
+    private func doubleQuote(_ s: String) -> NSAttributedString {
+
+        let escaped = s
+            .replacingOccurrences(of: "\\",  with: "\\\\")
+            .replacingOccurrences(of: "\"",  with: "\\\"")
+            .replacingOccurrences(of: "\n",  with: "\\n")
+            .replacingOccurrences(of: "\t",  with: "\\t")
+            .replacingOccurrences(of: "\r",  with: "\\r")
+        return NSAttributedString(string:"\"\(escaped)\"")
+    }
+}
+
+
+// ============================================================
+// MARK: - Internal: Processed line
+// ============================================================
+
+private struct Line {
+
+    let number: Int
+    let indent: Int
+    /// Trimmed content with inline comments removed (but NOT raw text –
+    /// block-scalar bodies are read from the raw source separately).
+    let text: String
+
+    var isEmpty:    Bool { text.isEmpty }
+    var isDocStart: Bool { text == "---" || text.hasPrefix("--- ") }
+    var isDocEnd:   Bool { text == "..." }
+}
+
+
+// ============================================================
+// MARK: - Internal: Parser
+// ============================================================
+
+private final class YAMLParser {
+
+    var currentLine: Int = 0
+    let lines: [Line]
+    // Keep the raw lines so that block-scalar bodies can be read without comment-stripping.
+    let rawLines: [String]
+
+
+    init(_ yamlSource: String) {
+        // Separate out the lines
+        self.rawLines = yamlSource.components(separatedBy: "\n")
+
+        // Process the lines in order
+        self.lines = self.rawLines.enumerated().map {
+            Self.processLine($0.element, $0.offset)
+        }
+    }
+
+
+    // MARK: - Line processing
+
+    private static func processLine(_ rawLine: String, _ number: Int) -> Line {
+
+        let indent = rawLine.prefix(while: { $0 == " " }).count
+        let trimmed = String(rawLine.dropFirst(indent))
+        if trimmed.hasPrefix("#") {
+            return Line(number: number, indent: indent, text: "")
+        }
+
+        let text = stripInlineComment(trimmed)
+        return Line(number: number, indent: indent, text: text)
+    }
+
+
+    // Remove a ` # …` inline comment that is not inside quotes.
+    private static func stripInlineComment(_ s: String) -> String {
+
+        var inSingle = false
+        var inDouble = false
+        var prev: Character = "\0"
+        var idx = s.startIndex
+
+        while idx < s.endIndex {
+            let c = s[idx]
+            if c == "'" && !inDouble {
+                inSingle.toggle()
+            } else if c == "\"" && !inSingle {
+                inDouble.toggle()
+            } else if c == "#" && !inSingle && !inDouble && (prev == " " || prev == "\t" || prev == "\0") {
+                return String(s[s.startIndex..<idx]).trimmingCharacters(in: .whitespaces)
+            }
+
+            prev = c
+            idx  = s.index(after: idx)
+        }
+
+        return s
+    }
+
+
+    // MARK: - Document parsing
+
+    /**
+     Convert the sequence of lines into a sequence of nodes.
+     */
+    func parse() -> [YAMLNode] {
+
+        var nodes: [YAMLNode] = []
+        while currentLine < lines.count {
+            skipBlanks()
+            if currentLine >= lines.count {
+                break
+            }
+
+            let line = lines[currentLine]
+            if line.isDocEnd {
+                currentLine += 1
+                continue
+            }
+
+            if line.isDocStart {
+                currentLine += 1          // Consume the `---` marker
+                skipBlanks()
+                if currentLine < lines.count, !lines[currentLine].isDocStart, !lines[currentLine].isDocEnd {
+                    nodes.append(parseNode(minIndent: 0))
+                } else {
+                    nodes.append(.null)
+                }
+            } else {
+                nodes.append(parseNode(minIndent: 0))
+            }
+        }
+
+        return nodes
+    }
+
+    // MARK: - Node dispatch
+
+    func parseNode(minIndent: Int) -> YAMLNode {
+
+        skipBlanks()
+        guard currentLine < lines.count else {
+            return .null
+        }
+
+        let line = lines[currentLine]
+        guard !line.isDocStart, !line.isDocEnd else {
+            return .null
+        }
+
+        guard line.indent >= minIndent else {
+            return .null
+        }
+
+        let text = line.text
+
+        if text.hasPrefix("- ") || text == "-" {
+            return parseSequence(indent: line.indent)
+        }
+
+        if findColonIndex(in: text) != nil {
+            return parseMapping(indent: line.indent, injectedFirst: nil)
+        }
+
+        if isBlockScalarHeader(text) {
+            return parseBlockScalar()
+        }
+
+        currentLine += 1
+        return parseScalarText(text)
+    }
+
+
+    // MARK: - Sequence
+
+    func parseSequence(indent: Int) -> YAMLNode {
+
+        var items: [YAMLNode] = []
+
+        while currentLine < lines.count {
+            skipBlanks()
+            guard currentLine < lines.count else {
+                break
+            }
+
+            let line = lines[currentLine]
+            if line.isDocStart || line.isDocEnd {
+                break
+            }
+
+            if line.indent != indent {
+                break
+            }
+
+            guard line.text.hasPrefix("- ") || line.text == "-" else {
+                break
+            }
+
+            currentLine += 1
+            let rest = line.text == "-"
+                ? ""
+                : String(line.text.dropFirst(2)).trimmingCharacters(in: .whitespaces)
+
+            if rest.isEmpty {
+                skipBlanks()
+                if currentLine < lines.count, lines[currentLine].indent > indent, !lines[currentLine].isDocStart, !lines[currentLine].isDocEnd {
+                    items.append(parseNode(minIndent: indent + 1))
+                } else {
+                    items.append(.null)
+                }
+            } else if isBlockScalarHeader(rest) {
+                items.append(parseBlockScalarBody(bodyIndentHint: indent + 2, style: rest))
+            } else if findColonIndex(in: rest) != nil {
+                // "- key: value" — inline mapping entry
+                items.append(parseMapping(indent: indent + 2, injectedFirst: rest))
+            } else if rest.hasPrefix("- ") || rest == "-" {
+                // Nested sequence on the same line; uncommon but valid
+                items.append(parseScalarText(rest))   // best-effort
+            } else {
+                items.append(parseScalarText(rest))
+            }
+        }
+
+        return .sequence(items)
+    }
+
+
+    // MARK: - Mapping
+
+    func parseMapping(indent: Int, injectedFirst: String?) -> YAMLNode {
+
+        var pairs: [(key: String, value: YAMLNode)] = []
+
+        func absorb(_ text: String) {
+
+            guard let colonIdx = findColonIndex(in: text) else { return }
+            let rawKey = String(text[text.startIndex..<colonIdx]).trimmingCharacters(in: .whitespaces)
+            let key = unquoteScalar(rawKey)
+            let rawVal = String(text[text.index(after: colonIdx)...]).trimmingCharacters(in: .whitespaces)
+
+            if rawVal.isEmpty {
+                // Value is on the following lines.
+                skipBlanks()
+                if currentLine < lines.count, lines[currentLine].indent > indent, !lines[currentLine].isDocStart, !lines[currentLine].isDocEnd {
+                    pairs.append((key: key, value: parseNode(minIndent: indent + 1)))
+                } else {
+                    pairs.append((key: key, value: .null))
+                }
+            } else if isBlockScalarHeader(rawVal) {
+                pairs.append((key: key, value: parseBlockScalarBody(bodyIndentHint: indent + 2, style: rawVal)))
+            } else {
+                pairs.append((key: key, value: parseScalarText(rawVal)))
+            }
+        }
+
+        // An injected first line is used when we encounter "- key: value"
+        // inside a sequence; we already consumed that line.
+        if let first = injectedFirst {
+            absorb(first)
+        }
+
+        while currentLine < lines.count {
+            skipBlanks()
+            guard currentLine < lines.count else {
+                break
+            }
+
+            let line = lines[currentLine]
+            if line.isDocStart || line.isDocEnd {
+                break }
+            if line.indent < indent {
+                break
+            }
+
+            if line.indent > indent {
+                break
+            }
+
+            guard findColonIndex(in: line.text) != nil else {
+                break
+            }
+
+            currentLine += 1 // consume the key line before absorbing
+            absorb(line.text)
+        }
+
+        return .mapping(pairs)
+    }
+
+
+    // MARK: - Block scalars  (| and >)
+
+    private func isBlockScalarHeader(_ s: String) -> Bool {
+
+        let stripped = s.trimmingCharacters(in: .whitespaces)
+        return stripped == "|"  || stripped == "|-" || stripped == "|+" ||
+               stripped == ">"  || stripped == ">-" || stripped == ">+" ||
+               stripped.hasPrefix("| ") || stripped.hasPrefix("> ")
+    }
+
+
+    func parseBlockScalar() -> YAMLNode {
+
+        let style = lines[currentLine].text
+        currentLine += 1
+        return parseBlockScalarBody(bodyIndentHint: -1, style: style)
+    }
+
+
+    /// `bodyIndentHint` is the expected indentation of the body; pass -1 to
+    /// auto-detect from the first content line.
+    func parseBlockScalarBody(bodyIndentHint: Int, style: String) -> YAMLNode {
+
+        let isLiteral = style.hasPrefix("|")
+        let chomping: Character = {
+            let last = style.last
+            if last == "-" {
+                return "-"
+            }
+
+            if last == "+" {
+                return "+"
+            }
+
+            return " "   // clip (default)
+        }()
+
+        // Determine the effective indent from the first non-empty body line.
+        var bodyIndent = bodyIndentHint
+        if bodyIndent < 0 {
+            var i = currentLine
+            while i < lines.count && lines[i].isEmpty {
+                i += 1
+            }
+
+            bodyIndent = i < lines.count ? lines[i].indent : 0
+        }
+
+        var collected: [String] = []
+        while currentLine < lines.count {
+            let l = lines[currentLine]
+            if l.isDocStart || l.isDocEnd { break }
+            if !l.isEmpty && l.indent < bodyIndent { break }
+
+            // Preserve the original raw text (minus the leading spaces).
+            let rawContent: String
+            if l.isEmpty {
+                rawContent = ""
+            } else {
+                let rawLine = rawLines[l.number]
+                rawContent  = String(rawLine.dropFirst(bodyIndent))
+            }
+            collected.append(rawContent)
+            currentLine += 1
+        }
+
+        // Apply chomping.
+        switch chomping {
+            case "-":   // strip – remove all trailing newlines
+                while let last = collected.last, last.isEmpty { collected.removeLast() }
+            case "+":   // keep – preserve all trailing newlines (nothing to do)
+                break
+            default:    // clip – one trailing newline
+                while collected.count > 1, let last = collected.last, last.isEmpty {
+                    collected.removeLast()
+                }
+        }
+
+        let result: String
+        if isLiteral {
+            result = collected.joined(separator: "\n")
+                + (chomping == " " ? "\n" : "")
+        } else {
+            // Folded: blank lines stay as literal newlines;
+            // non-blank lines are joined with a space.
+            var out   = ""
+            var first = true
+            var i     = 0
+            while i < collected.count {
+                let line = collected[i]
+                if line.isEmpty {
+                    out  += "\n"
+                    first = true
+                } else {
+                    out  += (first ? "" : " ") + line
+                    first = false
+                }
+                i += 1
+            }
+            if chomping == " " { out += "\n" }
+            result = out
+        }
+        return .string(result)
+    }
+
+    // MARK: - Scalar parsing
+
+    func parseScalarText(_ s: String) -> YAMLNode {
+
+        let t = s.trimmingCharacters(in: .whitespaces)
+
+        if t == "null" || t == "~" || t.isEmpty  { return .null }
+        switch t.lowercased() {
+            case "true",  "yes", "on":
+                return .bool(true)
+            case "false", "no",  "off":
+                return .bool(false)
+            default:
+                break
+        }
+
+        switch t {
+            case ".inf", "+.inf", ".Inf", "+.Inf", ".INF", "+.INF":
+                return .double(.infinity)
+            case "-.inf", "-.Inf", "-.INF":
+                return .double(-.infinity)
+            case ".nan",  ".NaN",  ".NAN":
+                return .double(.nan)
+            default: break
+        }
+
+        // Integer literals (decimal, hex, octal, binary)
+        if t.hasPrefix("0x") || t.hasPrefix("0X"), let i = Int(t.dropFirst(2), radix: 16) {
+            return .int(i)
+        }
+
+        if t.hasPrefix("0o") || t.hasPrefix("0O"), let i = Int(t.dropFirst(2), radix: 8) {
+            return .int(i)
+        }
+
+        if t.hasPrefix("0b") || t.hasPrefix("0B"),
+           let i = Int(t.dropFirst(2), radix: 2)   { return .int(i) }
+        if let i = Int(t)                           { return .int(i) }
+        if let d = Double(t)                        { return .double(d) }
+
+        // Double-quoted string
+        if t.hasPrefix("\"") && t.hasSuffix("\"") && t.count >= 2 {
+            return .string(unescapeDouble(String(t.dropFirst().dropLast())))
+        }
+        // Single-quoted string
+        if t.hasPrefix("'") && t.hasSuffix("'") && t.count >= 2 {
+            let inner = String(t.dropFirst().dropLast())
+                .replacingOccurrences(of: "''", with: "'")
+            return .string(inner)
+        }
+        // Flow sequence / mapping
+        if t.hasPrefix("[") { return parseFlowSequence(t) ?? .string(t) }
+        if t.hasPrefix("{") { return parseFlowMapping(t)  ?? .string(t) }
+
+        return .string(t)
+    }
+
+    private func unquoteScalar(_ s: String) -> String {
+
+        if (s.hasPrefix("\"") && s.hasSuffix("\"") && s.count >= 2) || (s.hasPrefix("'")  && s.hasSuffix("'")  && s.count >= 2) {
+            return String(s.dropFirst().dropLast())
+        }
+
+        return "*\(s)*"
+    }
+
+    private func unescapeDouble(_ s: String) -> String {
+        
+        var result = ""
+        var idx = s.startIndex
+        while idx < s.endIndex {
+            let c = s[idx]
+            if c == "\\" {
+                let next = s.index(after: idx)
+                guard next < s.endIndex else { result.append(c); break }
+                switch s[next] {
+                    case "n":
+                        result.append("\n")
+                    case "t":
+                        result.append("\t")
+                    case "r":
+                        result.append("\r")
+                    case "\\":
+                        result.append("\\")
+                    case "\"":
+                        result.append("\"")
+                    case "0":
+                        result.append("\0")
+                    case "a":
+                        result.append("\u{07}")
+                    case "b":
+                        result.append("\u{08}")
+                    case "e":
+                        result.append("\u{1B}")
+                    case " ":
+                        result.append(" ")
+                    default:
+                        result.append("\\"); result.append(s[next])
+                }
+
+                idx = s.index(after: next)
+            } else {
+                result.append(c)
+                idx = s.index(after: idx)
+            }
+        }
+
+        return result
+    }
+
+
+    // MARK: - Flow collections
+
+    private func parseFlowSequence(_ s: String) -> YAMLNode? {
+
+        guard s.hasPrefix("["), s.hasSuffix("]") else { return nil }
+        let inner = String(s.dropFirst().dropLast()).trimmingCharacters(in: .whitespaces)
+        if inner.isEmpty { return .sequence([]) }
+        return .sequence(splitFlowItems(inner).map {
+            parseScalarText($0.trimmingCharacters(in: .whitespaces))
+        })
+    }
+
+    private func parseFlowMapping(_ s: String) -> YAMLNode? {
+
+        guard s.hasPrefix("{"), s.hasSuffix("}") else { return nil }
+        let inner = String(s.dropFirst().dropLast()).trimmingCharacters(in: .whitespaces)
+        if inner.isEmpty { return .mapping([]) }
+        var pairs: [(key: String, value: YAMLNode)] = []
+        for item in splitFlowItems(inner) {
+            let t = item.trimmingCharacters(in: .whitespaces)
+            guard let ci = findColonIndex(in: t) else { continue }
+            let k = String(t[t.startIndex..<ci]).trimmingCharacters(in: .whitespaces)
+            let v = String(t[t.index(after: ci)...]).trimmingCharacters(in: .whitespaces)
+            pairs.append((key: unquoteScalar(k), value: parseScalarText(v)))
+        }
+        return .mapping(pairs)
+    }
+
+    /// Splits a comma-separated flow string, respecting nested brackets and quotes.
+    private func splitFlowItems(_ s: String) -> [String] {
+
+        var items:   [String]    = []
+        var depth    = 0
+        var inSingle = false
+        var inDouble = false
+        var current  = ""
+        for c in s {
+            if      c == "'" && !inDouble { inSingle.toggle() }
+            else if c == "\"" && !inSingle { inDouble.toggle() }
+            else if !inSingle && !inDouble {
+                if      c == "[" || c == "{" { depth += 1 }
+                else if c == "]" || c == "}" { depth -= 1 }
+                else if c == "," && depth == 0 {
+                    items.append(current); current = ""; continue
+                }
+            }
+            current.append(c)
+        }
+        if !current.trimmingCharacters(in: .whitespaces).isEmpty { items.append(current) }
+        return items
+    }
+
+    // MARK: - Utilities
+
+    func skipBlanks() {
+
+        while currentLine < lines.count && lines[currentLine].isEmpty {
+            currentLine += 1
+        }
+    }
+
+    /// Returns the index of the `:` that introduces a mapping value, or nil.
+    /// Skips colons that are inside single- or double-quoted strings.
+    func findColonIndex(in s: String) -> String.Index? {
+
+        var inSingle = false
+        var inDouble = false
+        var idx = s.startIndex
+        while idx < s.endIndex {
+            let c = s[idx]
+            if c == "'" && !inDouble {
+                inSingle.toggle()
+            } else if c == "\"" && !inSingle {
+                inDouble.toggle()
+            } else if c == ":" && !inSingle && !inDouble {
+                let next = s.index(after: idx)
+                // A mapping colon must be followed by a space, tab, or end-of-string.
+                if next == s.endIndex || s[next] == " " || s[next] == "\t" {
+                    return idx
+                }
+            }
+
+            idx = s.index(after: idx)
+        }
+
+        return nil
+    }
+}
+
+
 
 
 /**
