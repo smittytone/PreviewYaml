@@ -7,72 +7,79 @@
  */
 
 
-import Cocoa
+import AppKit
 import CoreServices
 import WebKit
 
 
 @main
-final class AppDelegate: NSObject,
+@MainActor
+final class AppDelegate: NSResponder,
                          NSApplicationDelegate,
-                         URLSessionDelegate,
-                         URLSessionDataDelegate,
+                         NSControlTextEditingDelegate,
+                         NSMenuDelegate,
+                         NSTextFieldDelegate,
+                         NSWindowDelegate,
                          WKNavigationDelegate {
 
     // MARK: - Class UI Properies
     
     // Menu Items
-    @IBOutlet var helpMenuOnlineHelp: NSMenuItem!
-    @IBOutlet var helpMenuAcknowledgments: NSMenuItem!
-    @IBOutlet var helpMenuAppStoreRating: NSMenuItem!
-    @IBOutlet var helpMenuAckYamlSwift: NSMenuItem!
-    // FROM 1.0.1
-    @IBOutlet var helpMenuOthersPreviewMarkdown: NSMenuItem!
-    // FROM 1.0.2
-    @IBOutlet var helpMenuOthersPreviewCode: NSMenuItem!
-    // FROM 1.1.3
-    @IBOutlet var helpMenuOthersPreviewjson: NSMenuItem!
+    @IBOutlet weak var helpMenu: NSMenuItem!
+    @IBOutlet weak var helpMenuOnlineHelp: NSMenuItem!
+    @IBOutlet weak var helpMenuAppStoreRating: NSMenuItem!
+    @IBOutlet weak var helpMenuOthersPreviewMarkdown: NSMenuItem!
+    @IBOutlet weak var helpMenuOthersPreviewCode: NSMenuItem!
+    @IBOutlet weak var helpMenuOthersPreviewjson: NSMenuItem!
     // FROM 1.1.4
-    //@IBOutlet var helpMenuOthersPreviewText: NSMenuItem!
-    @IBOutlet var helpMenuWhatsNew: NSMenuItem!
-    //@IBOutlet var helpMenuReportBug: NSMenuItem!
-    @IBOutlet var mainMenuSettings: NSMenuItem!
-    
-    // Panel Items
-    @IBOutlet var versionLabel: NSTextField!
-    
+    @IBOutlet weak var helpMenuWhatsNew: NSMenuItem!
+    @IBOutlet weak var helpMenuReportBug: NSMenuItem!
+    @IBOutlet weak var mainMenuSettings: NSMenuItem!
+
     // Windows
-    @IBOutlet var window: NSWindow!
+    @IBOutlet weak var window: NSWindow!
+    @IBOutlet weak var infoButton: NSButton!
+    @IBOutlet weak var settingsButton: NSButton!
+    @IBOutlet weak var feedbackButton: NSButton!
+    @IBOutlet weak var mainTabView: NSTabView!
 
-    // Report Sheet
-    @IBOutlet var reportWindow: NSWindow!
-    @IBOutlet var feedbackText: NSTextField!
-    @IBOutlet var connectionProgress: NSProgressIndicator!
+    // Window > Info Tab Items
+    @IBOutlet weak var versionLabel: NSTextField!
+    @IBOutlet weak var infoLabel: NSTextField!
 
-    // Preferences Sheet
-    //@IBOutlet weak var codeColourPopup: NSPopUpButton!
-    @IBOutlet var preferencesWindow: NSWindow!
-    @IBOutlet var fontSizeSlider: NSSlider!
-    @IBOutlet var fontSizeLabel: NSTextField!
-    @IBOutlet var useLightCheckbox: NSButton!
-    //@IBOutlet var doShowTagCheckbox: NSButton!
-    @IBOutlet var doIndentScalarsCheckbox: NSButton!
-    @IBOutlet var doShowRawYamlCheckbox: NSButton!
-    @IBOutlet var codeFontPopup: NSPopUpButton!
-    @IBOutlet var codeIndentPopup: NSPopUpButton!
-    // FROM 1.1.0
-    @IBOutlet var codeColorWell: NSColorWell!
-    @IBOutlet var codeStylePopup: NSPopUpButton!
-    // FROM 1.1.1
-    //@IBOutlet var tagInfoTextField: NSTextField!
-    // FROM 1.2.0
-    @IBOutlet var doSortKeysCheckbox: NSButton!
-    @IBOutlet var doShowColonCheckbox: NSButton!
+    // Window > Settings Tab Items
+    @IBOutlet weak var fontSizeSlider: NSSlider!
+    @IBOutlet weak var fontSizeLabel: NSTextField!
+    @IBOutlet weak var applyButton: NSButton!
     @IBOutlet var colourSelectionPopup: NSPopUpButton!
+    @IBOutlet var colourWell: NSColorWell!
+    @IBOutlet var fontPopup: NSPopUpButton!
+    @IBOutlet var stylePopup: NSPopUpButton!
+    @IBOutlet var useLightSwitch: NSSwitch!
+    @IBOutlet var doIndentScalarsSwitch: NSSwitch!
+    @IBOutlet var showBadYamlSwitch: NSSwitch!
+    @IBOutlet var showYamlMarksSwitch: NSSwitch!
+    @IBOutlet var indentPopup: NSPopUpButton!
+
+    // Window > Feedback Tab Items
+    @IBOutlet weak var messageSizeLabel: NSTextField!
+    @IBOutlet weak var messageSendButton: NSButton!
+    @IBOutlet weak var feedbackText: NSTextField!
+    @IBOutlet weak var connectionProgress: NSProgressIndicator!
 
     // What's New Sheet
-    @IBOutlet var whatsNewWindow: NSWindow!
-    @IBOutlet var whatsNewWebView: WKWebView!
+    @IBOutlet weak var whatsNewWindow: NSWindow!
+    @IBOutlet weak var whatsNewWebView: WKWebView!
+
+    // FROM 2.0.0
+    // Advanced Settings Sheet
+    @IBOutlet weak var advancedSettingsSheet: NSWindow!
+    @IBOutlet weak var helpAdvancedButton: NSButton!
+    @IBOutlet weak var previewSizeAdvancedPopup: NSPopUpButton!
+    @IBOutlet weak var tintTumbnailsAdvancedSwitch: NSSwitch!
+    @IBOutlet weak var tintTumbnailsAdvancedLabel: NSTextField!
+    @IBOutlet weak var previewMarginSizeText: NSTextField!
+    @IBOutlet weak var previewMarginRangeText: NSTextField!
 
     // MARK: - Private Properies
 
@@ -80,78 +87,108 @@ final class AppDelegate: NSObject,
 
     // MARK: - Private Properies
 
-    internal var whatsNewNav: WKNavigation? = nil
-    private  var feedbackTask: URLSessionTask? = nil
-    private  var indentDepth: Int = BUFFOON_CONSTANTS.YAML_INDENT
-    private  var doShowLightBackground: Bool = false
-    private  var doShowTag: Bool = false
-    private  var doShowRawYaml: Bool = false
-    private  var doIndentScalars: Bool = false
+    internal var whatsNewNav: WKNavigation?     = nil
+    internal var fonts: [PMFont]                = []
+    // FROM 2.0.0
+    private  var tabManager: PMTabManager       = PMTabManager()
+    internal var hasSentFeedback: Bool          = false
+    internal var timer: Timer?                  = nil
+    internal let defaultSettings: PYSettings    = PYSettings()      // Standard values
+    internal var currentSettings: PYSettings    = PYSettings()      // Loaded val
+
+
+    //private  var feedbackTask: URLSessionTask? = nil
+    //private  var indentDepth: Int = BUFFOON_CONSTANTS.YAML_INDENT
+    //private  var doShowLightBackground: Bool = false
+    //private  var doShowTag: Bool = false
+    //private  var doShowRawYaml: Bool = false
+    //private  var doIndentScalars: Bool = false
     // FROM 1.1.0
-    internal var codeFonts: [PMFont] = []
-    private  var codeFontName: String = BUFFOON_CONSTANTS.CODE_FONT_NAME
-    private  var codeColourHex: String = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
-    private  var codeFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+    //internal var codeFonts: [PMFont] = []
+    //private  var codeFontName: String = BUFFOON_CONSTANTS.CODE_FONT_NAME
+    //private  var codeColourHex: String = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+    //private  var codeFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
     // FROM 1.1.1
-    internal var isMontereyPlus: Bool = false
+    //internal var isMontereyPlus: Bool = false
     // FROM 1.1.4
     //private  var havePrefsChanged: Bool = false
     // FROM 1.2.0
-    private var doSortKeys: Bool = true
-    private var doShowColons: Bool = false
-    private var displayColours: [String:String] = [:]
+    //private var doSortKeys: Bool = true
+    //private var doShowColons: Bool = false
+    //private var displayColours: [String:String] = [:]
 
     /*
      Replace the following string with your own team ID. This is used to
      identify the app suite and so share preferences set by the main app with
      the previewer and thumbnailer extensions.
      */
-    private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
+    internal var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
 
 
     // MARK: - Class Lifecycle Functions
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         
-        // FROM 1.1.0
         // Asynchronously get the list of code fonts
-        DispatchQueue.init(label: "com.bps.previewyaml.async-queue").async {
-            self.asyncGetFonts()
+        // FROM 2.0.0 - Use Swift Concurrency
+        Task {
+            asyncGetFonts()
         }
 
         // Set application group-level defaults
-        registerPreferences()
-        
-        // FROM 1.1.1
-        recordSystemState()
-        
-        // Get the local UTI for Yaml files
-        self.localYamlUTI = getLocalFileUTI(BUFFOON_CONSTANTS.SAMPLE_UTI_FILE)
+        self.defaultSettings.registerSettings(self.appSuiteName, getVersion())
 
         // Add the app's version number to the UI
         let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
         versionLabel.stringValue = "Version \(version) (\(build))"
-        
+
         // Disable the Help menu Spotlight features
-        let dummyHelpMenu: NSMenu = NSMenu.init(title: "Dummy")
+        let dummyHelpMenu: NSMenu = NSMenu(title: "Dummy")
         let theApp = NSApplication.shared
         theApp.helpMenu = dummyHelpMenu
-        
-        // FROM 1.1.4
-        // Watch for macOS UI mode changes
-        DistributedNotificationCenter.default.addObserver(self,
-                                                          selector: #selector(interfaceModeChanged),
-                                                          name: NSNotification.Name(rawValue: "AppleInterfaceThemeChangedNotification"),
-                                                          object: nil)
+
+        // FROM 2.0.0
+        // Configure the tab manager
+        self.tabManager.parent = self
+        self.tabManager.buttons.append(self.infoButton)
+        self.tabManager.buttons.append(self.settingsButton)
+        self.tabManager.buttons.append(self.feedbackButton)
+        self.infoButton.toolTip = "About PreviewYaml 2"
+        self.settingsButton.toolTip = "Set preview styles and content"
+        self.feedbackButton.toolTip = "Send feedback to the developer"
+        self.infoButton.alphaValue = 1.0
+        self.settingsButton.alphaValue = 1.0
+        self.feedbackButton.alphaValue = 1.0
+
+        // Add callback closures, one per tab, to the tab manager
+        self.tabManager.callbacks.append(nil)   // Info tab
+        self.tabManager.callbacks.append {      // Settings tab
+            self.willShowSettingsPage()
+        }
+        self.tabManager.callbacks.append {
+            self.willShowFeedbackPage()         // Feedback tab
+        }
+
+        // Clear the Feedback tab
+        // NOTE Don't initialise the Settings tab here too:
+        //      It must happen after we've got a list of fonts
+        initialiseFeedback()
+
+        // FROM 2.0.0
+        // Set up advanced settings
+        self.previewMarginSizeText.delegate = self
+        self.previewMarginRangeText.stringValue = "Valid range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MAX)"
 
         // Centre the main window and display
+        setInfoText()
+        self.window.delegate = self
         self.window.center()
         self.window.makeKeyAndOrderFront(self)
 
         // Show the 'What's New' panel if we need to
         // NOTE Has to take place at the end of the function
-        doShowWhatsNew(self)
+        //doShowWhatsNew(self)
     }
 
 
@@ -170,83 +207,148 @@ final class AppDelegate: NSObject,
      - Parameters:
         - sender: The source of the action.
      */
-    @IBAction private func doClose(_ sender: Any) {
-        
-        // Reset the QL thumbnail cache... just in case it helps
-        _ = runProcess(app: "/usr/bin/qlmanage", with: ["-r", "cache"])
-        
-        // FROM 1.1.4
-        // Check for open panels
-        if self.preferencesWindow.isVisible {
-            if checkPrefs() {
-                let alert: NSAlert = showAlert("You have unsaved settings",
-                                               "Do you wish to cancel and save them, or quit the app anyway?",
-                                               false)
-                alert.addButton(withTitle: "Quit")
-                alert.addButton(withTitle: "Cancel")
-                alert.beginSheetModal(for: self.preferencesWindow) { (response: NSApplication.ModalResponse) in
-                    if response == NSApplication.ModalResponse.alertFirstButtonReturn {
-                        // The user clicked 'Quit'
-                        self.preferencesWindow.close()
-                        self.window.close()
-                    }
-                }
-                
-                return
-            }
-            
-            self.preferencesWindow.close()
-        }
-        
+    @IBAction
+    private func doClose(_ sender: Any) {
+
+        closeBasics()
+        closeSettings()
+    }
+    
+
+    /**
+     Close sheets and perform other general close-related tasks.
+
+     FROM 2.0.0
+     */
+    internal func closeBasics() {
+
+        // Close the What's New sheet if it's open
         if self.whatsNewWindow.isVisible {
             self.whatsNewWindow.close()
         }
-        
-        if self.reportWindow.isVisible {
-            if self.feedbackText.stringValue.count > 0 {
-                let alert: NSAlert = showAlert("You have unsent feedback",
-                                               "Do you wish to cancel and send it, or quit the app anyway?",
-                                               false)
-                alert.addButton(withTitle: "Quit")
-                alert.addButton(withTitle: "Cancel")
-                alert.beginSheetModal(for: self.reportWindow) { (response: NSApplication.ModalResponse) in
-                    if response == NSApplication.ModalResponse.alertFirstButtonReturn {
-                        // The user clicked 'Quit'
-                        self.reportWindow.close()
-                        self.window.close()
-                    }
+    }
+
+
+    /**
+     Handle a settings-change call to action, if there is one, and either bail (to allow the user
+     to save the settings) or move on to the feedback check.
+
+     FROM 2.0.0
+     */
+    internal func closeSettings() {
+
+        // Are there any unsaved changes to the settings?
+        if checkSettings() {
+            let alert: NSAlert = makeAlert("You have unsaved settings",
+                                           "Do you wish to cancel and save or change them, or quit the app anyway?",
+                                           false)
+            alert.addButton(withTitle: "Quit")
+            alert.addButton(withTitle: "Cancel")
+            alert.beginSheetModal(for: self.window) { (response) in
+                if response == .alertFirstButtonReturn {
+                    // The user clicked 'Quit': now check for feedback changes
+                    self.closeFeedback()
                 }
-                
-                return
             }
-            
-            self.reportWindow.close()
+
+            // Exit the close process to allow the user to save their changed settings
+            return
         }
-                
-        // Close the window... which will trigger an app closure
+
+        // Move on to the next phase: the feedback check
+        closeFeedback()
+    }
+
+
+    /**
+     Handle a feedback-unsent call to action, if one is needed, and either bail (to all the user
+     to send the feedback) or close the main window.
+
+     FROM 2.0.0
+     */
+    internal func closeFeedback() {
+
+        // Does the feeback page contain text? If so let the user know
+        if self.feedbackText.stringValue.count > 0 && !self.hasSentFeedback {
+            let alert: NSAlert = makeAlert("You have unsent feedback",
+                                           "Do you wish to cancel and send it, or quit the app anyway?",
+                                           false)
+            alert.addButton(withTitle: "Quit")
+            alert.addButton(withTitle: "Cancel")
+            alert.beginSheetModal(for: self.window) { (response) in
+                if response == .alertFirstButtonReturn {
+                    // The user clicked 'Quit'
+                    self.window.close()
+                }
+            }
+
+            // Exit the close process to allow the user to send their entered feedback
+            return
+        }
+
+        // No feedback text to send/ignore so close the window which will trigger an app closure
         self.window.close()
     }
-    
-    
+
+
+    @IBAction
+    private func doSwitchTab(sender: NSButton) {
+
+        // FROM 2.0.0
+        self.tabManager.buttonClicked(sender)
+    }
+
+
+    @IBAction
+    private func doShowSettings(sender: Any) {
+
+        // FROM 2.0.0
+        self.tabManager.programmaticallyClickButton(at: 1)
+    }
+
+
+    @IBAction
+    private func doShowFeedback(sender: Any) {
+
+        // FROM 2.0.0
+        self.tabManager.programmaticallyClickButton(at: 2)
+    }
+
+
+    /**
+     Alternative route to help.
+     */
+    @IBAction
+    private func doShowPrefsHelp(sender: Any) {
+
+        let path: String
+        if sender as? NSButton == self.helpAdvancedButton {
+            path = BUFFOON_CONSTANTS.URL_MAIN + "#advanced-settings"
+        } else {
+            path = BUFFOON_CONSTANTS.URL_MAIN + "#customise-the-preview"
+        }
+
+        NSWorkspace.shared.open(URL(string:path)!)
+    }
+
+
     /**
      Called from various **Help** items to open various websites.
 
      - Parameters:
         - sender: The source of the action.
      */
-    @IBAction @objc private func doShowSites(sender: Any) {
-        
+    @IBAction
+    @objc
+    private func doShowSites(sender: Any) {
+
         // Open the websites for contributors, help and suc
         let item: NSMenuItem = sender as! NSMenuItem
         var path: String = BUFFOON_CONSTANTS.URL_MAIN
         
         // Depending on the menu selected, set the load path
-        if item == self.helpMenuAcknowledgments {
-            path += "#acknowledgements"
-        } else if item == self.helpMenuAppStoreRating {
+        if item == self.helpMenuAppStoreRating {
             path = BUFFOON_CONSTANTS.APP_STORE + "?action=write-review"
-        } else if item == self.helpMenuAckYamlSwift {
-            path = "https://github.com/behrang/YamlSwift"
         } else if item == self.helpMenuOnlineHelp {
             path += "#how-to-use-previewyaml"
         } else if item == self.helpMenuOthersPreviewMarkdown {
@@ -255,20 +357,52 @@ final class AppDelegate: NSObject,
             path = BUFFOON_CONSTANTS.APP_URLS.PC
         } else if item == self.helpMenuOthersPreviewjson {
             path = BUFFOON_CONSTANTS.APP_URLS.PJ
-        } //else if item == self.helpMenuOthersPreviewText {
-          //  path = BUFFOON_CONSTANTS.APP_URLS.PT
-        //}
+        }
         
         // Open the selected website
         NSWorkspace.shared.open(URL.init(string:path)!)
     }
+
+
+    // MARK: - Window Set Up Functions
+
+    /**
+     Create and display the information text label. This is done programmatically
+     because we're using an NSAttributedString rather than a plain string.
+     */
+    private func setInfoText() {
+
+        // Set the attributes
+        let bodyAtts: [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: 13.0),
+            .foregroundColor: NSColor.labelColor
+        ]
+
+        let boldAtts : [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: 13.0, weight: .bold),
+            .foregroundColor: NSColor.labelColor
+        ]
+
+        let infoText: NSMutableAttributedString = NSMutableAttributedString(string: "You need only run this app once, to register its YAML Previewer and YAML Thumbnailer application extensions with macOS. You can then manage these extensions in ", attributes: bodyAtts)
+        let boldText: NSAttributedString = NSAttributedString(string: "System Settings > Extensions > Quick Look", attributes: boldAtts)
+        infoText.append(boldText)
+        infoText.append(NSAttributedString(string: ".\n\nCases where previews cannot be rendered can usually be resolved by logging out of your Mac, logging in again and running this app once more.", attributes: bodyAtts))
+        self.infoLabel.attributedStringValue = infoText
+    }
+
+
+
+
+
+
+
 
     /**
      Open the System Preferences app at the Extensions pane.
 
      - Parameters:
         - sender: The source of the action.
-     */
+
     @IBAction private func doOpenSysPrefs(sender: Any) {
 
         // Open the System Preferences app at the Extensions pane
@@ -1038,5 +1172,8 @@ final class AppDelegate: NSObject,
             }
         }
     }
-    
+
+     */
+
+
 }

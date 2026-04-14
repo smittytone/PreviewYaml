@@ -113,19 +113,6 @@ extension AppDelegate {
 
 
     /**
-     Build a basic 'major.manor' version string for prefs usage.
-
-     - Returns: The version string.
-     */
-    internal func getVersion() -> String {
-
-        let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-        let parts: [String] = (version as NSString).components(separatedBy: ".")
-        return parts[0] + "-" + parts[1]
-    }
-
-
-    /**
      Build a date string string for feedback usage.
 
      - Returns: The date string.
@@ -197,28 +184,6 @@ extension AppDelegate {
         }
         
         return localUTI
-    }
-    
-    
-    /**
-     Disable all panel-opening menu items.
-     */
-    internal func hidePanelGenerators() {
-        
-        //self.helpMenuReportBug.isEnabled = false
-        self.helpMenuWhatsNew.isEnabled = false
-        self.mainMenuSettings.isEnabled = false
-    }
-    
-    
-    /**
-     Enable all panel-opening menu items.
-     */
-    internal func showPanelGenerators() {
-        
-        //self.helpMenuReportBug.isEnabled = true
-        self.helpMenuWhatsNew.isEnabled = true
-        self.mainMenuSettings.isEnabled = true
     }
     
     
