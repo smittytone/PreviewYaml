@@ -14,21 +14,37 @@ class AppDelegate:  NSObject,
 
     // MARK: - Class UI Properies
     
-    @IBOutlet var window: NSWindow!
-    @IBOutlet var mainView: NSView!
-    @IBOutlet var previewTextView: NSTextView!
-    @IBOutlet var previewScrollView: NSScrollView!
-    @IBOutlet var modeButton: NSButton!
-    @IBOutlet var indentButton: NSButton!
+    @IBOutlet weak var window: NSWindow!
+    @IBOutlet weak var mainView: NSView!
+    @IBOutlet weak var previewTextView: NSTextView!
+    @IBOutlet weak var previewScrollView: NSScrollView!
+    @IBOutlet weak var modeButton: NSButton!
+    @IBOutlet weak var indentButton: NSButton!
+    @IBOutlet weak var reloadButton: NSButton!
+    @IBOutlet weak var reloadMenuItem: NSMenuItem!
+    @IBOutlet weak var progress: NSProgressIndicator!
+    @IBOutlet weak var thumbButton: NSButton!
 
 
     // MARK: - Private Properies
 
     private var openDialog: NSOpenPanel? = nil
-    private var currentURL: URL? = nil
+    private var _currentURL: URL? = nil
+    private var currentDirURL: URL? = nil
     private var renderAsDark: Bool = true
     private var renderIndents: Bool = false
-    private var common: Common = Common.init(false)
+    private var common: Common? = nil
+
+    private var currentURL: URL? {
+        get {
+            return self._currentURL
+        }
+        set(new) {
+            self._currentURL = new
+            self.reloadButton.isEnabled = new != nil
+            self.reloadMenuItem.isEnabled = new != nil
+        }
+    }
 
     
     // MARK: - Class Lifecycle Functions
@@ -38,7 +54,15 @@ class AppDelegate:  NSObject,
         // Set the mode button
         self.modeButton.state = self.renderAsDark ? .on : .off
         self.indentButton.state = self.renderIndents ? .on : .off
-        
+        self.reloadButton.isEnabled = false
+        self.reloadMenuItem.isEnabled = false
+        self.progress.isHidden = true
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.doRender),
+                                               name: NSNotification.Name(rawValue: "com.bps.rd.load"),
+                                               object: nil)
+
         // Centre the main window and display
         self.window.center()
         self.window.makeKeyAndOrderFront(self)
@@ -54,47 +78,72 @@ class AppDelegate:  NSObject,
 
     // MARK: - Action Functions
     
-    @IBAction private func doLoadFile(_ sender: Any) {
+    @IBAction
+    private func doLoadFile(_ sender: Any) {
 
-        self.openDialog = NSOpenPanel.init()
-        self.openDialog!.canChooseFiles = true
-        self.openDialog!.canChooseDirectories = false
-        self.openDialog!.allowsMultipleSelection = false
-        self.openDialog!.delegate = self
-        self.openDialog!.directoryURL = URL.init(fileURLWithPath: "")
-
-        if self.openDialog!.runModal() == .OK {
-            self.currentURL = self.openDialog!.url
-            let possibleError: NSError? = renderContent(self.openDialog!.url)
-            if possibleError != nil {
-                let errorAlert: NSAlert = NSAlert.init(error: possibleError!)
-                errorAlert.beginSheetModal(for: self.window)
-            }
+        let openPanel = NSOpenPanel()
+        openPanel.delegate = self
+        openPanel.canChooseFiles = true
+        openPanel.allowsMultipleSelection = false
+        openPanel.canChooseDirectories = false
+        if self.currentDirURL != nil {
+            openPanel.directoryURL = self.currentDirURL!
+        } else {
+            openPanel.directoryURL = FileManager.default.homeDirectoryForCurrentUser
         }
 
-        self.openDialog = nil
+        openPanel.beginSheetModal(for: self.window) { (response) in
+            if response == .OK {
+                self.currentURL = openPanel.url
+                self.currentDirURL = openPanel.directoryURL
+                NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "com.bps.rd.load")))
+            }
+        }
     }
-    
-    
-    @IBAction private func doSwitchMode(_ sender: Any) {
-        
+
+
+    @IBAction
+    private func doReloadFile(_ sender: Any) {
+
+        doRender(Notification(name: Notification.Name(rawValue: "")))
+    }
+
+    @IBAction
+    private func doSwitchMode(_ sender: Any) {
+
         self.renderAsDark = self.modeButton.state == .on
         doReRenderFile(self)
     }
 
 
-    @IBAction private func doReRenderFile(_ sender: Any) {
+    @IBAction
+    private func doReRenderFile(_ sender: Any) {
 
-        let possibleError: NSError? = renderContent(self.currentURL)
-        if possibleError != nil {
-            // Pop up an alert
-            let errorAlert: NSAlert = NSAlert.init(error: possibleError!)
-            errorAlert.beginSheetModal(for: self.window)
-        }
+        wenderFile()
     }
 
 
-    @IBAction private func doSetIndentCharacter(_ sender: Any) {
+    @objc
+    func wenderFile() {
+
+        Task { @MainActor in
+            self.progress.isHidden = false
+            self.progress.startAnimation(self)
+
+            let possibleError: NSError? = await renderContent(self.currentURL)
+            self.progress.stopAnimation(self)
+
+            if possibleError != nil {
+                // Pop up an alert
+                let errorAlert: NSAlert = NSAlert(error: possibleError!)
+                await errorAlert.beginSheetModal(for: self.window)
+            }
+        }
+   }
+
+
+    @IBAction
+    private func doSetIndentCharacter(_ sender: Any) {
 
         self.renderIndents = self.indentButton.state == .on
         doReRenderFile(self)
@@ -102,35 +151,82 @@ class AppDelegate:  NSObject,
 
     
     // MARK: - Rendering Functions
-    
-    func renderContent(_ fileToRender: URL?) -> NSError? {
-        
+
+    @objc
+    private func doRender(_ note: Notification) {
+
+        self.progress.isHidden = false
+        self.progress.startAnimation(self)
+        let _ = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.wenderFile), userInfo: nil, repeats: false)
+
+    }
+
+    @MainActor
+    private func renderContent(_ fileToRender: URL?) async -> NSError? {
+
+
         var reportError: NSError? = nil
+
+        self.common = Common(forThumbnail: false)
 
         do {
             if let yamlUrl: URL = fileToRender {
                 self.window.title = yamlUrl.absoluteString
 
                 // Get the file contents as a string
-                let data: Data = try Data.init(contentsOf: yamlUrl, options: [.uncached])
+                let data: Data = try Data(contentsOf: yamlUrl, options: [.uncached])
 
                 // Get the string's encoding, or fail back to .utf8
                 let encoding: String.Encoding = data.stringEncoding ?? .utf8
 
-                if let yamlFileString: String = String.init(data: data, encoding: encoding) {
-                    common.doShowLightBackground = !self.renderAsDark
-                    common.doUseSpecialIndentChar = self.renderIndents
-                    common.resetStylesOnModeChange()
-                    
-                    let yamlAttString: NSAttributedString = common.getAttributedString(yamlFileString)
+                if let yamlString: String = String(data: data, encoding: encoding) {
 
-                    self.previewTextView.backgroundColor = common.doShowLightBackground ? NSColor.init(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
-                    self.previewScrollView.scrollerKnobStyle = common.doShowLightBackground ? .dark : .light
+                    self.common!.doShowLightBackground = !self.renderAsDark
+                    self.common!.resetStylesOnModeChange()
 
+                    /* OLD 1.x ENGINE STUFF
+                    let regexTrue = try! NSRegularExpression(pattern: ":[\\s]*true")
+                    let jsonStringTrue: String = regexTrue.stringByReplacingMatches(in: jsonString,
+                                                                                    options: [],
+                                                                                    range: NSMakeRange(0, jsonString.count),
+                                                                                    withTemplate: ": \"JSON-TRUE\"")
+
+                    let regexFalse = try! NSRegularExpression(pattern: ":[\\s]*false")
+                    let jsonStringFalse: String = regexFalse.stringByReplacingMatches(in: jsonStringTrue,
+                                                                                      options: [],
+                                                                                      range: NSMakeRange(0, jsonStringTrue.count),
+                                                                                      withTemplate: ": \"JSON-FALSE\"")
+
+                    // Get the key string first
+                    let jsonDataCoded: Data = jsonStringFalse.data(using: encoding) ?? data
+                    let jsonAttString: NSAttributedString = common.getAttributedString(jsonDataCoded)
+                     */
+
+                    let attString: NSAttributedString
+                    if self.thumbButton.state == .on {
+                        attString = self.common!.getThumbnailString(fromYaml: yamlString)
+                    } else {
+                        attString = await self.common!.getAttributedString(yamlString)
+                    }
+                    self.previewTextView.backgroundColor = self.common!.doShowLightBackground ? NSColor(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
+                    self.previewScrollView.scrollerKnobStyle = self.common!.doShowLightBackground ? .dark : .light
+
+                    // Rescale the text view
+                    if common!.tableWidth > self.previewTextView.frame.width {
+                        self.previewTextView.setFrameSize(NSSize(width: self.common!.tableWidth + 20.0, height: self.previewTextView.frame.size.height))
+                    }
+
+                    // Render the attributed string
                     if let renderTextStorage: NSTextStorage = self.previewTextView.textStorage {
                         renderTextStorage.beginEditing()
-                        renderTextStorage.setAttributedString(yamlAttString)
+                        renderTextStorage.setAttributedString(attString)
                         renderTextStorage.endEditing()
+
+#if DEBUG
+                        print("********** END ************")
+#endif
+                        
+                        self.common = nil
                         return nil
                     }
 
@@ -154,8 +250,10 @@ class AppDelegate:  NSObject,
             // We couldn't read the file so set an appropriate error to report back
             reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
         }
-        
+
+        self.common = nil
         return reportError
+        
     }
     
     

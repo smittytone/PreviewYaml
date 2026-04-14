@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="21701" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24765" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="21701"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24765"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -14,11 +15,15 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="RenderDemo" customModuleProvider="target">
             <connections>
-                <outlet property="indentButton" destination="AYa-sx-eam" id="kHQ-gh-B3B"/>
+                <outlet property="indentButton" destination="PY0-yp-q30" id="y11-Rb-Ge7"/>
                 <outlet property="mainView" destination="EiT-Mj-1SZ" id="Xgj-E0-Kdt"/>
-                <outlet property="modeButton" destination="gEA-fv-6Ox" id="s5U-zN-PZt"/>
+                <outlet property="modeButton" destination="cUv-yG-ROn" id="nRU-sE-vcW"/>
                 <outlet property="previewScrollView" destination="9tz-gF-DdE" id="fWy-88-plv"/>
                 <outlet property="previewTextView" destination="NAJ-g1-D1W" id="UaC-b0-EJw"/>
+                <outlet property="progress" destination="Wzq-xC-xkq" id="NO6-mA-IJ3"/>
+                <outlet property="reloadButton" destination="xXF-zr-IHi" id="L11-it-rA5"/>
+                <outlet property="reloadMenuItem" destination="hgU-EM-IhT" id="7em-zg-5z0"/>
+                <outlet property="thumbButton" destination="mIm-wI-PGa" id="cY9-pK-RcH"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -71,11 +76,11 @@
                 </menuItem>
                 <menuItem title="File" id="dMs-cI-mzQ">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="File" id="bib-Uj-vzu">
+                    <menu key="submenu" title="File" autoenablesItems="NO" id="bib-Uj-vzu">
                         <items>
                             <menuItem title="Open…" keyEquivalent="o" id="IAo-SY-fd9">
                                 <connections>
-                                    <action selector="doLoadYamlFile:" target="Voe-Tx-rLC" id="Bt2-4Z-2Vr"/>
+                                    <action selector="doLoadFile:" target="Voe-Tx-rLC" id="sxq-ZC-6zu"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Open Recent" id="tXI-mr-wws">
@@ -91,6 +96,12 @@
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="mdE-Es-IKM"/>
+                            <menuItem title="Refresh" keyEquivalent="r" id="hgU-EM-IhT">
+                                <connections>
+                                    <action selector="doReloadFile:" target="Voe-Tx-rLC" id="Jgt-ge-mdT"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>
@@ -98,11 +109,12 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="View" id="HyV-fh-RgO">
                         <items>
-                            <menuItem title="Switch UI Mode" keyEquivalent="M" id="snW-S8-Cw5">
+                            <menuItem title="Re-render File" keyEquivalent="r" id="A9A-XP-Ocv">
                                 <connections>
-                                    <action selector="doSwitchMode:" target="Voe-Tx-rLC" id="tfh-0W-uUl"/>
+                                    <action selector="doReRenderFile:" target="Voe-Tx-rLC" id="Pe2-lc-TBJ"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Switch UI Mode" keyEquivalent="M" id="snW-S8-Cw5"/>
                             <menuItem isSeparatorItem="YES" id="hB3-LF-h0Y"/>
                             <menuItem title="Enter Full Screen" keyEquivalent="f" id="4J7-dP-txa">
                                 <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
@@ -157,95 +169,139 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="335" y="390" width="660" height="478"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="3840" height="2135"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1204"/>
             <value key="minSize" type="size" width="660" height="478"/>
             <value key="minFullScreenContentSize" type="size" width="660" height="478"/>
             <view key="contentView" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="660" height="478"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9tz-gF-DdE">
-                        <rect key="frame" x="0.0" y="78" width="660" height="400"/>
+                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" translatesAutoresizingMaskIntoConstraints="NO" id="9tz-gF-DdE">
+                        <rect key="frame" x="0.0" y="88" width="660" height="390"/>
                         <clipView key="contentView" drawsBackground="NO" id="BJy-MZ-98D">
-                            <rect key="frame" x="0.0" y="0.0" width="660" height="400"/>
+                            <rect key="frame" x="0.0" y="0.0" width="660" height="390"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textView wantsLayer="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="NAJ-g1-D1W">
-                                    <rect key="frame" x="0.0" y="0.0" width="660" height="400"/>
+                                <textView wantsLayer="YES" editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" allowsCharacterPickerTouchBarItem="NO" usesRuler="YES" textCompletion="NO" layoutManager="textKit1" id="NAJ-g1-D1W">
+                                    <rect key="frame" x="0.0" y="0.0" width="660" height="390"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="minSize" width="660" height="400"/>
+                                    <size key="minSize" width="660" height="390"/>
                                     <size key="maxSize" width="660" height="10000000"/>
                                     <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                 </textView>
                             </subviews>
                         </clipView>
                         <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="Xl5-99-hvh">
-                            <rect key="frame" x="-100" y="-100" width="240" height="16"/>
+                            <rect key="frame" x="0.0" y="383" width="660" height="17"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="skS-h9-m4V">
-                            <rect key="frame" x="644" y="0.0" width="16" height="400"/>
+                        <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="skS-h9-m4V">
+                            <rect key="frame" x="643" y="0.0" width="17" height="294"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
-                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="f2a-59-pv7">
-                        <rect key="frame" x="535" y="13" width="112" height="32"/>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PY0-yp-q30">
+                        <rect key="frame" x="20" y="20" width="138" height="16"/>
+                        <buttonCell key="cell" type="check" title="Expose indentation" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Kua-pY-mCh">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
                         <constraints>
-                            <constraint firstAttribute="height" constant="20" id="HyQ-Gu-ppa"/>
-                            <constraint firstAttribute="width" constant="98" id="U17-b5-UTQ"/>
+                            <constraint firstAttribute="height" constant="16" id="0yt-6L-z4q"/>
                         </constraints>
+                        <connections>
+                            <action selector="doSetIndentCharacter:" target="Voe-Tx-rLC" id="7AW-EK-kM8"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cUv-yG-ROn">
+                        <rect key="frame" x="20" y="42" width="514" height="16"/>
+                        <buttonCell key="cell" type="check" title="Dark Mode" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="0P9-pv-cCh">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="16" id="2kT-Dq-oG1"/>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="514" id="E8q-QZ-8mr"/>
+                        </constraints>
+                        <connections>
+                            <action selector="doSwitchMode:" target="Voe-Tx-rLC" id="uCD-0Y-TM4"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="f2a-59-pv7">
+                        <rect key="frame" x="542" y="20" width="98" height="20"/>
                         <buttonCell key="cell" type="push" title="Load..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="629-9R-UdX">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="98" id="IkA-gX-OG4"/>
+                            <constraint firstAttribute="height" constant="20" id="ipA-Pc-maB"/>
+                        </constraints>
                         <connections>
-                            <action selector="doLoadFile:" target="Voe-Tx-rLC" id="ycC-ua-wcQ"/>
+                            <action selector="doLoadFile:" target="Voe-Tx-rLC" id="cl2-82-I8J"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="AYa-sx-eam">
-                        <rect key="frame" x="18" y="19" width="516" height="18"/>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xXF-zr-IHi">
+                        <rect key="frame" x="451" y="18" width="83" height="24"/>
+                        <buttonCell key="cell" type="push" title="Reload" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dH6-Fu-yLg">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
                         <constraints>
-                            <constraint firstAttribute="height" constant="16" id="3CS-WB-Q0C"/>
+                            <constraint firstAttribute="height" constant="24" id="TGt-He-Aac"/>
+                            <constraint firstAttribute="width" constant="83" id="tLx-sl-wEY"/>
                         </constraints>
-                        <buttonCell key="cell" type="check" title="Expose indentation" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="X20-y1-ldl">
+                        <connections>
+                            <action selector="doReloadFile:" target="Voe-Tx-rLC" id="UgI-o3-rb7"/>
+                        </connections>
+                    </button>
+                    <progressIndicator maxValue="100" displayedWhenStopped="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="Wzq-xC-xkq">
+                        <rect key="frame" x="314" y="223" width="32" height="32"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="32" id="219-RT-Gjg"/>
+                            <constraint firstAttribute="width" constant="32" id="JR8-05-X7V"/>
+                        </constraints>
+                    </progressIndicator>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="mIm-wI-PGa">
+                        <rect key="frame" x="20" y="64" width="620" height="16"/>
+                        <buttonCell key="cell" type="check" title="Thumbnail" bezelStyle="regularSquare" imagePosition="left" inset="2" id="yj0-nX-zys">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
-                        <connections>
-                            <action selector="doSetIndentCharacter:" target="Voe-Tx-rLC" id="ATs-sx-cC2"/>
-                        </connections>
-                    </button>
-                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gEA-fv-6Ox">
-                        <rect key="frame" x="18" y="41" width="516" height="18"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="514" id="EMb-rr-QTt"/>
-                            <constraint firstAttribute="height" constant="16" id="wmT-b2-rho"/>
+                            <constraint firstAttribute="height" constant="16" id="8cO-tc-h4o"/>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="514" id="EF4-oS-4YG"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="16" id="kUA-Qp-PoB"/>
                         </constraints>
-                        <buttonCell key="cell" type="check" title="Dark Mode" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="54m-bT-00c">
-                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
                         <connections>
-                            <action selector="doSwitchMode:" target="Voe-Tx-rLC" id="uFv-GE-PiR"/>
+                            <action selector="doReloadFile:" target="Voe-Tx-rLC" id="IVw-qq-khL"/>
                         </connections>
                     </button>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="AYa-sx-eam" firstAttribute="top" secondItem="gEA-fv-6Ox" secondAttribute="bottom" constant="6" symbolic="YES" id="0Rl-xQ-ArR"/>
-                    <constraint firstAttribute="trailing" secondItem="9tz-gF-DdE" secondAttribute="trailing" id="7wz-ec-rat"/>
-                    <constraint firstItem="9tz-gF-DdE" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="FqV-CX-aej"/>
-                    <constraint firstAttribute="bottom" secondItem="f2a-59-pv7" secondAttribute="bottom" constant="20" symbolic="YES" id="Wd3-NR-TJY"/>
-                    <constraint firstItem="f2a-59-pv7" firstAttribute="leading" secondItem="AYa-sx-eam" secondAttribute="trailing" constant="8" symbolic="YES" id="Wzf-zG-mIi"/>
-                    <constraint firstAttribute="bottom" secondItem="AYa-sx-eam" secondAttribute="bottom" constant="20" symbolic="YES" id="YUH-gY-tjS"/>
-                    <constraint firstItem="gEA-fv-6Ox" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="Zbj-cL-n9C"/>
-                    <constraint firstItem="9tz-gF-DdE" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="jwR-mf-E6O"/>
-                    <constraint firstItem="gEA-fv-6Ox" firstAttribute="top" secondItem="9tz-gF-DdE" secondAttribute="bottom" constant="20" id="ob3-bG-fM2"/>
-                    <constraint firstItem="AYa-sx-eam" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="sHd-wM-A7u"/>
-                    <constraint firstAttribute="trailing" secondItem="f2a-59-pv7" secondAttribute="trailing" constant="20" symbolic="YES" id="xai-fh-jYP"/>
+                    <constraint firstAttribute="trailing" secondItem="9tz-gF-DdE" secondAttribute="trailing" id="1Cy-I4-BDP"/>
+                    <constraint firstItem="9tz-gF-DdE" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="1nO-d9-maJ"/>
+                    <constraint firstItem="f2a-59-pv7" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="PY0-yp-q30" secondAttribute="trailing" constant="8" symbolic="YES" id="6CR-xc-7sH"/>
+                    <constraint firstAttribute="trailing" secondItem="f2a-59-pv7" secondAttribute="trailing" constant="20" symbolic="YES" id="CFz-ED-Zjx"/>
+                    <constraint firstItem="f2a-59-pv7" firstAttribute="leading" secondItem="xXF-zr-IHi" secondAttribute="trailing" constant="8" id="CuA-dy-EpB"/>
+                    <constraint firstAttribute="trailing" secondItem="mIm-wI-PGa" secondAttribute="trailing" constant="20" symbolic="YES" id="Fdv-Lb-tgb"/>
+                    <constraint firstItem="PY0-yp-q30" firstAttribute="top" secondItem="cUv-yG-ROn" secondAttribute="bottom" constant="6" symbolic="YES" id="Ju4-iW-DsC"/>
+                    <constraint firstItem="Wzq-xC-xkq" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" id="N5z-Zx-eyb"/>
+                    <constraint firstItem="PY0-yp-q30" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="SKt-Yq-a9G"/>
+                    <constraint firstAttribute="bottom" secondItem="xXF-zr-IHi" secondAttribute="bottom" constant="18" id="XRf-QO-Xpo"/>
+                    <constraint firstItem="mIm-wI-PGa" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="Y1Z-Y0-iAP"/>
+                    <constraint firstItem="Wzq-xC-xkq" firstAttribute="centerY" secondItem="EiT-Mj-1SZ" secondAttribute="centerY" id="foa-kC-aa1"/>
+                    <constraint firstItem="cUv-yG-ROn" firstAttribute="top" secondItem="mIm-wI-PGa" secondAttribute="bottom" constant="6" symbolic="YES" id="gPa-8d-22o"/>
+                    <constraint firstItem="cUv-yG-ROn" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="p2F-wZ-QCI"/>
+                    <constraint firstAttribute="bottom" secondItem="f2a-59-pv7" secondAttribute="bottom" constant="20" symbolic="YES" id="r8O-uD-U7X"/>
+                    <constraint firstAttribute="bottom" secondItem="PY0-yp-q30" secondAttribute="bottom" constant="20" symbolic="YES" id="ssS-EH-JMo"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="cUv-yG-ROn" secondAttribute="trailing" constant="20" symbolic="YES" id="uoj-4f-PSC"/>
+                    <constraint firstItem="mIm-wI-PGa" firstAttribute="top" secondItem="9tz-gF-DdE" secondAttribute="bottom" constant="8" symbolic="YES" id="wnF-mP-byN"/>
+                    <constraint firstItem="9tz-gF-DdE" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="xOf-Lx-EmJ"/>
                 </constraints>
             </view>
-            <point key="canvasLocation" x="290" y="458"/>
+            <point key="canvasLocation" x="304" y="680"/>
         </window>
     </objects>
 </document>
