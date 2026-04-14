@@ -7,18 +7,38 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3B07D226267CA77500BAEF6B /* GenericColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B07D225267CA77500BAEF6B /* GenericColorExtensions.swift */; };
-		3B07D227267CA77500BAEF6B /* GenericColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B07D225267CA77500BAEF6B /* GenericColorExtensions.swift */; };
-		3B07D228267CA77500BAEF6B /* GenericColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B07D225267CA77500BAEF6B /* GenericColorExtensions.swift */; };
+		3B110DB62F88FCF5003EFF55 /* YAMLEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DB42F88FCF5003EFF55 /* YAMLEntities.swift */; };
+		3B110DB72F88FCF5003EFF55 /* YAMLEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DB42F88FCF5003EFF55 /* YAMLEntities.swift */; };
+		3B110DB82F88FCF5003EFF55 /* YAMLEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DB42F88FCF5003EFF55 /* YAMLEntities.swift */; };
+		3B110DB92F88FCF5003EFF55 /* YAMLEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DB42F88FCF5003EFF55 /* YAMLEntities.swift */; };
+		3B110DBB2F88FF6C003EFF55 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DBA2F88FF6C003EFF55 /* Entities.swift */; };
+		3B110DBC2F88FF6C003EFF55 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DBA2F88FF6C003EFF55 /* Entities.swift */; };
+		3B110DBE2F88FF9D003EFF55 /* PMTabManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DBD2F88FF9D003EFF55 /* PMTabManager.swift */; };
+		3B110DC02F89000D003EFF55 /* AppDelegateWhatsNew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DBF2F890002003EFF55 /* AppDelegateWhatsNew.swift */; };
+		3B110DC22F8901BE003EFF55 /* PYSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DC12F8901BA003EFF55 /* PYSettings.swift */; };
+		3B110DC32F8901BE003EFF55 /* PYSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DC12F8901BA003EFF55 /* PYSettings.swift */; };
+		3B110DC42F8901BE003EFF55 /* PYSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DC12F8901BA003EFF55 /* PYSettings.swift */; };
+		3B110DC52F8901BE003EFF55 /* PYSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DC12F8901BA003EFF55 /* PYSettings.swift */; };
+		3B110DC72F89030F003EFF55 /* AppDelegateMisc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DC62F890309003EFF55 /* AppDelegateMisc.swift */; };
+		3B110DC92F8904FC003EFF55 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DC82F8904FC003EFF55 /* Extensions.swift */; };
+		3B110DCA2F8904FC003EFF55 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DC82F8904FC003EFF55 /* Extensions.swift */; };
+		3B110DCB2F8904FC003EFF55 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DC82F8904FC003EFF55 /* Extensions.swift */; };
+		3B110DCC2F8904FC003EFF55 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DC82F8904FC003EFF55 /* Extensions.swift */; };
+		3B110DCE2F8905BD003EFF55 /* AppDelegateFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DCD2F8905B7003EFF55 /* AppDelegateFeedback.swift */; };
+		3B110DD02F8905C7003EFF55 /* AppDelegateSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DCF2F8905C2003EFF55 /* AppDelegateSettings.swift */; };
+		3B110DD22F8912AC003EFF55 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DD12F8912AC003EFF55 /* Common.swift */; };
+		3B110DD32F8912AC003EFF55 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DD12F8912AC003EFF55 /* Common.swift */; };
+		3B110DD42F8912AC003EFF55 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DD12F8912AC003EFF55 /* Common.swift */; };
+		3B110DD52F8912AC003EFF55 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B110DD12F8912AC003EFF55 /* Common.swift */; };
+		3B110DD72F8916AD003EFF55 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 3B110DD62F8916AD003EFF55 /* AppIcon.icon */; };
+		3B110DD82F892E24003EFF55 /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */; };
 		3B21717D26344C81000C5AF6 /* sample.yml in Resources */ = {isa = PBXBuildFile; fileRef = 3B21717C26344C81000C5AF6 /* sample.yml */; };
 		3B218DDB2637F41F0024446B /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3B218DDA2637F41F0024446B /* Yaml */; };
 		3B218DE22637F4290024446B /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3B218DE12637F4290024446B /* Yaml */; };
 		3B3CEF5E2A5B798A00D05123 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3CEF5D2A5B798A00D05123 /* AppDelegate.swift */; };
 		3B3CEF602A5B798B00D05123 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B3CEF5F2A5B798B00D05123 /* Assets.xcassets */; };
 		3B3CEF632A5B798B00D05123 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B3CEF612A5B798B00D05123 /* MainMenu.xib */; };
-		3B3CEF682A5B7A8F00D05123 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64DED2632013A003CD14D /* Common.swift */; };
 		3B3CEF692A5B7A9600D05123 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E112632023C003CD14D /* Constants.swift */; };
-		3B3CEF6A2A5B7AA800D05123 /* GenericColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B07D225267CA77500BAEF6B /* GenericColorExtensions.swift */; };
 		3B3CEF6D2A5B7D9600D05123 /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3B3CEF6C2A5B7D9600D05123 /* Yaml */; };
 		3B6C9177268FAA5000745DF4 /* PMFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6C9176268FAA5000745DF4 /* PMFont.swift */; };
 		3B7D83F92A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */; };
@@ -27,7 +47,7 @@
 		3B7D83FC2A8A3102008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */; };
 		3B7D83FE2A8A311D008A4B2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B7D83FD2A8A311D008A4B2E /* Assets.xcassets */; };
 		3B93E5CF2BD994CD0042F553 /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3B93E5CE2BD994CD0042F553 /* Yaml */; };
-		3BAE671D28D4D481001532BD /* GenericFontExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAE671C28D4D481001532BD /* GenericFontExtensions.swift */; };
+		3BAE671D28D4D481001532BD /* AppDelegateFontHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAE671C28D4D481001532BD /* AppDelegateFontHandling.swift */; };
 		3BB64D8926320064003CD14D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64D8826320064003CD14D /* AppDelegate.swift */; };
 		3BB64D8E26320065003CD14D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8C26320065003CD14D /* MainMenu.xib */; };
 		3BB64D9A26320065003CD14D /* PreviewYamlTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64D9926320065003CD14D /* PreviewYamlTests.swift */; };
@@ -40,15 +60,12 @@
 		3BB64DD7263200BA003CD14D /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BB64DBB263200A8003CD14D /* Quartz.framework */; };
 		3BB64DDA263200BA003CD14D /* ThumbnailProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64DD9263200BA003CD14D /* ThumbnailProvider.swift */; };
 		3BB64DDF263200BA003CD14D /* Yaml Thumbnailer.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3BB64DD4263200BA003CD14D /* Yaml Thumbnailer.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		3BB64DEE2632013A003CD14D /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64DED2632013A003CD14D /* Common.swift */; };
 		3BB64DF52632014D003CD14D /* licences.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64DF42632014D003CD14D /* licences.txt */; };
-		3BB64E05263201A6003CD14D /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64DED2632013A003CD14D /* Common.swift */; };
 		3BB64E0B263201B4003CD14D /* licences.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64DF42632014D003CD14D /* licences.txt */; };
 		3BB64E122632023C003CD14D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E112632023C003CD14D /* Constants.swift */; };
 		3BB64E132632023C003CD14D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E112632023C003CD14D /* Constants.swift */; };
 		3BB64E142632023C003CD14D /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E112632023C003CD14D /* Constants.swift */; };
 		3BC233812A96927E005C3015 /* new in Resources */ = {isa = PBXBuildFile; fileRef = 3BC233802A96927E005C3015 /* new */; };
-		3BDE3EF4267CE6C10037351C /* GenericExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDE3EF3267CE6C10037351C /* GenericExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,7 +115,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3B07D225267CA77500BAEF6B /* GenericColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericColorExtensions.swift; sourceTree = "<group>"; };
+		3B110DB42F88FCF5003EFF55 /* YAMLEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YAMLEntities.swift; sourceTree = "<group>"; };
+		3B110DBA2F88FF6C003EFF55 /* Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
+		3B110DBD2F88FF9D003EFF55 /* PMTabManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PMTabManager.swift; sourceTree = "<group>"; };
+		3B110DBF2F890002003EFF55 /* AppDelegateWhatsNew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegateWhatsNew.swift; sourceTree = "<group>"; };
+		3B110DC12F8901BA003EFF55 /* PYSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PYSettings.swift; sourceTree = "<group>"; };
+		3B110DC62F890309003EFF55 /* AppDelegateMisc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegateMisc.swift; sourceTree = "<group>"; };
+		3B110DC82F8904FC003EFF55 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		3B110DCD2F8905B7003EFF55 /* AppDelegateFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegateFeedback.swift; sourceTree = "<group>"; };
+		3B110DCF2F8905C2003EFF55 /* AppDelegateSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegateSettings.swift; sourceTree = "<group>"; };
+		3B110DD12F8912AC003EFF55 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		3B110DD62F8916AD003EFF55 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; name = AppIcon.icon; path = "/Users/smitty/Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewYaml/AppIcon.icon"; sourceTree = "<absolute>"; };
 		3B21717C26344C81000C5AF6 /* sample.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = sample.yml; sourceTree = "<group>"; };
 		3B3CEF5B2A5B798A00D05123 /* RenderDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RenderDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B3CEF5D2A5B798A00D05123 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -109,7 +136,7 @@
 		3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = REPLACE_WITH_YOUR_CODES.swift; path = "/Users/smitty/Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewApps/REPLACE_WITH_YOUR_CODES.swift"; sourceTree = "<absolute>"; };
 		3B7D83F82A8A30E1008A4B2E /* REPLACE_WITH_YOUR_FUNCTIONS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = REPLACE_WITH_YOUR_FUNCTIONS.swift; path = "/Users/smitty/Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewApps/REPLACE_WITH_YOUR_FUNCTIONS.swift"; sourceTree = "<absolute>"; };
 		3B7D83FD2A8A311D008A4B2E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "/Users/smitty/Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewYaml/Assets.xcassets"; sourceTree = "<absolute>"; };
-		3BAE671C28D4D481001532BD /* GenericFontExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericFontExtensions.swift; sourceTree = "<group>"; };
+		3BAE671C28D4D481001532BD /* AppDelegateFontHandling.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateFontHandling.swift; sourceTree = "<group>"; };
 		3BB64D8526320064003CD14D /* PreviewYaml.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PreviewYaml.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BB64D8826320064003CD14D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3BB64D8D26320065003CD14D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -132,13 +159,11 @@
 		3BB64DD9263200BA003CD14D /* ThumbnailProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailProvider.swift; sourceTree = "<group>"; };
 		3BB64DDB263200BA003CD14D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3BB64DDC263200BA003CD14D /* Yaml_Thumbnailer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Yaml_Thumbnailer.entitlements; sourceTree = "<group>"; };
-		3BB64DED2632013A003CD14D /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		3BB64DF42632014D003CD14D /* licences.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = licences.txt; sourceTree = "<group>"; };
 		3BB64E112632023C003CD14D /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3BB920582A562E9E006C088E /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 		3BB920592A562E9E006C088E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3BC233802A96927E005C3015 /* new */ = {isa = PBXFileReference; lastKnownFileType = folder; name = new; path = "../../../Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewYaml/new"; sourceTree = "<group>"; };
-		3BDE3EF3267CE6C10037351C /* GenericExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,6 +219,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3B110DB52F88FCF5003EFF55 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				3B110DD12F8912AC003EFF55 /* Common.swift */,
+				3B110DB42F88FCF5003EFF55 /* YAMLEntities.swift */,
+				3B110DC82F8904FC003EFF55 /* Extensions.swift */,
+				3B110DC12F8901BA003EFF55 /* PYSettings.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
 		3B3CEF5C2A5B798A00D05123 /* RenderDemo */ = {
 			isa = PBXGroup;
 			children = (
@@ -222,6 +258,7 @@
 				3BB64D8726320064003CD14D /* PreviewYaml */,
 				3BB64DBD263200A8003CD14D /* Yaml Previewer */,
 				3BB64DD8263200BA003CD14D /* Yaml Thumbnailer */,
+				3B110DB52F88FCF5003EFF55 /* Common */,
 				3BB64D9826320065003CD14D /* PreviewYamlTests */,
 				3BB64DA326320065003CD14D /* PreviewYamlUITests */,
 				3B3CEF5C2A5B798A00D05123 /* RenderDemo */,
@@ -248,12 +285,17 @@
 			children = (
 				3BB64E112632023C003CD14D /* Constants.swift */,
 				3BB64D8826320064003CD14D /* AppDelegate.swift */,
-				3BDE3EF3267CE6C10037351C /* GenericExtensions.swift */,
-				3B07D225267CA77500BAEF6B /* GenericColorExtensions.swift */,
-				3BAE671C28D4D481001532BD /* GenericFontExtensions.swift */,
+				3B110DCF2F8905C2003EFF55 /* AppDelegateSettings.swift */,
+				3B110DCD2F8905B7003EFF55 /* AppDelegateFeedback.swift */,
+				3B110DBF2F890002003EFF55 /* AppDelegateWhatsNew.swift */,
+				3BAE671C28D4D481001532BD /* AppDelegateFontHandling.swift */,
+				3B110DC62F890309003EFF55 /* AppDelegateMisc.swift */,
+				3B110DBD2F88FF9D003EFF55 /* PMTabManager.swift */,
 				3B6C9176268FAA5000745DF4 /* PMFont.swift */,
+				3B110DBA2F88FF6C003EFF55 /* Entities.swift */,
 				3B21717C26344C81000C5AF6 /* sample.yml */,
 				3BB64D8C26320065003CD14D /* MainMenu.xib */,
+				3B110DD62F8916AD003EFF55 /* AppIcon.icon */,
 				3BB64D8F26320065003CD14D /* Info.plist */,
 				3BB64D9026320065003CD14D /* PreviewYaml.entitlements */,
 				3B7D83F62A8A30C7008A4B2E /* YOU MUST SUPPLY */,
@@ -293,7 +335,6 @@
 			isa = PBXGroup;
 			children = (
 				3BB64DBE263200A8003CD14D /* PreviewViewController.swift */,
-				3BB64DED2632013A003CD14D /* Common.swift */,
 				3BB64DC0263200A8003CD14D /* PreviewViewController.xib */,
 				3BB64DC3263200A8003CD14D /* Info.plist */,
 				3BB64DF42632014D003CD14D /* licences.txt */,
@@ -522,6 +563,7 @@
 				3BC233812A96927E005C3015 /* new in Resources */,
 				3B7D83FE2A8A311D008A4B2E /* Assets.xcassets in Resources */,
 				3BB64D8E26320065003CD14D /* MainMenu.xib in Resources */,
+				3B110DD72F8916AD003EFF55 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -563,10 +605,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B3CEF682A5B7A8F00D05123 /* Common.swift in Sources */,
+				3B110DBB2F88FF6C003EFF55 /* Entities.swift in Sources */,
+				3B110DB82F88FCF5003EFF55 /* YAMLEntities.swift in Sources */,
+				3B110DD82F892E24003EFF55 /* REPLACE_WITH_YOUR_CODES.swift in Sources */,
 				3B3CEF5E2A5B798A00D05123 /* AppDelegate.swift in Sources */,
 				3B3CEF692A5B7A9600D05123 /* Constants.swift in Sources */,
-				3B3CEF6A2A5B7AA800D05123 /* GenericColorExtensions.swift in Sources */,
+				3B110DC22F8901BE003EFF55 /* PYSettings.swift in Sources */,
+				3B110DCA2F8904FC003EFF55 /* Extensions.swift in Sources */,
+				3B110DD32F8912AC003EFF55 /* Common.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -574,14 +620,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B110DD42F8912AC003EFF55 /* Common.swift in Sources */,
+				3B110DBC2F88FF6C003EFF55 /* Entities.swift in Sources */,
+				3B110DCE2F8905BD003EFF55 /* AppDelegateFeedback.swift in Sources */,
+				3B110DC02F89000D003EFF55 /* AppDelegateWhatsNew.swift in Sources */,
 				3BB64D8926320064003CD14D /* AppDelegate.swift in Sources */,
-				3BAE671D28D4D481001532BD /* GenericFontExtensions.swift in Sources */,
-				3BDE3EF4267CE6C10037351C /* GenericExtensions.swift in Sources */,
+				3B110DC52F8901BE003EFF55 /* PYSettings.swift in Sources */,
+				3BAE671D28D4D481001532BD /* AppDelegateFontHandling.swift in Sources */,
+				3B110DD02F8905C7003EFF55 /* AppDelegateSettings.swift in Sources */,
 				3B7D83FA2A8A30E1008A4B2E /* REPLACE_WITH_YOUR_FUNCTIONS.swift in Sources */,
 				3B6C9177268FAA5000745DF4 /* PMFont.swift in Sources */,
 				3B7D83F92A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */,
-				3B07D226267CA77500BAEF6B /* GenericColorExtensions.swift in Sources */,
+				3B110DC72F89030F003EFF55 /* AppDelegateMisc.swift in Sources */,
+				3B110DB62F88FCF5003EFF55 /* YAMLEntities.swift in Sources */,
+				3B110DBE2F88FF9D003EFF55 /* PMTabManager.swift in Sources */,
 				3BB64E122632023C003CD14D /* Constants.swift in Sources */,
+				3B110DCC2F8904FC003EFF55 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -605,11 +659,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3BB64DEE2632013A003CD14D /* Common.swift in Sources */,
+				3B110DB72F88FCF5003EFF55 /* YAMLEntities.swift in Sources */,
 				3B7D83FB2A8A3100008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */,
-				3B07D227267CA77500BAEF6B /* GenericColorExtensions.swift in Sources */,
 				3BB64DBF263200A8003CD14D /* PreviewViewController.swift in Sources */,
+				3B110DC32F8901BE003EFF55 /* PYSettings.swift in Sources */,
 				3BB64E132632023C003CD14D /* Constants.swift in Sources */,
+				3B110DC92F8904FC003EFF55 /* Extensions.swift in Sources */,
+				3B110DD22F8912AC003EFF55 /* Common.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -617,11 +673,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3BB64E05263201A6003CD14D /* Common.swift in Sources */,
+				3B110DB92F88FCF5003EFF55 /* YAMLEntities.swift in Sources */,
 				3B7D83FC2A8A3102008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */,
-				3B07D228267CA77500BAEF6B /* GenericColorExtensions.swift in Sources */,
 				3BB64DDA263200BA003CD14D /* ThumbnailProvider.swift in Sources */,
+				3B110DC42F8901BE003EFF55 /* PYSettings.swift in Sources */,
 				3BB64E142632023C003CD14D /* Constants.swift in Sources */,
+				3B110DCB2F8904FC003EFF55 /* Extensions.swift in Sources */,
+				3B110DD52F8912AC003EFF55 /* Common.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -876,7 +934,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 70;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -886,8 +944,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.2.3;
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				MARKETING_VERSION = 2.0.0;
 				OTHER_SWIFT_FLAGS = "-D TARGET_IS_PY";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewYaml;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -907,7 +965,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 70;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -917,8 +975,8 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.2.3;
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				MARKETING_VERSION = 2.0.0;
 				OTHER_SWIFT_FLAGS = "-D TARGET_IS_PY";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewYaml;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1022,7 +1080,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 70;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1032,8 +1090,8 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.2.3;
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Previewer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1049,7 +1107,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 70;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1059,8 +1117,8 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.2.3;
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Previewer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1076,7 +1134,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 70;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
@@ -1087,8 +1145,8 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.2.3;
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Thumbnailer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1104,7 +1162,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 68;
+				CURRENT_PROJECT_VERSION = 70;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1114,8 +1172,8 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.2.3;
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewYaml.Yaml-Thumbnailer";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
