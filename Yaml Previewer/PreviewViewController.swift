@@ -31,7 +31,7 @@ class PreviewViewController: NSViewController,
     
     // MARK:- QLPreviewingController Required Functions
 
-    func preparePreviewOfFile(at url: URL, completionHandler handler: @escaping (Error?) -> Void) {
+    func preparePreviewOfFile(at url: URL) async throws {
 
         /*
          * Main entry point for the macOS preview system
@@ -47,8 +47,8 @@ class PreviewViewController: NSViewController,
         self.renderTextScrollView.isHidden = false
         
         // Set the base values
-        let common: Common = Common.init(false)
-        
+        let common = Common(forThumbnail: false)
+
         // Load the source file using a co-ordinator as we don't know what thread this function
         // will be executed in when it's called by macOS' QuickLook code
         if FileManager.default.isReadableFile(atPath: url.path) {
@@ -63,8 +63,8 @@ class PreviewViewController: NSViewController,
                 
                 if let yamlFileString: String = String.init(data: data, encoding: encoding) {
                     // Get the key string first
-                    let yamlAttString: NSAttributedString = common.getAttributedString(yamlFileString)
-                    
+                    let yamlAttString: NSAttributedString = await common.getAttributedString(yamlFileString)
+
                     // Knock back the light background to make the scroll bars visible in dark mode
                     // NOTE If !doShowLightBackground,
                     //              in light mode, the scrollers show up dark-on-light, in dark mode light-on-dark
@@ -83,13 +83,6 @@ class PreviewViewController: NSViewController,
                         renderTextStorage.beginEditing()
                         renderTextStorage.setAttributedString(yamlAttString)
                         renderTextStorage.endEditing()
-                        
-                        // Add the subview to the instance's own view and draw
-                        self.view.display()
-
-                        // Call the QLPreviewingController indicating no error
-                        // (argument is nil)
-                        handler(nil)
                         return
                     }
                     
@@ -112,34 +105,21 @@ class PreviewViewController: NSViewController,
             reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE)
         }
 
-        // Display the error locally in the window
-        showError(reportError!.userInfo[NSLocalizedDescriptionKey] as! String)
-
-        // Call the QLPreviewingController indicating an error
-        // (argumnet is not nil)
-        handler(reportError)
+        // Error
+        throw reportError!
     }
 
 
-    func preparePreviewOfSearchableItem(identifier: String, queryString: String?, completionHandler handler: @escaping (Error?) -> Void) {
-
-        // Is this ever called?
-        NSLog("BUFFOON searchable identifier: \(identifier)")
-        NSLog("BUFFOON searchable query:      " + (queryString ?? "nil"))
-        
-        // Hand control back to QuickLook
-        handler(nil)
-    }
-    
-    
     // MARK:- Utility Functions
     
     /**
      Place an error message in its various outlets.
-     
+
+     UNUSED 2.0.0
+
      - parameters:
         - errString: The error message.
-     */
+
     func showError(_ errString: String) {
 
         NSLog("BUFFOON \(errString)")
@@ -148,8 +128,9 @@ class PreviewViewController: NSViewController,
         self.renderTextScrollView.isHidden = true
         self.view.display()
     }
+     */
     
-    
+
     /**
      Generate an NSError for an internal error, specified by its code.
 
