@@ -41,7 +41,16 @@ class ThumbnailProvider: QLThumbnailProvider {
             do {
                 // Get the file contents as a string, making sure it's not cached
                 // as we're not going to read it again any time soon
-                let data: Data = try Data.init(contentsOf: request.fileURL, options: [.uncached])
+                //let data: Data = try Data.init(contentsOf: request.fileURL, options: [.uncached])
+                let jsonFileHandle = try FileHandle(forReadingFrom: request.fileURL)
+                try jsonFileHandle.seek(toOffset: 0)
+                guard let data = try jsonFileHandle.read(upToCount: 1024) else {
+                    try jsonFileHandle.close()
+                    handler(nil, ThumbnailerError.badFileUnreadable(request.fileURL.path))
+                    return
+                }
+
+                try jsonFileHandle.close()
 
                 // Get the string's encoding, or fail back to .utf8
                 let encoding: String.Encoding = data.stringEncoding ?? .utf8
@@ -54,7 +63,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                 }
 
                 // Instantiate the common code
-                let common: Common = Common.init(true)
+                let common = Common(forThumbnail: true)
 
                 // Set the primary drawing frame and a base font size
                 let yamlFrame: CGRect = NSMakeRect(CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X),
@@ -64,7 +73,7 @@ class ThumbnailProvider: QLThumbnailProvider {
 
                 // Instantiate an NSTextField to display the NSAttributedString render of the YAML
                 let yamlTextField: NSTextField = NSTextField.init(frame: yamlFrame)
-                yamlTextField.attributedStringValue = common.getAttributedString(yamlFileString)
+                yamlTextField.attributedStringValue = common.getThumbnailString(fromYaml: yamlFileString)
 
                 // Generate the bitmap from the rendered YAML text view
                 guard let bodyImageRep: NSBitmapImageRep = yamlTextField.bitmapImageRepForCachingDisplay(in: yamlFrame) else {
