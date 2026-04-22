@@ -13,96 +13,108 @@ import Quartz
 
 class PreviewViewController: NSViewController,
                              QLPreviewingController {
-    
-    // MARK:- Class UI Properties
+
+    // MARK: - Class UI Properties
 
     @IBOutlet var renderTextView: NSTextView!
     @IBOutlet var renderTextScrollView: NSScrollView!
-    // FROM 1.1.0
-    @IBOutlet var errorReportField: NSTextField!
-    
-    
-    // MARK:- Public Properties
-    
+
+
+    // MARK: - Public Properties
+
     override var nibName: NSNib.Name? {
         return NSNib.Name("PreviewViewController")
     }
 
-    
-    // MARK:- QLPreviewingController Required Functions
 
+    // MARK: - QLPreviewingController Required Functions
+
+    // FROM 2.0.0
+    // Update to use Swift Concurrency
     func preparePreviewOfFile(at url: URL) async throws {
 
         /*
-         * Main entry point for the macOS preview system
+         * This is the main entry point for the macOS QuickLook previewing system
          */
-        
+
         // Get an error message ready for use
         var reportError: NSError? = nil
-        
-        // FROM 1.1.0
-        // Hide the error message field
-        self.errorReportField.stringValue = ""
-        self.errorReportField.isHidden = true
-        self.renderTextScrollView.isHidden = false
-        
-        // Set the base values
-        let common = Common(forThumbnail: false)
 
-        // Load the source file using a co-ordinator as we don't know what thread this function
-        // will be executed in when it's called by macOS' QuickLook code
-        if FileManager.default.isReadableFile(atPath: url.path) {
-            // Only proceed if the file is accessible from here
-            do {
-                // Get the file contents as a string
-                let data: Data = try Data.init(contentsOf: url, options: [.uncached])
-                
-                // FROM 1.1.2
-                // Get the string's encoding, or fail back to .utf8
-                let encoding: String.Encoding = data.stringEncoding ?? .utf8
-                
-                if let yamlFileString: String = String.init(data: data, encoding: encoding) {
-                    // Get the key string first
-                    let yamlAttString: NSAttributedString = await common.getAttributedString(yamlFileString)
+        // Get the file contents as a string
+        do {
+            // Get the file contents as a string
+            let data = try Data(contentsOf: url, options: [.uncached])
+            let encoding = data.stringEncoding ?? .utf8
 
-                    // Knock back the light background to make the scroll bars visible in dark mode
-                    // NOTE If !doShowLightBackground,
-                    //              in light mode, the scrollers show up dark-on-light, in dark mode light-on-dark
-                    //      If doShowLightBackground,
-                    //              in light mode, the scrollers show up light-on-light, in dark mode light-on-dark
-                    // NOTE Changing the scrollview scroller knob style has no effect
-                    self.renderTextView.backgroundColor = common.doShowLightBackground ? NSColor.init(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
-                    self.renderTextScrollView.scrollerKnobStyle = common.doShowLightBackground ? .dark : .light
+            // Convert the data to a string
+            if let yaml = String.init(data: data, encoding: encoding) {
+                /*
+                 Instantiate the common code within the closure
+                 */
+                let common = Common(forThumbnail: false)
 
-                    if let renderTextStorage: NSTextStorage = self.renderTextView.textStorage {
-                        /*
-                         * NSTextStorage subclasses that return true from the fixesAttributesLazily
-                         * method should avoid directly calling fixAttributes(in:) or else bracket
-                         * such calls with beginEditing() and endEditing() messages.
-                         */
-                        renderTextStorage.beginEditing()
-                        renderTextStorage.setAttributedString(yamlAttString)
-                        renderTextStorage.endEditing()
-                        return
-                    }
-                    
-                    // We can't access the preview NSTextView's NSTextStorage
-                    reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
-                } else {
-                    // FROM 1.1.2
-                    // We couldn't convert to data to a valid encoding
-                    let errDesc: String = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) \(encoding)"
-                    reportError = NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,
-                                          code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING,
-                                          userInfo: [NSLocalizedDescriptionKey: errDesc])
+                /*
+                 Attributed string acquisition
+                 */
+                let attributedYaml = await common.getAttributedString(yaml)
+
+                /*
+                 Window and mode configuration
+                 */
+
+                // FROM 2.0.0
+                // Set the parent window's size
+                setPreviewWindowSize(common.settings)
+
+                // FROM 2.0.0
+                // The force-light-mode-preview-in-dark-mode setting is now a general
+                // preview-colours-should-be-opposite-the-mode setting.
+                var renderPreviewLight = NSApplication.shared.inLightMode
+                if common.settings.doReverseMode {
+                    // Invert the colour scheme based on the current mode
+                    renderPreviewLight = !renderPreviewLight
                 }
-            } catch {
-                // We couldn't read the file so set an appropriate error to report back
-                reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
+
+                // Update the NSTextView
+                self.renderTextView.backgroundColor = renderPreviewLight ? NSColor.white : NSColor.textBackgroundColor
+                self.renderTextScrollView.scrollerKnobStyle = renderPreviewLight ? .dark : .light
+                self.view.appearance = renderPreviewLight ? NSAppearance(named: .aqua) : NSAppearance(named: .darkAqua)
+
+                // FROM 2.0.0
+                // Add margin if required
+                if common.settings.previewMarginWidth > 0.0 {
+                    self.renderTextView.textContainerInset = NSSize(width: common.settings.previewMarginWidth,
+                                                                    height: common.settings.previewMarginWidth)
+                }
+
+                /*
+                 Attributed String Presentation
+                 */
+                if let renderTextStorage: NSTextStorage = self.renderTextView.textStorage {
+                    /*
+                     * NSTextStorage subclasses that return true from the fixesAttributesLazily
+                     * method should avoid directly calling fixAttributes(in:) or else bracket
+                     * such calls with beginEditing() and endEditing() messages.
+                     */
+                    renderTextStorage.beginEditing()
+                    renderTextStorage.setAttributedString(attributedYaml)
+                    renderTextStorage.endEditing()
+                    return
+                }
+
+                // We can't access the preview NSTextView's NSTextStorage
+                reportError = makeError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
+            } else {
+                // FROM 1.1.2
+                // We couldn't convert to data to a valid encoding
+                let errDesc: String = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) \(encoding)"
+                reportError = NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,
+                                      code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING,
+                                      userInfo: [NSLocalizedDescriptionKey: errDesc])
             }
-        } else {
-            // We couldn't access the file so set an appropriate error to report back
-            reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE)
+        } catch {
+            // We couldn't read the file so set an appropriate error to report back
+            reportError = makeError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
         }
 
         // Error
@@ -111,25 +123,6 @@ class PreviewViewController: NSViewController,
 
 
     // MARK:- Utility Functions
-    
-    /**
-     Place an error message in its various outlets.
-
-     UNUSED 2.0.0
-
-     - parameters:
-        - errString: The error message.
-
-    func showError(_ errString: String) {
-
-        NSLog("BUFFOON \(errString)")
-        self.errorReportField.stringValue = errString
-        self.errorReportField.isHidden = false
-        self.renderTextScrollView.isHidden = true
-        self.view.display()
-    }
-     */
-    
 
     /**
      Generate an NSError for an internal error, specified by its code.
@@ -137,25 +130,25 @@ class PreviewViewController: NSViewController,
      Codes are listed in `Constants.swift`
 
      - Parameters:
-        - code: The internal error code.
+     - code: The internal error code.
 
      - Returns: The described error as an NSError.
      */
-    func setError(_ code: Int) -> NSError {
-        
+    func makeError(_ code: Int) -> NSError {
+
         var errDesc: String
-        
+
         switch(code) {
-        case BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE:
-            errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_INACCESSIBLE
-        case BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN:
-            errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_WONT_OPEN
-        case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING:
-            errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING
-        case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING:
-            errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_MD_STRING
-        default:
-            errDesc = "UNKNOWN ERROR"
+            case BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE:
+                errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_INACCESSIBLE
+            case BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN:
+                errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_WONT_OPEN
+            case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING:
+                errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING
+            case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING:
+                errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_MD_STRING
+            default:
+                errDesc = "UNKNOWN ERROR"
         }
 
         return NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,
@@ -163,4 +156,23 @@ class PreviewViewController: NSViewController,
                        userInfo: [NSLocalizedDescriptionKey: errDesc])
     }
 
+
+    /**
+     Specify the content size of the parent view.
+    */
+    private func setPreviewWindowSize(_ settings: PYSettings) {
+
+        var screen: NSScreen = NSScreen.screens[0]
+
+        // We've set `screen` to the primary, ie. menubar-displaying,
+        // screen, but ideally we should pick the screen with user focus.
+        // They may be one and the same, of course...
+        if let mainScreen = NSScreen.main, mainScreen != screen {
+            screen = mainScreen
+        }
+
+        let height: CGFloat = screen.frame.size.height * settings.previewWindowScale
+        let width: CGFloat = screen.frame.size.width * settings.previewWindowScale
+        self.preferredContentSize = NSSize(width: width, height: height)
+    }
 }
