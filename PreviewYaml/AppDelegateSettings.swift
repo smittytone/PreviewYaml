@@ -403,6 +403,10 @@ extension AppDelegate {
         }
 
         if !settingsHaveChanged {
+            settingsHaveChanged = self.currentSettings.displayColours[BUFFOON_CONSTANTS.COLOUR_IDS.NEW_COMMENTS] != nil
+        }
+
+        if !settingsHaveChanged {
             settingsHaveChanged = self.currentSettings.indentSize != displayedSettings.indentSize
         }
 

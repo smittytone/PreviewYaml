@@ -1218,6 +1218,9 @@ running this app once more.</string>
                                                         <menuItem title="YAML Marks" id="a8z-xC-dJV">
                                                             <modifierMask key="keyEquivalentModifierMask"/>
                                                         </menuItem>
+                                                        <menuItem title="Comments" id="tCv-CB-aaG">
+                                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                                        </menuItem>
                                                     </items>
                                                 </menu>
                                                 <connections>

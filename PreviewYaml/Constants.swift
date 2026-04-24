@@ -62,9 +62,6 @@ struct BUFFOON_CONSTANTS {
     //static let YAML_INDENT                      = 2
     //static let CODE_COLOUR_HEX                  = "007D78FF"
 
-
-
-
     
     struct APP_URLS {
         
@@ -88,6 +85,7 @@ struct BUFFOON_CONSTANTS {
         static let PREVIEW_STRINGS_COLOUR           = "com-bps-previewyaml-string-colour-hex"
         static let PREVIEW_SPECIALS_COLOUR          = "com-bps-previewyaml-special-colour-hex"
         static let PREVIEW_MARKS_COLOUR             = "com-bps-previewyaml-marks-colour-hex"
+        static let PREVIEW_COMMENTS_COLOUR          = "com-bps-previewyaml-comments-colour-hex"
         static let PREVIEW_INDENT_SCALARS           = "com-bps-previewyaml-do-indent-scalars"
         static let PREVIEW_MARGIN_WIDTH             = "com-bps-previewyaml-preview-margin-width"
         static let PREVIEW_WINDOW_SCALE             = "com-bps-previewyaml-preview-window-scale"
@@ -104,6 +102,7 @@ struct BUFFOON_CONSTANTS {
         static let STRINGS                          = "FC6A5DFF"
         static let SPECIALS                         = "D0BF69FF"
         static let MARKS                            = "929292FF"
+        static let COMMENTS                         = "8EB26AFF"
     }
 
     struct COLOUR_IDS {
@@ -112,16 +111,19 @@ struct BUFFOON_CONSTANTS {
         static let STRINGS                          = "strings"
         static let SPECIALS                         = "specials"
         static let MARKS                            = "marks"
+        static let COMMENTS                         = "comments"
         static let NEW_KEYS                         = "new_keys"
         static let NEW_STRINGS                      = "new_strings"
         static let NEW_SPECIALS                     = "new_specials"
         static let NEW_MARKS                        = "new_marks"
+        static let NEW_COMMENTS                     = "new_comments"
     }
 
     static let COLOUR_OPTIONS                       = [BUFFOON_CONSTANTS.COLOUR_IDS.KEYS,
                                                        BUFFOON_CONSTANTS.COLOUR_IDS.STRINGS,
                                                        BUFFOON_CONSTANTS.COLOUR_IDS.SPECIALS,
-                                                       BUFFOON_CONSTANTS.COLOUR_IDS.MARKS]
+                                                       BUFFOON_CONSTANTS.COLOUR_IDS.MARKS,
+                                                       BUFFOON_CONSTANTS.COLOUR_IDS.COMMENTS]
 
     struct SCALERS {
 

@@ -28,7 +28,8 @@ class PYSettings {
         BUFFOON_CONSTANTS.COLOUR_IDS.KEYS:      BUFFOON_CONSTANTS.HEX_COLOUR.KEYS,
         BUFFOON_CONSTANTS.COLOUR_IDS.STRINGS:   BUFFOON_CONSTANTS.HEX_COLOUR.STRINGS,
         BUFFOON_CONSTANTS.COLOUR_IDS.SPECIALS:  BUFFOON_CONSTANTS.HEX_COLOUR.SPECIALS,
-        BUFFOON_CONSTANTS.COLOUR_IDS.MARKS:     BUFFOON_CONSTANTS.HEX_COLOUR.MARKS
+        BUFFOON_CONSTANTS.COLOUR_IDS.MARKS:     BUFFOON_CONSTANTS.HEX_COLOUR.MARKS,
+        BUFFOON_CONSTANTS.COLOUR_IDS.COMMENTS:  BUFFOON_CONSTANTS.HEX_COLOUR.COMMENTS
     ]
 
     /*
@@ -68,6 +69,8 @@ class PYSettings {
             ?? BUFFOON_CONSTANTS.HEX_COLOUR.SPECIALS
             self.displayColours[BUFFOON_CONSTANTS.COLOUR_IDS.MARKS] = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARKS_COLOUR)
             ?? BUFFOON_CONSTANTS.HEX_COLOUR.MARKS
+            self.displayColours[BUFFOON_CONSTANTS.COLOUR_IDS.COMMENTS] = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_COMMENTS_COLOUR)
+            ?? BUFFOON_CONSTANTS.HEX_COLOUR.COMMENTS
 
             self.previewMarginWidth = CGFloat(defaults.double(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARGIN_WIDTH))
             self.previewWindowScale = CGFloat(defaults.double(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_WINDOW_SCALE))
@@ -119,6 +122,12 @@ class PYSettings {
                 defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARKS_COLOUR)
             }
 
+            if let newColour: String = self.displayColours[BUFFOON_CONSTANTS.COLOUR_IDS.NEW_COMMENTS] {
+                self.displayColours[BUFFOON_CONSTANTS.COLOUR_IDS.COMMENTS] = newColour
+                self.displayColours[BUFFOON_CONSTANTS.COLOUR_IDS.NEW_COMMENTS] = nil
+                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_COMMENTS_COLOUR)
+            }
+
             defaults.setValue(self.previewMarginWidth, forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARGIN_WIDTH)
             defaults.setValue(self.previewWindowScale, forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_WINDOW_SCALE)
             defaults.setValue(self.thumbnailMatchFinderMode, forKey: BUFFOON_CONSTANTS.PREFS_IDS.THUMB_MATCH_FINDER)
@@ -165,10 +174,10 @@ class PYSettings {
                                   forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_SHOW_MARKS)
             }
 
-            // Present malformed JSON on error?
+            // Present malformed YAML on error?
             // Default: false
-            let presentBadJson: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_SHOW_RAW)
-            if presentBadJson == nil {
+            let presentBadYaml: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_SHOW_RAW)
+            if presentBadYaml == nil {
                 defaults.setValue(false,
                                   forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_SHOW_RAW)
             }
@@ -201,11 +210,11 @@ class PYSettings {
                 defaults.setValue(true, forKey: key)
             }
 
-            // Colour of JSON keys in the preview, stored as a hex string
+            // Colour of YAML keys in the preview, stored as a hex string
             // Default: #CA0D0E
             var colourDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_KEYS_COLOUR)
             if colourDefault == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.COLOUR_IDS.KEYS,
+                defaults.setValue(BUFFOON_CONSTANTS.HEX_COLOUR.KEYS,
                                   forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_KEYS_COLOUR)
             }
 
@@ -213,7 +222,7 @@ class PYSettings {
             // Default: #FC6A5DFF
             colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_STRINGS_COLOUR)
             if colourDefault == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.COLOUR_IDS.STRINGS,
+                defaults.setValue(BUFFOON_CONSTANTS.HEX_COLOUR.STRINGS,
                                   forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_STRINGS_COLOUR)
             }
 
@@ -221,16 +230,24 @@ class PYSettings {
             // Default: #FC6A5DFF
             colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_SPECIALS_COLOUR)
             if colourDefault == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.COLOUR_IDS.SPECIALS,
+                defaults.setValue(BUFFOON_CONSTANTS.HEX_COLOUR.SPECIALS,
                                   forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_SPECIALS_COLOUR)
             }
 
-            // Colour of JSON markers in the preview, stored as a hex string
+            // Colour of YAML markers in the preview, stored as a hex string
             // Default: #0096FF
             colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARKS_COLOUR)
             if colourDefault == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.COLOUR_IDS.MARKS,
+                defaults.setValue(BUFFOON_CONSTANTS.HEX_COLOUR.MARKS,
                                   forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARKS_COLOUR)
+            }
+
+            // Colour of comments in the preview, stored as a hex string
+            // Default: #8EB26A
+            colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_COMMENTS_COLOUR)
+            if colourDefault == nil {
+                defaults.setValue(BUFFOON_CONSTANTS.HEX_COLOUR.COMMENTS,
+                                  forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_COMMENTS_COLOUR)
             }
 
             // ADVANCED - What margin size should we apply?
