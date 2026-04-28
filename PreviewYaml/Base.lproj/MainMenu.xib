@@ -411,7 +411,7 @@ DQ
                     <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9WJ-du-sIm">
                         <rect key="frame" x="18" y="60" width="577" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" controlSize="mini" lineBreakMode="clipping" alignment="center" title="PreviewYaml © 2025, Tony Smith. Contains YamlSwift © 2019 Behrang Noruzi Niya" id="g12-Ft-65u">
+                        <textFieldCell key="cell" controlSize="mini" lineBreakMode="clipping" alignment="center" title="PreviewYaml© 2026, Tony Smith. Contains YamlSwift © 2019 Behrang Noruzi Niya" id="g12-Ft-65u">
                             <font key="font" metaFont="miniSystem"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>

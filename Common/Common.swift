@@ -4,11 +4,11 @@
  *  Code common to Yaml Previewer and Yaml Thumbnailer
  *
  *  Created by Tony Smith on 22/04/2021.
- *  Copyright © 2025 Tony Smith. All rights reserved.
+ *  Copyright© 2026 Tony Smith. All rights reserved.
  */
 
 
-import Yaml
+//import Yaml
 import AppKit
 
 
@@ -275,7 +275,7 @@ final class Common {
         - isKey:  Is the Yaml part a key?
 
      - Returns: The rendered string as an NSAttributedString, or nil on error.
-     */
+
     func renderYaml(_ part: Yaml, _ indent: Int, _ isKey: Bool) -> NSAttributedString? {
         
         // FROM 1.1.5
@@ -482,29 +482,8 @@ final class Common {
         
         return returnString.string.count > 0 ? returnString : nil
     }
-
-
-    /** REMOVED 1.2.0
-     Return a space-prefix NSAttributedString.
-     DEPRECATED
-
-     - Parameters:
-        - baseString: The string to be indented.
-        - indent:     The number of indent spaces to add.
-
-     - Returns: The indented string as an NSAttributedString.
-
-    func getIndentedString(_ baseString: String, _ indent: Int) -> NSAttributedString {
-        
-        let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
-        let spaceString = String(repeating: " ", count: indent)
-        let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
-        indentedString.append(NSAttributedString.init(string: spaceString))
-        indentedString.append(NSAttributedString.init(string: trimmedString))
-        return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
-    }
      */
-    
+
 
     /**
      Return a space-prefix NSAttributedString.
@@ -515,7 +494,7 @@ final class Common {
         - attributeType: The attribute to apply.
 
      - Returns: The indented string as an NSAttributedString.
-     */
+
     func getIndentedAttributedString(_ baseString: String, _ indent: Int, _ attributeType: AttributeType) -> NSAttributedString {
 
         let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
@@ -525,7 +504,8 @@ final class Common {
         indentedString.append(NSAttributedString(string: trimmedString, attributes: getAttributes(attributeType)))
         return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
     }
-    
+    */
+
 
     /**
      Return an attribute dictionary from a passed attribute type.
@@ -534,7 +514,7 @@ final class Common {
         - attributeType: The requested attribute type.
 
      - Returns: The attributes as a dictionary.
-     */
+
     private func getAttributes(_ attributeType: AttributeType) -> [NSAttributedString.Key: Any] {
 
         switch attributeType {
@@ -548,6 +528,7 @@ final class Common {
                 return self.scalarAttributes
         }
     }
+     */
 
 
     /**
@@ -557,7 +538,7 @@ final class Common {
         - yamlString: The YAML file contents.
 
      - Returns: The corrected YAML content.
-     */
+
     func fixNan(_ yamlString: String) -> String {
         
         let numberRegexes = [#"-\.(inf|Inf|INF)+"#, #"\.(inf|Inf|INF)+"#, #"\.(nan|NaN|NAN)+"#]
@@ -607,6 +588,7 @@ final class Common {
         // Send the updated string back
         return fixedString
     }
+     */
 
 
     // MARK: - New YAML Functions

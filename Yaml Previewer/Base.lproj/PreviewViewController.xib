@@ -25,7 +25,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="480" height="272"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView editable="NO" selectable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" textCompletion="NO" layoutManager="textKit1" id="rZ2-iI-Mjq">
+                            <textView editable="NO" selectable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" textCompletion="NO" layoutManager="textKit2" id="rZ2-iI-Mjq">
                                 <rect key="frame" x="0.0" y="0.0" width="480" height="272"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>

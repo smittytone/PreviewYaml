@@ -164,6 +164,7 @@
 		3BB920582A562E9E006C088E /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 		3BB920592A562E9E006C088E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3BC233802A96927E005C3015 /* new */ = {isa = PBXFileReference; lastKnownFileType = folder; name = new; path = "../../../Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewYaml/new"; sourceTree = "<group>"; };
+		3BCB08C72FA0F96C006CB29A /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHANGELOG.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -359,6 +360,7 @@
 			children = (
 				3BB920582A562E9E006C088E /* LICENSE.md */,
 				3BB920592A562E9E006C088E /* README.md */,
+				3BCB08C72FA0F96C006CB29A /* CHANGELOG.md */,
 			);
 			name = Misc;
 			sourceTree = "<group>";
