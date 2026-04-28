@@ -47,7 +47,7 @@ class PreviewViewController: NSViewController,
             let encoding = data.stringEncoding ?? .utf8
 
             // Convert the data to a string
-            if let yaml = String.init(data: data, encoding: encoding) {
+            if let yaml = String(data: data, encoding: encoding) {
                 /*
                  Instantiate the common code within the closure
                  */
@@ -56,7 +56,7 @@ class PreviewViewController: NSViewController,
                 /*
                  Attributed string acquisition
                  */
-                let attributedYaml = await common.getAttributedString(yaml)
+                let attributedYaml = await common.getPreviewString(fromYaml: yaml)
 
                 /*
                  Window and mode configuration
@@ -76,7 +76,7 @@ class PreviewViewController: NSViewController,
                 }
 
                 // Update the NSTextView
-                self.renderTextView.backgroundColor = renderPreviewLight ? NSColor.white : NSColor.textBackgroundColor
+                self.renderTextView.backgroundColor = renderPreviewLight ? .white : .textBackgroundColor
                 self.renderTextScrollView.scrollerKnobStyle = renderPreviewLight ? .dark : .light
                 self.view.appearance = renderPreviewLight ? NSAppearance(named: .aqua) : NSAppearance(named: .darkAqua)
 
@@ -90,7 +90,7 @@ class PreviewViewController: NSViewController,
                 /*
                  Attributed String Presentation
                  */
-                if let renderTextStorage: NSTextStorage = self.renderTextView.textStorage {
+                if let renderTextStorage = self.renderTextView.textStorage {
                     /*
                      * NSTextStorage subclasses that return true from the fixesAttributesLazily
                      * method should avoid directly calling fixAttributes(in:) or else bracket
@@ -171,8 +171,8 @@ class PreviewViewController: NSViewController,
             screen = mainScreen
         }
 
-        let height: CGFloat = screen.frame.size.height * settings.previewWindowScale
-        let width: CGFloat = screen.frame.size.width * settings.previewWindowScale
+        let height = screen.frame.size.height * settings.previewWindowScale
+        let width = screen.frame.size.width * settings.previewWindowScale
         self.preferredContentSize = NSSize(width: width, height: height)
     }
 }
