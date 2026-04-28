@@ -1,0 +1,45 @@
+## Release Notes ##
+
+- 2.0.0 *Unreleased*
+    - New YAML processing and rendering pipeline that respects file order.
+    - Updated UI to match that of other version 2.0 PreviewApps.
+- 1.2.3 *April 2025*
+    - Preparation work ahead of deprecation.
+- 1.2.2 *30 August 2024*
+    - Correctly render the bad YAML separator line: revert NSTextViews to TextKit 1 (previously bumped to 2 by Xcode).
+    - Improve preference change handling.
+    - Fix out-of-bounds double-to-int conversion in Yaml library.
+- 1.2.1 *5 May 2024*
+    - Revise thumbnailer to improve memory utilization and efficiency.
+    - Fix the 'white flash' seen on first presenting the What's New sheet.
+- 1.2.0 *25 August 2023*
+    - Make the alphabetical sorting of keys optional. Default: do sort. Requested by: klas.
+    - Make the display of key colon symbols a setting. Default: do not show.
+    - Allow users to choose the colours of strings and special values (`NaN`, `±INF`).
+- 1.1.5 *14 February 2023*
+    - Fix regression affecting thumbnails of large documents.
+- 1.1.4 *21 January 2023*
+    - Add link to [PreviewText](https://smittytone.net/previewtext/index.html).
+    - Better menu handling when panels are visible.
+    - Better app exit management.
+    - Bug fixes.
+- 1.1.3 *2 October 2022*
+    - Add link to [PreviewJson](https://smittytone.net/previewjson/index.html).
+- 1.1.2 *26 August 2022*
+    - Initial support for non-utf8 source code file encodings.
+- 1.1.1 *19 November 2021*
+    - Disable selection of thumbnail tags under macOS 12 Monterey to avoid clash with system-added tags.
+- 1.1.0 *28 July 2021*
+    - Allow any installed monospace font to be selected.
+    - Allow any font style to be applied.
+    - Allow any key colour to be chosen using macOS’ colour picker.
+    - Indent multi-line text.
+    - Tighten thumbnail rendering code.
+    - Fixed a rare bug in the previewer error reporting code.
+    - Link to [PreviewCode](https://smittytone.net/previewcode/index.html).
+- 1.0.1 *18 June 2021*
+    - Add links to other PreviewApps.
+    - Support macOS 11 Big Sur’s UTType API.
+    - Stability improvements.
+- 1.0.0 *10 May 2021*
+    - Initial public release.
