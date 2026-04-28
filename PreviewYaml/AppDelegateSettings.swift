@@ -22,7 +22,7 @@ extension AppDelegate {
 
         // Fix track colour on macOS 26
         if #available(macOS 26.0, *) {
-            self.fontSizeSlider.tintProminence = .none
+            self.fontSizeSlider.tintProminence = .secondary
         }
 
         // FROM 2.0.0

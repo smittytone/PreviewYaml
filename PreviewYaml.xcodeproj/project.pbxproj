@@ -33,20 +33,16 @@
 		3B110DD72F8916AD003EFF55 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 3B110DD62F8916AD003EFF55 /* AppIcon.icon */; };
 		3B110DD82F892E24003EFF55 /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */; };
 		3B21717D26344C81000C5AF6 /* sample.yml in Resources */ = {isa = PBXBuildFile; fileRef = 3B21717C26344C81000C5AF6 /* sample.yml */; };
-		3B218DDB2637F41F0024446B /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3B218DDA2637F41F0024446B /* Yaml */; };
-		3B218DE22637F4290024446B /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3B218DE12637F4290024446B /* Yaml */; };
 		3B3CEF5E2A5B798A00D05123 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3CEF5D2A5B798A00D05123 /* AppDelegate.swift */; };
 		3B3CEF602A5B798B00D05123 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B3CEF5F2A5B798B00D05123 /* Assets.xcassets */; };
 		3B3CEF632A5B798B00D05123 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B3CEF612A5B798B00D05123 /* MainMenu.xib */; };
 		3B3CEF692A5B7A9600D05123 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64E112632023C003CD14D /* Constants.swift */; };
-		3B3CEF6D2A5B7D9600D05123 /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3B3CEF6C2A5B7D9600D05123 /* Yaml */; };
 		3B6C9177268FAA5000745DF4 /* PMFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6C9176268FAA5000745DF4 /* PMFont.swift */; };
 		3B7D83F92A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */; };
 		3B7D83FA2A8A30E1008A4B2E /* REPLACE_WITH_YOUR_FUNCTIONS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83F82A8A30E1008A4B2E /* REPLACE_WITH_YOUR_FUNCTIONS.swift */; };
 		3B7D83FB2A8A3100008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */; };
 		3B7D83FC2A8A3102008A4B2E /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7D83F72A8A30E1008A4B2E /* REPLACE_WITH_YOUR_CODES.swift */; };
 		3B7D83FE2A8A311D008A4B2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B7D83FD2A8A311D008A4B2E /* Assets.xcassets */; };
-		3B93E5CF2BD994CD0042F553 /* Yaml in Frameworks */ = {isa = PBXBuildFile; productRef = 3B93E5CE2BD994CD0042F553 /* Yaml */; };
 		3BAE671D28D4D481001532BD /* AppDelegateFontHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAE671C28D4D481001532BD /* AppDelegateFontHandling.swift */; };
 		3BB64D8926320064003CD14D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB64D8826320064003CD14D /* AppDelegate.swift */; };
 		3BB64D8E26320065003CD14D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3BB64D8C26320065003CD14D /* MainMenu.xib */; };
@@ -164,7 +160,7 @@
 		3BB920582A562E9E006C088E /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 		3BB920592A562E9E006C088E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3BC233802A96927E005C3015 /* new */ = {isa = PBXFileReference; lastKnownFileType = folder; name = new; path = "../../../Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewYaml/new"; sourceTree = "<group>"; };
-		3BCB08C72FA0F96C006CB29A /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CHANGELOG.md; sourceTree = "<group>"; };
+		3BCB08C72FA0F96C006CB29A /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,7 +168,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B3CEF6D2A5B7D9600D05123 /* Yaml in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -180,7 +175,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B93E5CF2BD994CD0042F553 /* Yaml in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,7 +197,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BB64DBC263200A8003CD14D /* Quartz.framework in Frameworks */,
-				3B218DDB2637F41F0024446B /* Yaml in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,7 +206,6 @@
 			files = (
 				3BB64DD6263200BA003CD14D /* QuickLookThumbnailing.framework in Frameworks */,
 				3BB64DD7263200BA003CD14D /* Quartz.framework in Frameworks */,
-				3B218DE22637F4290024446B /* Yaml in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -382,7 +374,6 @@
 			);
 			name = RenderDemo;
 			packageProductDependencies = (
-				3B3CEF6C2A5B7D9600D05123 /* Yaml */,
 			);
 			productName = RenderDemo;
 			productReference = 3B3CEF5B2A5B798A00D05123 /* RenderDemo.app */;
@@ -405,7 +396,6 @@
 			);
 			name = PreviewYaml;
 			packageProductDependencies = (
-				3B93E5CE2BD994CD0042F553 /* Yaml */,
 			);
 			productName = PreviewYaml;
 			productReference = 3BB64D8526320064003CD14D /* PreviewYaml.app */;
@@ -458,11 +448,9 @@
 			buildRules = (
 			);
 			dependencies = (
-				3B4330FB2BD9927000411CC9 /* PBXTargetDependency */,
 			);
 			name = "Yaml Previewer";
 			packageProductDependencies = (
-				3B218DDA2637F41F0024446B /* Yaml */,
 			);
 			productName = "Yaml Previewer";
 			productReference = 3BB64DB9263200A8003CD14D /* Yaml Previewer.appex */;
@@ -479,11 +467,9 @@
 			buildRules = (
 			);
 			dependencies = (
-				3B4330FD2BD9927900411CC9 /* PBXTargetDependency */,
 			);
 			name = "Yaml Thumbnailer";
 			packageProductDependencies = (
-				3B218DE12637F4290024446B /* Yaml */,
 			);
 			productName = "Yaml Thumbnailer";
 			productReference = 3BB64DD4263200BA003CD14D /* Yaml Thumbnailer.appex */;
@@ -497,7 +483,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 2640;
 				TargetAttributes = {
 					3B3CEF5A2A5B798A00D05123 = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -531,7 +517,6 @@
 			);
 			mainGroup = 3BB64D7C26320064003CD14D;
 			packageReferences = (
-				3B218DD92637F41F0024446B /* XCRemoteSwiftPackageReference "YamlSwift" */,
 			);
 			productRefGroup = 3BB64D8626320064003CD14D /* Products */;
 			projectDirPath = "";
@@ -688,14 +673,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		3B4330FB2BD9927000411CC9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 3B4330FA2BD9927000411CC9 /* Yaml */;
-		};
-		3B4330FD2BD9927900411CC9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 3B4330FC2BD9927900411CC9 /* Yaml */;
-		};
 		3BB64D9726320065003CD14D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3BB64D8426320064003CD14D /* PreviewYaml */;
@@ -863,6 +840,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -920,6 +898,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
@@ -928,7 +907,6 @@
 		3BB64DAA26320065003CD14D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PreviewYaml/PreviewYaml.entitlements;
@@ -936,7 +914,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -959,7 +937,6 @@
 		3BB64DAB26320065003CD14D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PreviewYaml/PreviewYaml.entitlements;
@@ -967,7 +944,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -990,7 +967,6 @@
 		3BB64DAD26320065003CD14D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -1013,7 +989,6 @@
 		3BB64DAE26320065003CD14D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -1036,7 +1011,6 @@
 		3BB64DB026320065003CD14D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
@@ -1057,7 +1031,6 @@
 		3BB64DB126320065003CD14D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
@@ -1082,7 +1055,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1109,7 +1082,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1136,7 +1109,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
@@ -1164,7 +1137,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1251,50 +1224,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		3B218DD92637F41F0024446B /* XCRemoteSwiftPackageReference "YamlSwift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/smittytone/YamlSwift.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		3B218DDA2637F41F0024446B /* Yaml */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3B218DD92637F41F0024446B /* XCRemoteSwiftPackageReference "YamlSwift" */;
-			productName = Yaml;
-		};
-		3B218DE12637F4290024446B /* Yaml */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3B218DD92637F41F0024446B /* XCRemoteSwiftPackageReference "YamlSwift" */;
-			productName = Yaml;
-		};
-		3B3CEF6C2A5B7D9600D05123 /* Yaml */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3B218DD92637F41F0024446B /* XCRemoteSwiftPackageReference "YamlSwift" */;
-			productName = Yaml;
-		};
-		3B4330FA2BD9927000411CC9 /* Yaml */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3B218DD92637F41F0024446B /* XCRemoteSwiftPackageReference "YamlSwift" */;
-			productName = Yaml;
-		};
-		3B4330FC2BD9927900411CC9 /* Yaml */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3B218DD92637F41F0024446B /* XCRemoteSwiftPackageReference "YamlSwift" */;
-			productName = Yaml;
-		};
-		3B93E5CE2BD994CD0042F553 /* Yaml */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3B218DD92637F41F0024446B /* XCRemoteSwiftPackageReference "YamlSwift" */;
-			productName = Yaml;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3BB64D7D26320064003CD14D /* Project object */;
 }

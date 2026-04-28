@@ -10,3 +10,9 @@ zing-zang-spillip: |
       This is a multiline sentence,
       so it appears on multiple lines
       at the same time.
+zing-zang-smissip: >
+      This is a multiline item,
+      but is rendered to
+      appear on
+      a single
+      line.
