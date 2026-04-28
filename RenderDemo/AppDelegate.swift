@@ -206,8 +206,9 @@ class AppDelegate:  NSObject,
                     if self.thumbButton.state == .on {
                         attString = self.common!.getThumbnailString(fromYaml: yamlString)
                     } else {
-                        attString = await self.common!.getAttributedString(yamlString)
+                        attString = await self.common!.getPreviewString(fromYaml: yamlString)
                     }
+                    
                     self.previewTextView.backgroundColor = self.common!.doShowLightBackground ? NSColor(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
                     self.previewScrollView.scrollerKnobStyle = self.common!.doShowLightBackground ? .dark : .light
 
