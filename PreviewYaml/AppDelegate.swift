@@ -360,7 +360,7 @@ final class AppDelegate: NSResponder,
         }
         
         // Open the selected website
-        NSWorkspace.shared.open(URL.init(string:path)!)
+        NSWorkspace.shared.open(URL(string:path)!)
     }
 
 
