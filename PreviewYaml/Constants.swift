@@ -143,14 +143,15 @@ struct BUFFOON_CONSTANTS {
 
     static let SAMPLE_UTI_FILE                      = "sample.yml"
     static let THUMBNAIL_LINE_COUNT                 = 30
+    static let MAX_THUMBNAIL_READ_SIZE              = 1024
 
-#if DEBUG2
-    static let CR                               = "↵\n"
-    static let COLLECTION_SPACER                = "⟼\n"
-    static let TAB                              = "↦\t"
+#if DEBUG
+    static let CR                                   = "↵\n"
+    static let COLLECTION_SPACER                    = "⟼\n"
+    static let TAB                                  = "↦\t"
 #else
-    static let CR                               = "\n"
-    static let COLLECTION_SPACER                = "\n"
-    static let TAB                              = "\t"
+    static let CR                                   = "\n"
+    static let COLLECTION_SPACER                    = "\n"
+    static let TAB                                  = "\t"
 #endif
 }
