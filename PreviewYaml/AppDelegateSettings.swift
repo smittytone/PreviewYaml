@@ -14,6 +14,19 @@ extension AppDelegate {
 
 
     /**
+     Initialise settings handling.
+
+     FROM 2.0.0
+     */
+    internal func initialiseSettings() {
+
+        // Set up advanced settings
+        self.previewMarginSizeText.delegate = self
+        self.previewMarginRangeText.stringValue = "Valid range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MAX)"
+    }
+
+    
+    /**
      Update UI when we are about to switch to it.
 
      // FROM 2.0.0
@@ -215,8 +228,40 @@ extension AppDelegate {
     @IBAction
     internal func doCloseAdvancedSettings(sender: Any) {
 
-        self.window.endSheet(self.advancedSettingsSheet)
-        willShowSettingsPage()
+        if advancedValuesGood() {
+            self.window.endSheet(self.advancedSettingsSheet)
+            willShowSettingsPage()
+        }
+    }
+
+
+    /**
+     Check that advanced settings textfield values are of the right type
+     and within range, presenting a warning if they are not.
+
+     FROM 2.0.0
+
+     - Returns: `true` if the values are good, otherwise `false`.
+     */
+    internal func advancedValuesGood() -> Bool {
+
+        let warningMessage: String
+        if let previewMargin = Float(self.previewMarginSizeText.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)) {
+            if previewMargin >= 0.0 && previewMargin <= 256.0 {
+                return true
+            }
+
+            warningMessage = "The preview margin value is outside the range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MAX)"
+        } else {
+            warningMessage = "The preview margin value must be a number in the range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MAX)"
+        }
+
+        Task { @MainActor in
+            let alert = makeAlert("Something’s not right!", warningMessage)
+            _ = await alert.beginSheetModal(for: self.advancedSettingsSheet)
+        }
+
+        return false
     }
 
 
@@ -459,4 +504,42 @@ extension AppDelegate {
         }
     }
 
+
+    // MARK: - NSTextFieldDelegate Functions
+
+    /**
+     Verify input values.
+
+     FROM 2.0.3
+    */
+    func controlTextDidEndEditing(_ obj: Notification) {
+
+        let textField = obj.object as? NSTextField ?? nil
+        if textField == self.previewMarginSizeText {
+            if let doubleValue = Double(textField!.stringValue) {
+                let min = Double(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MIN).rounded(.towardZero)
+                let max = Double(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MAX).rounded(.towardZero)
+
+                if doubleValue > min && doubleValue <= max {
+                    // Value within supported range, so write the formatted value back from where it will later be read
+                    textField!.stringValue = String(format:"%.1f", doubleValue)
+                    return
+                }
+
+                // Erroneous value: numeric but out of range
+                // Set value to either end
+                if doubleValue < min {
+                    textField!.stringValue = String(format:"%.1f", min)
+                } else if doubleValue > max {
+                    textField!.stringValue = String(format:"%.1f", max)
+                }
+            } else {
+                // Erroneous value: not numeric
+                textField!.stringValue = String(format:"%.1f", self.currentSettings.previewMarginWidth)
+            }
+        }
+
+        // Warn the user
+        NSSound.beep()
+    }
 }

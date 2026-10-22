@@ -156,9 +156,8 @@ final class AppDelegate: NSResponder,
         initialiseFeedback()
 
         // FROM 2.0.0
-        // Set up advanced settings
-        self.previewMarginSizeText.delegate = self
-        self.previewMarginRangeText.stringValue = "Valid range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MAX)"
+        // Set up settings
+        initialiseSettings()
 
         // Centre the main window and display
         setInfoText()
