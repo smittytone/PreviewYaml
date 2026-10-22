@@ -37,88 +37,72 @@ class PreviewViewController: NSViewController,
          * This is the main entry point for the macOS QuickLook previewing system
          */
 
-        // Get an error message ready for use
-        var reportError: NSError? = nil
-
         // Get the file contents as a string
-        do {
-            // Get the file contents as a string
-            let data = try Data(contentsOf: url, options: [.uncached])
-            let encoding = data.stringEncoding ?? .utf8
-
-            // Convert the data to a string
-            if let yaml = String(data: data, encoding: encoding) {
-                /*
-                 Instantiate the common code within the closure
-                 */
-                let common = Common(forThumbnail: false)
-
-                /*
-                 Attributed string acquisition
-                 */
-                let attributedYaml = await common.getPreviewString(fromYaml: yaml)
-
-                /*
-                 Window and mode configuration
-                 */
-
-                // FROM 2.0.0
-                // Set the parent window's size
-                setPreviewWindowSize(common.settings)
-
-                // FROM 2.0.0
-                // The force-light-mode-preview-in-dark-mode setting is now a general
-                // preview-colours-should-be-opposite-the-mode setting.
-                var renderPreviewLight = NSApplication.shared.inLightMode
-                if common.settings.doReverseMode {
-                    // Invert the colour scheme based on the current mode
-                    renderPreviewLight = !renderPreviewLight
-                }
-
-                // Update the NSTextView
-                self.renderTextView.backgroundColor = renderPreviewLight ? .white : .textBackgroundColor
-                self.renderTextScrollView.scrollerKnobStyle = renderPreviewLight ? .dark : .light
-                self.view.appearance = renderPreviewLight ? NSAppearance(named: .aqua) : NSAppearance(named: .darkAqua)
-
-                // FROM 2.0.0
-                // Add margin if required
-                if common.settings.previewMarginWidth > 0.0 {
-                    self.renderTextView.textContainerInset = NSSize(width: common.settings.previewMarginWidth,
-                                                                    height: common.settings.previewMarginWidth)
-                }
-
-                /*
-                 Attributed String Presentation
-                 */
-                if let renderTextStorage = self.renderTextView.textStorage {
-                    /*
-                     * NSTextStorage subclasses that return true from the fixesAttributesLazily
-                     * method should avoid directly calling fixAttributes(in:) or else bracket
-                     * such calls with beginEditing() and endEditing() messages.
-                     */
-                    renderTextStorage.beginEditing()
-                    renderTextStorage.setAttributedString(attributedYaml)
-                    renderTextStorage.endEditing()
-                    return
-                }
-
-                // We can't access the preview NSTextView's NSTextStorage
-                reportError = makeError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
-            } else {
-                // FROM 1.1.2
-                // We couldn't convert to data to a valid encoding
-                let errDesc: String = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) \(encoding)"
-                reportError = NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,
-                                      code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING,
-                                      userInfo: [NSLocalizedDescriptionKey: errDesc])
-            }
-        } catch {
-            // We couldn't read the file so set an appropriate error to report back
-            reportError = makeError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
+        guard let data = try? Data(contentsOf: url, options: [.uncached]) else {
+            throw makeError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
         }
 
-        // Error
-        throw reportError!
+        // Convert the data to a string
+        let encoding = data.stringEncoding ?? .utf8
+        guard let yaml = String(data: data, encoding: encoding) else {
+            // FROM 1.1.2
+            // We couldn't convert to data to a valid encoding
+            let errDesc: String = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) \(encoding)"
+            throw NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,
+                                  code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING,
+                                  userInfo: [NSLocalizedDescriptionKey: errDesc])
+        }
+
+        /*
+         * Attributed string acquisition
+         */
+        let common = Common(forThumbnail: false)
+        let attributedYaml = await common.getPreviewString(fromYaml: yaml)
+
+        /*
+         Window and mode configuration
+         */
+
+        // FROM 2.0.0
+        // Set the parent window's size
+        setPreviewWindowSize(common.settings)
+
+        // FROM 2.0.0
+        // The force-light-mode-preview-in-dark-mode setting is now a general
+        // preview-colours-should-be-opposite-the-mode setting.
+        var renderPreviewLight = NSApplication.shared.inLightMode
+        if common.settings.doReverseMode {
+            // Invert the colour scheme based on the current mode
+            renderPreviewLight = !renderPreviewLight
+        }
+
+        // Update the NSTextView
+        self.renderTextView.backgroundColor = renderPreviewLight ? .white : .textBackgroundColor
+        self.renderTextScrollView.scrollerKnobStyle = renderPreviewLight ? .dark : .light
+        self.view.appearance = renderPreviewLight ? NSAppearance(named: .aqua) : NSAppearance(named: .darkAqua)
+
+        // FROM 2.0.0
+        // Add margin if required
+        if common.settings.previewMarginWidth > 0.0 {
+            self.renderTextView.textContainerInset = NSSize(width: common.settings.previewMarginWidth,
+                                                            height: common.settings.previewMarginWidth)
+        }
+
+        /*
+         * Attributed String Presentation
+         */
+        guard let renderTextStorage = self.renderTextView.textStorage else {
+            throw makeError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
+        }
+
+        /*
+         * NSTextStorage subclasses that return true from the fixesAttributesLazily
+         * method should avoid directly calling fixAttributes(in:) or else bracket
+         * such calls with beginEditing() and endEditing() messages.
+         */
+        renderTextStorage.beginEditing()
+        renderTextStorage.setAttributedString(attributedYaml)
+        renderTextStorage.endEditing()
     }
 
 
