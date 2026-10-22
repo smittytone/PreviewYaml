@@ -709,11 +709,11 @@ internal final class YAMLParser {
 
         switch text {
             case ".inf", "+.inf", ".Inf", "+.Inf", ".INF", "+.INF":
-                return YAMLValue2(value: Double.infinity, type: .double)
+                return YAMLValue2(value: "INF", type: .string)
             case "-.inf", "-.Inf", "-.INF":
-                return YAMLValue2(value: Double.infinity, type: .double)
+                return YAMLValue2(value: "-INF", type: .string)
             case ".nan",  ".NaN",  ".NAN":
-                return YAMLValue2(value: Double.nan, type: .double)
+                return YAMLValue2(value: "NaN", type: .string)
             default:
                 break
         }

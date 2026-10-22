@@ -840,14 +840,9 @@ final class Common {
                     base = String(base.dropFirst()).trimmingCharacters(in: .whitespaces)
                 }
 
-                var style: [NSAttributedString.Key: Any]
-                if base.hasPrefix("#") {
-                    style = self.commentAttributes
-                } else {
-                    style = self.specialAttributes
-                }
+                let style = scalar.type == .comment ? self.commentAttributes : self.specialAttributes
 
-                // Handle values with end-of-line comments
+                // Handle values with end-of-line comments (beyond directives)
                 if let comment = scalar.lineComment {
                     let attributedScalar = NSMutableAttributedString(string: "\(base)", attributes: style)
                     attributedScalar.append(renderComment(comment))
