@@ -2,7 +2,7 @@
 
 App Extension-based macOS QuickLook previews and Finder thumbnails for [YAML](https://yaml.org) files.
 
-[![PreviewYaml App Store QR code](qr-code-py.jpg)](https://apps.apple.com/gb/app/previewyaml/id1564574724?mt=12)
+*PreviewYaml* has now been End-of-Lifed. No further updates will be made.
 
 ## Installation and Usage ##
 
@@ -53,6 +53,8 @@ Contributions are welcome, but pull requestss can only be accepted when they tar
 Contributions will only be accepted if they code they contain is licensed under the terms of [the MIT Licence](#LICENSE.md)
 
 ## Release Notes ##
+
+*PreviewYaml* has now been End-of-Lifed. No further updates will be made.
 
 - 1.2.3 *April 2025*
     - Preparation work ahead of deprecation.
