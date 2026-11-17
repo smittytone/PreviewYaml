@@ -6,9 +6,9 @@ App Extension-based macOS QuickLook previews and Finder thumbnails for [YAML](ht
 
 ## Installation and Usage ##
 
-Just *run* the host app once to register the extensions &mdash; you can quit the app as soon as it has launched. We recommend logging out of your Mac and back in again at this point. Now you can preview YAML documents using QuickLook (select an icon and hit Space), and Finder’s preview pane and **Info** panels.
+Just run the host app once to register the extensions—you can quit the app as soon as it has launched. We recommend logging out of your Mac and back in again at this point. Now you can preview YAML documents using QuickLook (select an icon and hit Space), and Finder’s preview pane and **Info** panels.
 
-You can disable and re-enable the Yaml Previewer and Yaml Thumbnailer extensions at any time in **System Preferences > Extensions > Quick Look**.
+You can disable and re-enable the *Yaml Previewer* and *Yaml Thumbnailer* extensions at any time in **System Preferences > Extensions > Quick Look**.
 
 ### Adjusting the Preview ###
 
@@ -27,20 +27,19 @@ Changing these settings will affect previews immediately, but may not affect thu
 
 ## Troubleshooting ##
 
-If PreviewYaml reports that it was unable to render YAML, this is almost certainly caused by a slight malformation of the YAML itself — the error message should help you spot the problem. PreviewYaml’s YAML library is quite strict, so YAML malformations which other apps may accept may be rejected by PreviewYaml. For this reason, you can optionally tell PreviewYaml to display a file’s raw YAML in the event of a parsing error. This option is chosen in PreviewYaml’s **Preferences** panel and will allow you to QuickLook YAML files, albeit without rendering.
+If *PreviewYaml* reports that it was unable to render YAML, this is almost certainly caused by a slight malformation of the YAML itself—the error message should help you spot the problem. *PreviewYaml*’s YAML library is quite strict, so YAML malformations which other apps may accept may be rejected by *PreviewYaml*. For this reason, you can optionally tell *PreviewYaml* to display a file’s raw YAML in the event of a parsing error. This option is chosen in *PreviewYaml*’s **Preferences** panel and will allow you to QuickLook YAML files, albeit without rendering.
 
 ## Known Issues ##
 
 * *PreviewYaml* currently expects files to be encoded in UTF-8.
 * YAML custom tags are not as yet correctly rendered by *PreviewYAML*’s YAML library.
-
-Comments are not rendered.
+* Comments are not rendered.
 
 ## Source Code ##
 
-This repository contains the primary source code for *PreviewYaml*. Certain graphical assets, code components and data files are not included. To build *PreviewYaml* from scratch, you will need to add these files yourself or remove them from your fork.
+This repository contains the primary source code for *PreviewYaml*. Certain graphical assets, code components and data files are not included. To build *PreviewYaml* from scratch, you will need to add these files yourself or remove references to them from your fork.
 
-The files `REPLACE_WITH_YOUR_FUNCTIONS` and `REPLACE_WITH_YOUR_CODES` must be replaced with your own files. The former will contain your `sendFeedback(_ feedback: String) -> URLSessionTask?` function. The latter your Developer Team ID, used as the App Suite identifier prefix.
+The files `REPLACE_WITH_YOUR_FUNCTIONS` and `REPLACE_WITH_YOUR_CODES` must be replaced with your own files. The former will contain your `sendFeedback(_ feedback: String) -> URLSessionTask?` function. The latter contains your Developer Team ID, used as the App Suite identifier prefix.
 
 You will need to generate your own `Assets.xcassets` file containing the app icon and an `app_logo.png` file.
 
@@ -50,7 +49,7 @@ You will need to create your own `new` directory containing your own `new.html` 
 
 Contributions are welcome, but pull requestss can only be accepted when they target the `develop` branch. PRs targetting `main` will be rejected.
 
-Contributions will only be accepted if they code they contain is licensed under the terms of [the MIT Licence](#LICENSE.md)
+Contributions will only be accepted if the code they contain is licensed under the terms of [the MIT Licence](#LICENSE.md)
 
 ## Release Notes ##
 
